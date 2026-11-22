@@ -14,9 +14,9 @@ export const PARAMETER_SCRYPT = { ln: 17, r: 8, p: 1 } as const;
 const PANJANG_SALT = 16;
 const PANJANG_KUNCI = 64;
 
-/** Batas panjang (karakter). Batas atas mencegah kata sandi raksasa dipakai untuk membebani server. */
-export const PANJANG_MIN = 8;
-export const PANJANG_MAKS = 128;
+// Batas panjang ada di lib/aturan-sandi.ts (murni, bisa dibaca klien); diekspor ulang di sini.
+import { PANJANG_MAKS, PANJANG_MIN } from "./aturan-sandi.ts";
+export { PANJANG_MAKS, PANJANG_MIN };
 
 interface Parameter {
   ln: number;

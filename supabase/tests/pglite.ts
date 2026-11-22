@@ -2,7 +2,7 @@
 // dan PostGIS. Tidak menyentuh database Supabase milik siapa pun.
 //
 // Urutan memuat file sama dengan urutan yang dijalankan pemilik proyek di SQL Editor:
-//   0001 -> 0002 -> seed.sql -> 0003 -> 0004 -> seed_forum.sql
+//   0001 -> 0002 -> seed.sql -> 0003 -> 0004 -> seed_forum.sql -> 0005
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -20,6 +20,7 @@ export const BERKAS = {
   m0003: "migrations/0003_akun.sql",
   m0004: "migrations/0004_forum.sql",
   seedForum: "seed_forum.sql",
+  m0005: "migrations/0005_admin.sql",
 } as const;
 
 export type NamaBerkas = keyof typeof BERKAS;
@@ -66,6 +67,8 @@ export async function muat(db: PGlite, ...berkas: NamaBerkas[]): Promise<void> {
 
 export const SEBELUM_FORUM = ["m0001", "m0002", "seed", "m0003"] as const;
 export const SEMUA = [...SEBELUM_FORUM, "m0004", "seedForum"] as const;
+/** Sampai migrasi admin. Akun harus sudah ada sebelum seedForum, jadi pemanggil menyisipkannya sendiri. */
+export const SEMUA_DENGAN_ADMIN = [...SEMUA, "m0005"] as const;
 
 /** Hasil rekomendasi_resmi sebagai teks yang stabil, untuk dibandingkan sebelum dan sesudah. */
 export async function sidikRekomendasi(db: PGlite, pagu = 300_000_000): Promise<string> {

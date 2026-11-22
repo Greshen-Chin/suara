@@ -21,12 +21,16 @@ export const STATUS_KOMENTAR_AWAL: StatusKomentar = {
   perluMasuk: false,
 };
 
-export interface StatusSembunyikan {
+/** Hasil aksi yang meminta satu alasan tertulis (dialog alasan bersama forum dan admin). */
+export interface StatusAlasan {
+  /** Naik setiap ada hasil baru. */
   nomor: number;
   hasil: "belum" | "berhasil" | "galat";
   pesan: string | null;
   galatAlasan: string | null;
 }
+
+export type StatusSembunyikan = StatusAlasan;
 
 export const STATUS_SEMBUNYIKAN_AWAL: StatusSembunyikan = {
   nomor: 0,

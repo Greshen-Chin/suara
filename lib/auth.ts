@@ -26,6 +26,8 @@ export interface Pengguna {
    * Hanya untuk server: jangan dikirim ke klien. Komponen klien cukup menerima boolean.
    */
   wargaId: string | null;
+  /** Akun ini dibuat atau diatur ulang admin dan kata sandinya belum diganti pemiliknya. */
+  harusGantiSandi: boolean;
 }
 
 function keAkunPengguna(
@@ -33,7 +35,13 @@ function keAkunPengguna(
   akun: Awaited<ReturnType<typeof cariAkunById>>,
 ): Pengguna | null {
   if (!akun || !akun.aktif || akun.versi_sesi !== sesi.versi) return null;
-  return { id: akun.id, nama: akun.nama_pengguna, peran: akun.peran, wargaId: akun.warga_id };
+  return {
+    id: akun.id,
+    nama: akun.nama_pengguna,
+    peran: akun.peran,
+    wargaId: akun.warga_id,
+    harusGantiSandi: akun.harus_ganti_sandi,
+  };
 }
 
 /**
@@ -64,10 +72,14 @@ export const ambilPenggunaUntukBaca = cache(async (): Promise<Pengguna | null> =
   }
 });
 
-/** Arahkan ke halaman masuk bila belum masuk. */
+/**
+ * Arahkan ke halaman masuk bila belum masuk. Token yang masih sah tetapi akunnya sudah tidak berlaku
+ * (dinonaktifkan, sesi dicabut) diarahkan ke RUTE.masukSesiBerakhir: proxy.ts hanya membaca tanda
+ * tangan token, jadi tanpa penanda itu ia mengembalikan /masuk ke /akun dan keduanya berputar.
+ */
 export async function wajibMasuk(): Promise<Pengguna> {
   const pengguna = await ambilPengguna();
-  if (!pengguna) redirect(RUTE.masuk);
+  if (!pengguna) redirect((await bacaSesi()) ? RUTE.masukSesiBerakhir : RUTE.masuk);
   return pengguna;
 }
 
@@ -85,7 +97,7 @@ const ambilHashPalsu = () =>
   (hashPalsu ??= hashKataSandi(randomBytes(32).toString("base64url")));
 
 export type HasilKredensial =
-  | { status: "berhasil"; sesi: IsiSesi }
+  | { status: "berhasil"; sesi: IsiSesi; harusGantiSandi: boolean }
   | { status: "gagal" }
   | { status: "terkunci"; sampai: Date };
 
@@ -124,5 +136,6 @@ export async function periksaKredensial(
       peran: akun.peran,
       versi: akun.versi_sesi,
     },
+    harusGantiSandi: akun.harus_ganti_sandi,
   };
 }

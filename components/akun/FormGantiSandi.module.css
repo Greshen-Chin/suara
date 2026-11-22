@@ -1,0 +1,110 @@
+/* Formulir ganti kata sandi di /akun. Datar, garis 3 px tinta, token yang sama dengan formulir masuk. */
+
+.form {
+  display: grid;
+  gap: 1.25rem;
+  width: 100%;
+  padding: clamp(1rem, 4vw, 1.5rem);
+  border: var(--tebal) solid var(--tinta);
+  border-radius: var(--radius);
+  background: var(--papan);
+}
+
+.form :global(.tombol[aria-disabled="true"]) {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+.wajib {
+  padding: 0.75rem 0.875rem;
+  border: 2px solid var(--tinta);
+  border-radius: var(--radius);
+}
+
+.aturan {
+  display: grid;
+  gap: 0.25rem;
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+}
+
+.aturan ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.kolom {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.kolom label {
+  font-weight: 600;
+}
+
+.kolom input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--tinta);
+  border-radius: var(--radius);
+  background: var(--papan);
+  color: var(--tinta);
+  /* 16px ke atas mencegah iOS memperbesar halaman saat kolom disentuh. */
+  font: inherit;
+  font-size: max(1rem, var(--t-md));
+}
+
+.kolom input[aria-invalid="true"] {
+  border-color: var(--galat-tepi);
+}
+
+.sandi {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+}
+
+.galat {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.75rem 0.875rem;
+  border: 2px solid var(--galat-tepi);
+  border-radius: var(--radius);
+  background: var(--galat-latar);
+  color: var(--galat-teks);
+  font-weight: 600;
+}
+
+.galat ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.galat a {
+  color: var(--galat-teks);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+.galatKolom {
+  color: var(--galat-teks);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+.berhasil {
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: var(--tebal) solid var(--hijau-sawah);
+  border-radius: var(--radius);
+  background: var(--papan);
+}
+
+.berhasil strong {
+  font-family: var(--f-judul);
+  font-size: var(--t-xl);
+  line-height: 1.1;
+}

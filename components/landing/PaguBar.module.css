@@ -192,3 +192,49 @@
     align-items: flex-end;
   }
 }
+
+/* ---- Varian ringkas: dua batang yang dibandingkan (pratinjau dampak di halaman admin) ----
+   Hanya nama di tiap blok, satu baris; rincian biaya tetap terbaca pembaca layar. */
+.ringkas .batang {
+  height: 16rem;
+}
+
+.ringkas .isi {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 0.5rem;
+}
+
+.ringkas .nama {
+  min-width: 0;
+  font-size: var(--t-sm);
+  white-space: nowrap;
+}
+
+/* Nama di blok sempit dipotong dengan elipsis, bukan terpotong di tengah huruf. */
+.ringkas .namaTeks {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 45rem) {
+  .ringkas .batang {
+    height: 4.5rem;
+  }
+
+  .ringkas .isi {
+    justify-content: flex-start;
+    padding: 0 0.625rem;
+  }
+
+  .ringkas .nama {
+    font-size: var(--t-md);
+    align-items: center;
+  }
+
+  .ringkas .nama svg {
+    margin-top: 0;
+  }
+}

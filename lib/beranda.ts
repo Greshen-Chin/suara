@@ -3,10 +3,10 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import {
-  PAGU_DEFAULT,
   getBobotResmi,
   getGreedy,
   getLogTerbaru,
+  getPagu,
   getRekomendasi,
   getWilayah,
   type BarisLog,
@@ -35,11 +35,13 @@ export interface DataBeranda {
 export async function muatBeranda(): Promise<DataBeranda> {
   "use cache";
   cacheLife({ stale: 30, revalidate: 60, expire: 3600 });
-  // Dukungan pada usulan voting mengubah angka di sini. Server Action forum memanggil
+  // Dukungan pada usulan voting mengubah angka di sini. Server Action forum dan admin memanggil
   // updateTag(TAG.beranda), jadi angkanya langsung ikut berubah, tidak menunggu 60 detik.
-  cacheTag(TAG.beranda);
+  cacheTag(TAG.beranda, TAG.pengaturan);
 
-  const pagu = PAGU_DEFAULT;
+  // Pagu dari database (diubah admin); PAGU_DEFAULT hanya bila database tidak terjangkau.
+  const paguBaca = await getPagu();
+  const pagu = paguBaca.data;
   const [suara, rekomendasi, wilayah, bobot, log] = await Promise.all([
     getGreedy(pagu, "suara"),
     getRekomendasi(pagu),
@@ -61,7 +63,7 @@ export async function muatBeranda(): Promise<DataBeranda> {
     usulan: rekomendasi.data,
     bobot: bobot.data,
     log: log.data,
-    dataContoh: [suara, rekomendasi, wilayah, bobot, log].some(
+    dataContoh: [paguBaca, suara, rekomendasi, wilayah, bobot, log].some(
       (h) => h.source === "fallback",
     ),
   };

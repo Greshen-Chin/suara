@@ -4,7 +4,11 @@ import "server-only";
 import type { Json } from "./database.types";
 import { lamaTunggu } from "./waktu";
 
-/** Kode galat yang dikenal aplikasi. Sebagian berasal dari fungsi SQL (supabase/migrations/0004_forum.sql). */
+/**
+ * Kode galat yang dikenal aplikasi. Berasal dari fungsi SQL (supabase/migrations/0004_forum.sql
+ * untuk forum, 0005_admin.sql untuk admin). Kalimat untuk kode admin ada di lib/admin-aksi.ts;
+ * mesinnya (penguraian hasil, batas waktu, pencatatan galat) satu, di file ini.
+ */
 export type KodeGalat =
   | "belum_masuk"
   | "akun_tidak_aktif"
@@ -17,7 +21,18 @@ export type KodeGalat =
   | "ditutup"
   | "tidak_valid"
   | "batas_laju"
-  | "gangguan";
+  | "gangguan"
+  // Khusus admin (0005):
+  | "bentrok"
+  | "transisi_tidak_diizinkan"
+  | "batas_voting"
+  | "tanpa_rw"
+  | "tidak_berubah"
+  | "tidak_disembunyikan"
+  | "diri_sendiri"
+  | "admin_terakhir"
+  | "nama_dipakai"
+  | "warga_sudah_punya_akun";
 
 export interface Galat {
   ok: false;
@@ -85,12 +100,22 @@ export function pesanGalat(kode: KodeGalat, konteks: Konteks, ulangDetik?: numbe
       return konteks === "periksa"
         ? "Pemeriksaan usulan serupa belum bisa dijalankan sekarang. Anda tetap bisa mengajukan usulan."
         : GANGGUAN;
+    default:
+      // Kode khusus admin: kalimatnya ada di pesanGalatAdmin (lib/admin-aksi.ts).
+      return GANGGUAN;
   }
 }
 
 export type HasilRpc =
   | { ok: true; data: Record<string, Json | undefined> }
-  | { ok: false; kode: KodeGalat; ulangDetik?: number; bidang?: string };
+  | {
+      ok: false;
+      kode: KodeGalat;
+      ulangDetik?: number;
+      bidang?: string;
+      /** Isi lengkap jawaban galat, mis. nilai terbaru pada "bentrok" dan jumlah pada "batas_voting". */
+      rincian?: Record<string, Json | undefined>;
+    };
 
 const KODE_DIKENAL = new Set<string>([
   "akun_tidak_aktif",
@@ -103,6 +128,16 @@ const KODE_DIKENAL = new Set<string>([
   "ditutup",
   "tidak_valid",
   "batas_laju",
+  "bentrok",
+  "transisi_tidak_diizinkan",
+  "batas_voting",
+  "tanpa_rw",
+  "tidak_berubah",
+  "tidak_disembunyikan",
+  "diri_sendiri",
+  "admin_terakhir",
+  "nama_dipakai",
+  "warga_sudah_punya_akun",
 ]);
 
 /** Mengurai jsonb dari fungsi SQL: {"ok": true, ...} atau {"ok": false, "kode": "..."}. */
@@ -117,12 +152,27 @@ export function uraiHasilRpc(nilai: Json): HasilRpc {
     kode,
     ...(typeof nilai.ulang_detik === "number" && { ulangDetik: nilai.ulang_detik }),
     ...(typeof nilai.bidang === "string" && { bidang: nilai.bidang }),
+    rincian: nilai,
   };
 }
 
 const BATAS_WAKTU_TULIS_MS = 5000;
 
-type NamaFungsi = "dukung_usulan" | "batal_dukung" | "ajukan_usulan" | "tambah_komentar" | "sembunyikan";
+type NamaFungsi =
+  | "dukung_usulan"
+  | "batal_dukung"
+  | "ajukan_usulan"
+  | "tambah_komentar"
+  | "sembunyikan"
+  | "pindahkan_status"
+  | "ubah_pagu"
+  | "ubah_bobot"
+  | "tampilkan_kembali"
+  | "cari_warga_bebas"
+  | "buat_akun_warga"
+  | "atur_ulang_sandi"
+  | "atur_aktif"
+  | "ganti_sandi_sendiri";
 
 /**
  * Memanggil fungsi SQL penulis. `panggil` membuat permintaannya (dengan tipe argumen lengkap

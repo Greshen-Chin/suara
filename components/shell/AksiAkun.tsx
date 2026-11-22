@@ -10,9 +10,17 @@ export async function AksiAkun() {
   const pengguna = await ambilPenggunaUntukBaca();
   if (pengguna) {
     return (
-      <Link href={RUTE.akun} className="tombol tombol-kedua" aria-label={`Akun ${pengguna.nama}`}>
-        {pengguna.nama}
-      </Link>
+      <>
+        {/* Hanya admin yang melihat tautan ini. Pemeriksaan sebenarnya ada di setiap halaman admin. */}
+        {pengguna.peran === "admin" && (
+          <Link href={RUTE.admin} className="tombol tombol-utama">
+            Admin
+          </Link>
+        )}
+        <Link href={RUTE.akun} className="tombol tombol-kedua" aria-label={`Akun ${pengguna.nama}`}>
+          {pengguna.nama}
+        </Link>
+      </>
     );
   }
   return <TombolTamu />;

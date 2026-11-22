@@ -15,10 +15,10 @@ Di kebanyakan desa, usulan dengan suara terbanyak otomatis menang. Akibatnya RW 
 | **Halaman utama dengan Garis Pagu.** Batang anggaran yang bisa dialihkan antara "Suara terbanyak" dan "Rekomendasi SUARA", dengan animasi perpindahan dan penjelasan kenapa usulan dengan peringkat tertinggi bisa ditunda. | Selesai |
 | **Wilayah kontras.** Perbandingan RW 01 dan RW 07: penduduk, anggaran lalu, dan dukungan per 1.000 penduduk. | Selesai |
 | **Jejak keputusan.** Log perubahan bobot, status, dan hasil seleksi. | Selesai (3 log terbaru di halaman utama) |
-| **Masuk (login).** Peran warga dan admin desa, dengan sesi aman. | Selesai |
+| **Masuk (login).** Peran warga dan admin desa, dengan sesi aman. Semua peran bisa mengganti kata sandinya di `/akun`. | Selesai |
 | **Forum warga.** Usulan, dukungan, komentar, deteksi usulan mirip (AI), dan moderasi. | Selesai, lihat [Forum warga](#forum-warga) dan [docs/forum.md](docs/forum.md) |
-| **Simulasi anggaran** dan **halaman Keputusan**. | Direncanakan (halaman sementara) |
-| **Halaman admin.** Akun warga, pagu, bobot, dan status usulan. | Direncanakan |
+| **Admin desa.** Meninjau usulan, mengatur pagu dan bobot dengan pratinjau dampak, mengelola akun warga, dan memoderasi. | Selesai, lihat [Admin desa](#admin-desa) dan [docs/admin.md](docs/admin.md). Perlu migrasi 0005 |
+| **Simulasi anggaran** dan **halaman Keputusan** (penetapan hasil musyawarah). | Direncanakan (halaman sementara) |
 
 ---
 
@@ -73,6 +73,44 @@ keterbatasannya ada di **[docs/forum.md](docs/forum.md)**.
 3. Masuk sebagai `admin` / `admin123`: buka sebuah usulan lalu coba **Sembunyikan** pada komentar.
    Buka lagi tanpa masuk untuk melihat jejaknya.
 
+## Admin desa
+
+Halaman admin (`/admin`, hanya untuk admin desa aktif) menutup siklus usulan: sebelumnya usulan warga
+berhenti di forum, pagu tertanam di kode, dan bobot hanya bisa diubah lewat SQL. Setiap keputusan
+**wajib beralasan**, dan alasannya terbaca warga di jejak keputusan.
+
+| Bagian | Alamat | Untuk apa |
+|---|---|---|
+| Ringkasan | `/admin` | Pekerjaan yang menunggu: usulan belum ditinjau, hitungan anggaran, akun yang belum mengganti kata sandi |
+| Usulan | `/admin/usulan` | Memasukkan usulan ke hitungan anggaran (urgensi 1–10 dengan alasan), tidak melanjutkan, atau mengembalikan ke pembahasan |
+| Anggaran | `/admin/anggaran` | Mengubah pagu (Rp 10 juta sampai Rp 10 miliar) dan bobot (tiga bilangan bulat, jumlah 100), dengan riwayat |
+| Akun | `/admin/akun` | Membuat akun warga (kata sandi acak tampil sekali), mengatur ulang kata sandi, menonaktifkan dan mengaktifkan |
+| Moderasi | `/admin/moderasi` | Menyembunyikan dan menampilkan kembali komentar dan usulan |
+
+- **Pratinjau dampak.** Sebelum menyimpan pagu, bobot, atau perpindahan status, admin melihat dua Garis Pagu
+  ("Sekarang" dan "Sesudah disimpan") dan daftar usulan yang berubah status. Pratinjau memakai
+  `pilihOptimal` yang sama dengan halaman utama, dan tes SQL membuktikan hasilnya sama dengan
+  `rekomendasi_resmi` setelah perubahan disimpan.
+- **Aturan di database.** Perpindahan status, pagu, bobot, dan pengelolaan akun adalah fungsi SQL atomik yang
+  memeriksa sendiri bahwa pemanggilnya admin aktif. Dua admin yang menyimpan bersamaan ditangani dengan versi
+  (yang kedua ditolak dengan nilai terbaru, bukan menimpa), dan hitungan anggaran dijaga di 16 usulan.
+- **Yang sengaja tidak ada.** Membuat akun admin dari antarmuka (hanya `npm run akun:buat`), menonaktifkan
+  akun sendiri, dan menetapkan hasil musyawarah (itu fitur Keputusan).
+- **Cache.** Setiap perubahan memperbarui halaman utama dan forum seketika (`updateTag`). Halaman admin
+  sendiri tidak pernah memakai data cadangan.
+
+Alasan, rubrik urgensi, diagram status, jejak publik vs jejak tertutup, dan keterbatasannya ada di
+**[docs/admin.md](docs/admin.md)**.
+
+**Cara mencoba** (setelah database disiapkan termasuk migrasi 0005):
+
+1. Masuk sebagai `admin` / `admin123`, lalu buka **Admin** di header.
+2. Di **Usulan**, buka usulan berstatus *Sedang dibahas*, pilih "Masukkan ke hitungan anggaran", isi urgensi dan
+   alasan, lalu lihat pratinjau pada Garis Pagu sebelum menyimpan. Halaman utama berubah seketika.
+3. Di **Anggaran**, ubah pagu atau bobot dan perhatikan usulan yang bergeser status.
+4. Di **Akun**, buat akun untuk warga yang belum punya akun, catat kata sandi yang tampil (hanya sekali), lalu
+   masuk sebagai akun itu di jendela lain: ia diminta mengganti kata sandinya.
+
 ## Teknologi
 
 - **Next.js 16.4** (App Router, Cache Components, `proxy.ts`) dan **React 19.3** dengan React Compiler.
@@ -118,7 +156,9 @@ Jalankan file berikut **berurutan** di **SQL Editor** Supabase. Untuk setiap fil
 7. [supabase/seed_forum.sql](supabase/seed_forum.sql): 6 usulan forum, 15 komentar (satu disembunyikan, lengkap dengan jejaknya), dan, bila akun `warga` belum tertaut, menautkannya ke warga RW 07 nomor 70. Aman dijalankan ulang; tidak menghapus apa pun dan tidak menyentuh tujuh usulan voting.
 8. **Isi embedding** agar pemeriksaan usulan serupa memakai makna: `npm run embedding:isi`, lalu tempel SQL yang tercetak di SQL Editor (atau `npm run embedding:isi -- --tulis` untuk menulis langsung, dengan konfirmasi). Unduhan model pertama kali sekitar 118 MB.
 
-Tanpa langkah 5 dan 7, forum tetap tampil dari data cadangan dengan penanda yang jelas, dan semua aksi tulis dimatikan.
+9. [supabase/migrations/0005_admin.sql](supabase/migrations/0005_admin.sql): halaman admin. Pagu pindah ke tabel `pengaturan_anggaran` (Rp 300 juta, jadi **angka halaman utama tidak berubah**), kolom `versi` untuk admin bersamaan, jenis log pagu, tabel `jejak_admin` (tertutup), fungsi atomik admin, dan view admin. Seluruh file berjalan dalam satu transaksi. Harus sesudah langkah 7, boleh sebelum atau sesudah langkah 8, dan **harus dijalankan sebelum atau bersamaan dengan memasang kode baru**: kode baru membaca kolom `akun.harus_ganti_sandi` saat login, jadi tanpa 0005 login gagal. Bila berhenti dengan pesan "lebih dari satu akun", satu warga punya dua akun; kueri pencarinya ada di kepala file.
+
+Tanpa langkah 5 dan 7, forum tetap tampil dari data cadangan dengan penanda yang jelas, dan semua aksi tulis dimatikan. Kode terbaru **tidak boleh dipasang tanpa langkah 9**: login membaca kolom yang baru ada di 0005 dan akan gagal.
 
 Untuk memeriksa hasilnya, jalankan di SQL Editor:
 
@@ -152,6 +192,19 @@ Cek hasil setelah **langkah 8**:
 select count(*) from proposals where embedding is null;  -- 0
 ```
 
+Cek hasil setelah **langkah 9** (angka halaman utama **tidak boleh berubah**):
+
+```sql
+select pagu, versi from pengaturan_anggaran;                        -- 300000000, 1
+select count(*) from rekomendasi_resmi(300000000) where selected;   -- 4 (sama seperti sebelum 0005)
+select count(*) from votes
+ where proposal_id in (select id from proposals where status = 'voting');  -- 162
+select count(*) from accountability_logs where log_type = 'budget_change'; -- 1 (pagu awal dari seed.sql)
+select count(*) from jejak_admin;                                   -- 0 (belum ada tindakan admin)
+```
+
+Setelah itu buka `/admin` sebagai `admin`: angka di halaman utama harus tetap sama dengan sebelumnya.
+
 Cara lain: buka `http://localhost:3000/api/health`. Kalau database siap, isinya `{"db":"ok", ...}`.
 
 ### Membuat akun
@@ -163,6 +216,8 @@ npm run akun:buat
 ```
 
 Jalankan dari PowerShell, CMD, atau Windows Terminal. Di Git Bash pakai `winpty npm run akun:buat`.
+
+Setelah migrasi 0005, akun **warga** juga bisa dibuat dari halaman admin (`/admin/akun/baru`), tanpa SQL. Akun **admin** tetap hanya lewat skrip ini, sengaja: sesi admin yang bocor tidak bisa melahirkan admin baru.
 
 Skrip menanyakan nama pengguna, peran, dan (untuk warga) **nomor warga** di tabel `warga`. Akun warga harus tertaut ke data warga: hanya akun seperti itu yang boleh mendukung dan mengajukan usulan. Kata sandi tidak tampil saat diketik. Skrip lalu **mencetak** perintah `insert` berisi hash. Jalankan perintah itu di SQL Editor. Kata sandi asli tidak pernah disimpan atau dikirim ke mana pun.
 
@@ -209,18 +264,18 @@ Kedua akun ini **hanya untuk database demo**. Kata sandinya sengaja sederhana, j
 ## Pengujian
 
 ```bash
-npm test             # 178 tes: unit (lib/) dan SQL di PGlite (supabase/tests/)
+npm test             # 388 tes: unit (lib/) dan SQL di PGlite (supabase/tests/)
 npm run lint
 npx tsc --noEmit
 npm run build
-npm run e2e          # Playwright + axe di build produksi, melawan server tiruan (lihat docs/forum.md)
+npm run e2e          # 78 tes Playwright + axe di build produksi, melawan server tiruan (lihat docs/forum.md dan docs/admin.md)
 ```
 
 `npm run e2e` perlu browser Playwright (`npx playwright install chromium`) dan model embedding terunduh (atau `E2E_TANPA_EMBEDDING=1`). Skrip lain: `npm run kemiripan:kalibrasi` (mengukur deteksi usulan mirip), `npm run fallback:buat` (membuat ulang data cadangan forum dari seed), `npm run embedding:isi`.
 
 Sudah diperiksa secara manual:
-- **SQL:** migrasi 0001 sampai 0004 dan kedua seed dijalankan di PGlite (Postgres di dalam Node, dengan pgvector, pg_trgm, dan PostGIS): dukung/batal atomik, penolakan admin dan akun tanpa `warga_id`, batas laju, moderasi, hak `execute`, dan `rekomendasi_resmi(300000000)` identik dengan sebelum migrasi forum.
-- **Aksesibilitas:** axe-core (WCAG 2.2 AA) tanpa pelanggaran di 360 px dan 1440 px.
+- **SQL:** migrasi 0001 sampai 0005 dan kedua seed dijalankan di PGlite (Postgres di dalam Node, dengan pgvector, pg_trgm, dan PostGIS): dukung/batal atomik, penolakan admin dan akun tanpa `warga_id`, batas laju, moderasi, hak `execute`, dan `rekomendasi_resmi(300000000)` identik dengan sebelum migrasi forum **dan** sebelum migrasi admin. Tes admin (90 tes) juga memeriksa penolakan non-admin di setiap fungsi, bentrok versi, batas 16 usulan, jejak tertutup, dan bahwa pratinjau sama dengan `rekomendasi_resmi` setelah perubahan disimpan.
+- **Aksesibilitas:** axe-core (WCAG 2.2 AA) tanpa pelanggaran di 360 px dan 1440 px, juga untuk semua halaman `/admin/*` dan `/akun` termasuk dialog, galat, pratinjau, dan tiap langkah membuat akun. Ditambah reflow 320 px, keyboard, target sentuh 44 px, dan spasi teks WCAG 1.4.12.
 - **Kinerja:** Lighthouse mobile halaman utama mendapat 100 di keempat kategori, dengan CLS 0.
 - **Login:** diuji ujung ke ujung dengan Playwright: masuk, keluar, token palsu, dan `alg=none`.
 
@@ -229,18 +284,21 @@ Sudah diperiksa secara manual:
 ## Struktur folder
 
 ```
-app/                 rute (halaman utama, masuk, akun, forum, simulasi, keputusan, api/health)
+app/                 rute (halaman utama, masuk, akun, forum, admin, simulasi, keputusan, api/health)
   forum/             daftar, [id] (detail), usul (formulir), aksi.ts (Server Actions)
+  admin/             ringkasan, usulan, anggaran, akun, moderasi; aksi.ts (Server Actions) dan pratinjau.ts
 components/
   landing/           bagian halaman utama (GarisPagu, WilayahKontras, CaraKerja, JejakKeputusan)
   forum/             daftar, tombol dukung, filter, komentar, dialog moderasi, formulir usulan
+  admin/             pita mode, navigasi, tabel register, formulir pagu/bobot/status, pratinjau dampak, alur buat akun
+  akun/              formulir ganti kata sandi
   shell/             header (dengan penanda halaman aktif dan sesi) dan footer
-  ui/                komponen kecil yang dipakai ulang (StatusLabel, StatusSiklus, HalamanStub)
-lib/                 logika murni dan akses data (seleksi, pagu, format, data, auth, sesi, forum-*, kemiripan, embedding)
+  ui/                komponen kecil yang dipakai ulang (StatusLabel, StatusSiklus, DialogAlasan, HalamanStub)
+lib/                 logika murni dan akses data (seleksi, pagu, format, data, auth, sesi, forum-*, admin-*, pratinjau, kemiripan, embedding)
 scripts/             skrip baris perintah (buat-akun, isi-embedding, kalibrasi-kemiripan, buat-fallback)
 supabase/            migrasi dan seed SQL; tests/ berisi tes SQL (PGlite)
 e2e/                 tes Playwright dan server tiruan Supabase untuk pengujian
-docs/                forum.md; prompts/ berisi brief fitur
+docs/                forum.md, admin.md; prompts/ berisi brief fitur
 DESIGN.md            sistem visual (token, komponen, aturan)
 PRODUCT.md           pengguna, tujuan, prinsip, dan keputusan produk
 ```
@@ -250,4 +308,5 @@ PRODUCT.md           pengguna, tujuan, prinsip, dan keputusan produk
 ## Keputusan yang masih terbuka
 
 - **Aturan dukungan.** Untuk sementara, satu dukungan per usulan per warga, dan warga boleh mendukung banyak usulan. Alternatifnya jatah terbatas, misalnya 3 dukungan per warga per periode. Ini perlu diputuskan sebelum karya dikumpulkan. Aturannya hanya ada di dua tempat, jadi mudah diganti: lihat [docs/forum.md](docs/forum.md#aturan-dukungan-sementara).
-- **Penilaian urgensi oleh AI.** Halaman utama menyebut peran AI, tetapi fiturnya belum dibangun. Saat ini nilai urgensi demo diisi manual di `seed.sql`.
+- **Penilaian urgensi oleh AI.** Halaman utama menyebut peran AI, tetapi fiturnya belum dibangun. Urgensi kini diisi admin di halaman tinjau usulan, dengan rubrik empat tingkat; tempat untuk saran AI sudah disiapkan di formulirnya, tetapi tidak tampil sampai fiturnya ada.
+- **Penetapan hasil musyawarah.** `voting → approved/rejected` dan `approved → done` sengaja belum ada di halaman admin; itu bagian fitur Keputusan.

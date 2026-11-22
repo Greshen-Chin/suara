@@ -4,6 +4,7 @@
 import "server-only";
 import type { Database } from "./database.types";
 import fallbackJson from "./fallback-data.json";
+import { JENIS_LOG, type JenisLog } from "./jenis-log";
 import {
   greedyPilih,
   pilihOptimal,
@@ -16,6 +17,11 @@ import {
 import { supabaseServer } from "./supabase-server";
 
 export const BATAS_WAKTU_MS = 3000;
+/**
+ * Pagu yang berlaku ada di tabel pengaturan_anggaran (admin mengubahnya). Nilai ini hanya
+ * cadangan untuk halaman PUBLIK bila database tidak terjangkau: sama dengan pagu awal di seed.
+ * Halaman admin tidak pernah memakainya (lihat lib/admin-data.ts).
+ */
 export const PAGU_DEFAULT = 300_000_000;
 
 // Bobot bawaan fungsi SQL greedy_pilih bila argumen bobot tidak diberikan.
@@ -56,15 +62,8 @@ export interface BarisWilayah {
   jumlah_suara: number;
 }
 
-/** Jenis catatan di jejak keputusan. 'moderation' = admin menyembunyikan usulan atau komentar. */
-export const JENIS_LOG = [
-  "weight_change",
-  "status_change",
-  "selection",
-  "note",
-  "moderation",
-] as const;
-export type JenisLog = (typeof JENIS_LOG)[number];
+// Jenis log dan labelnya ada di lib/jenis-log.ts (murni, bisa dipakai komponen mana pun).
+export { JENIS_LOG, type JenisLog };
 
 type BarisLogDb = Database["public"]["Tables"]["accountability_logs"]["Row"];
 export type BarisLog = Omit<BarisLogDb, "log_type"> & { log_type: JenisLog };
@@ -225,6 +224,22 @@ function hitungFallback(
 // ---------------------------------------------------------------------------
 // Fungsi yang dipakai halaman
 // ---------------------------------------------------------------------------
+
+/** Pagu yang berlaku (tabel pengaturan_anggaran). Cadangan publik: PAGU_DEFAULT. */
+export function getPagu(): Promise<Hasil<number>> {
+  return denganFallback(
+    async (sinyal) => {
+      const { data, error } = await supabaseServer
+        .from("pengaturan_anggaran")
+        .select("pagu")
+        .eq("id", 1)
+        .abortSignal(sinyal)
+        .single();
+      return { data: data ? data.pagu : null, error };
+    },
+    () => PAGU_DEFAULT,
+  );
+}
 
 /** Rekomendasi resmi: kombinasi terbaik dengan bobot resmi dari tabel scoring_weights. */
 export function getRekomendasi(

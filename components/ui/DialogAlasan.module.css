@@ -1,0 +1,134 @@
+/* Dialog alasan bersama (forum dan admin): <dialog> asli, garis 3 px tinta, datar. Tanpa bayangan;
+   satu-satunya lapisan adalah latar tinta 55% di belakangnya. */
+
+.dialog {
+  width: min(34rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  padding: 0;
+  overflow-y: auto;
+  border: var(--tebal) solid var(--tinta);
+  border-radius: var(--radius);
+  background: var(--papan);
+  color: var(--tinta);
+}
+
+.dialog::backdrop {
+  background: rgb(20 38 30 / 0.55);
+}
+
+.isi {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.judul {
+  font-size: var(--t-xl);
+}
+
+.penjelasan {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 62ch;
+}
+
+.pemicu {
+  min-height: 2.75rem;
+  font-size: var(--t-xs);
+}
+
+.kolom {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.kolom label {
+  font-weight: 600;
+}
+
+.kolom textarea {
+  width: 100%;
+  min-height: 7rem;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--tinta);
+  border-radius: var(--radius);
+  background: var(--papan);
+  color: var(--tinta);
+  font: inherit;
+  font-size: max(1rem, var(--t-md));
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.kolom textarea[aria-invalid="true"] {
+  border-color: var(--galat-tepi);
+}
+
+.bantuBaris {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.bantu {
+  color: var(--abu-semen);
+  font-size: var(--t-xs);
+}
+
+.hitung {
+  flex: none;
+  color: var(--abu-semen);
+  font-size: var(--t-xs);
+}
+
+.hitungLebih {
+  color: var(--galat-teks);
+  font-weight: 700;
+}
+
+.galatKolom {
+  color: var(--galat-teks);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+.galatUmum {
+  padding: 0.75rem 0.875rem;
+  border: 2px solid var(--galat-tepi);
+  border-radius: var(--radius);
+  background: var(--galat-latar);
+  color: var(--galat-teks);
+  font-weight: 600;
+}
+
+/* Tombol di dasar dialog: sejajar di kanan; di ponsel bertumpuk selebar baris supaya mudah disentuh. */
+.baris {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.isi :global(.tombol[aria-disabled="true"]) {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+/* Aksi berisiko memakai warna galat yang sama dengan pesan galat: tepi dan teks, bukan hanya merah. */
+.berisiko {
+  background: var(--galat-teks);
+  border-color: var(--galat-teks);
+  color: var(--papan);
+}
+
+.berisiko:hover {
+  background: var(--galat-tepi);
+  border-color: var(--galat-tepi);
+}
+
+@media (max-width: 30rem) {
+  .baris > :global(.tombol) {
+    flex: 1 1 100%;
+  }
+}

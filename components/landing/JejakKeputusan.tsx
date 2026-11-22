@@ -1,6 +1,7 @@
 import Link from "next/link";
-import type { BarisLog, JenisLog } from "@/lib/data";
+import type { BarisLog } from "@/lib/data";
 import type { Json } from "@/lib/database.types";
+import { LABEL_JENIS_LOG as JENIS } from "@/lib/jenis-log";
 import { RUTE } from "@/lib/tautan";
 import styles from "./JejakKeputusan.module.css";
 
@@ -9,14 +10,6 @@ interface Props {
   /** Judul usulan menurut id, untuk entri yang menyangkut satu usulan. */
   judulUsulan: ReadonlyMap<string, string>;
 }
-
-const JENIS: Record<JenisLog, string> = {
-  weight_change: "Bobot diubah",
-  status_change: "Status berubah",
-  selection: "Rekomendasi dihitung",
-  note: "Catatan",
-  moderation: "Moderasi",
-};
 
 const tanggal = new Intl.DateTimeFormat("id-ID", {
   day: "numeric",
@@ -43,6 +36,9 @@ function rincianBobot(detail: Json): string | null {
   return teks.charAt(0).toUpperCase() + teks.slice(1) + ".";
 }
 
+/** Log bobot yang dibuat admin dari halaman admin sudah menyebut angkanya di pesan, lengkap dengan alasan. */
+const sudahMenyebutAngka = (detail: Json): boolean => adalahObjek(detail) && typeof detail.alasan === "string";
+
 /** Tiga entri terbaru dari log akuntabilitas: bukti bahwa setiap perubahan tercatat. */
 export function JejakKeputusan({ log, judulUsulan }: Props) {
   return (
@@ -60,7 +56,8 @@ export function JejakKeputusan({ log, judulUsulan }: Props) {
             <ol className={styles.daftar} reversed>
               {log.map((l) => {
                 const subjek = l.proposal_id ? judulUsulan.get(l.proposal_id) : undefined;
-                const rincian = l.log_type === "weight_change" ? rincianBobot(l.detail) : null;
+                const rincian =
+                  l.log_type === "weight_change" && !sudahMenyebutAngka(l.detail) ? rincianBobot(l.detail) : null;
                 return (
                   <li key={l.id} className={styles.entri}>
                     <time dateTime={l.created_at} className={styles.waktu}>

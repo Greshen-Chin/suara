@@ -36,6 +36,8 @@ async function siapkan(): Promise<PGlite> {
     [warga, admin],
   );
   await muat(db, "seedForum");
+  // Migrasi admin dijalankan terakhir, seperti urutan yang diberikan ke pemilik proyek.
+  await muat(db, "m0005");
 
   // Isi embedding seperti `npm run embedding:isi`, supaya jalur "AI" ikut teruji. Bila model
   // tidak bisa dimuat (mis. tanpa internet), dilewati: aplikasi lalu memakai cadangan kata.

@@ -96,7 +96,7 @@
 
 .galat {
   max-width: 34ch;
-  color: #7a1a13;
+  color: var(--galat-teks);
   font-size: var(--t-sm);
   font-weight: 600;
 }

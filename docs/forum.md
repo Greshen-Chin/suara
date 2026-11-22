@@ -60,25 +60,32 @@ daftar periksa perilaku yang harus tetap benar.
 ```mermaid
 stateDiagram-v2
     [*] --> forum: warga mengajukan
-    forum --> voting: admin memasukkan ke hitungan anggaran
-    voting --> approved: musyawarah menyetujui
-    voting --> rejected: musyawarah menolak
-    approved --> done: selesai dikerjakan
+    forum --> voting: admin memasukkan ke hitungan anggaran (urgensi + alasan)
+    forum --> rejected: admin tidak melanjutkan (alasan)
+    voting --> forum: admin mengembalikan ke pembahasan (alasan)
+    voting --> approved: musyawarah menyetujui (fitur Keputusan, belum ada)
+    voting --> rejected: musyawarah menolak (fitur Keputusan, belum ada)
+    approved --> done: selesai dikerjakan (fitur Keputusan, belum ada)
     forum --> tersembunyi: admin menyembunyikan (alasan wajib)
     voting --> tersembunyi: admin menyembunyikan (alasan wajib)
-    tersembunyi --> [*]: jejak publik tetap ada
+    tersembunyi --> forum: admin menampilkan kembali (alasan)
+    tersembunyi --> voting: admin menampilkan kembali (alasan)
 ```
+
+Tiga perpindahan pertama dan menampilkan kembali dikerjakan di [halaman admin](admin.md#siklus-status).
 
 - **Usulan baru** langsung tampil dengan status `forum` ("Sedang dibahas"), dan pengusul otomatis
   memberi dukungan pertama (trigger `trg_dukungan_pengusul`). `urgency_score` sengaja kosong:
   warga tidak menilai urgensi usulannya sendiri. Aturan basis data: kosong hanya boleh selama
-  status `forum`; status lain wajib 1 sampai 10.
+  status `forum` atau `rejected` (usulan yang tidak dilanjutkan admin tidak dipaksa dinilai,
+  dilonggarkan di migrasi 0005); `voting`, `approved`, dan `done` wajib 1 sampai 10.
 - **`forum` dan `voting`** tampil bersama di daftar, dengan filter status. Yang berstatus `voting`
   menampilkan posisinya pada rekomendasi, dari perhitungan yang sama dengan Garis Pagu.
 - **`approved`, `rejected`, `done`** tetap bisa dibuka, tetapi dukungannya ditutup. Komentar tetap
   boleh.
-- **Perpindahan `forum` ke `voting`** (dan penilaian urgensi) belum ada layarnya; lihat
-  [Pekerjaan berikutnya](#pekerjaan-berikutnya).
+- **Perpindahan `forum` ke `voting`** (dan penilaian urgensi) dikerjakan admin di
+  `/admin/usulan/[id]`, dengan pratinjau dampak; lihat [admin.md](admin.md). Perpindahan ke
+  `approved`, `rejected` (hasil musyawarah), dan `done` masih menunggu fitur Keputusan.
 
 ### Moderasi
 
@@ -108,10 +115,13 @@ sequenceDiagram
 - Usulan tersembunyi hilang dari daftar, tidak ikut skor (`skor_usulan` mengabaikannya), dan
   diskusinya ditutup. Halaman detailnya tetap ada.
 - Pesan di jejak keputusan tidak memuat judul usulan atau isi komentar, dan hanya menulis
-  pencatat "admin" (nama akun tidak dibuka).
+  pencatat "admin" (nama akun tidak dibuka di jejak publik; sejak migrasi 0005 nama akunnya
+  tercatat di `jejak_admin` yang tertutup dan terbaca admin di halaman Moderasi).
 - Entri moderasi ikut muncul di "Jejak keputusan" di halaman utama (tipe `moderation`,
   label "Moderasi").
-- Belum ada fitur menampilkan kembali konten yang disembunyikan.
+- Admin bisa **menampilkan kembali** konten yang disembunyikan di `/admin/moderasi`, dengan alasan
+  wajib (fungsi `tampilkan_kembali`, tercatat sebagai `moderation`). Usulan `voting` yang
+  ditampilkan kembali ditolak bila hitungan anggaran sudah berisi 16 usulan.
 
 ## Deteksi usulan mirip
 
@@ -286,9 +296,11 @@ Kena batas laju menghasilkan pesan dengan waktu tunggu, mis. "Anda sudah mengiri
   dimatikan dengan alasan. Kolom pada `v_forum`, `v_usulan`, dan `v_komentar` dipilih satu per
   satu, supaya view lama (nol baris tanpa galat) tidak membuat forum tampak kosong; yang terjadi
   adalah galat "kolom tidak ada" dan peralihan ke cadangan.
-- Peringkat anggaran digabungkan di TypeScript dari `getRekomendasi(PAGU_DEFAULT)`, bukan di view
-  SQL, karena pagu adalah konstanta aplikasi (belum ada tabel pagu) dan agar angkanya pasti sama
-  dengan Garis Pagu.
+- Peringkat anggaran digabungkan di TypeScript dari `getRekomendasi(pagu)`, bukan di view SQL,
+  agar angkanya pasti sama dengan Garis Pagu. Sejak migrasi 0005 pagunya dibaca dari tabel
+  `pengaturan_anggaran` lewat `getPagu()` (cadangan `PAGU_DEFAULT` hanya bila database tidak
+  terjangkau), dan `muatUsulan` ber-tag `beranda` dan `pengaturan` sehingga perubahan pagu atau
+  bobot oleh admin langsung terlihat di forum.
 
 ## Keamanan dan privasi
 
@@ -316,7 +328,7 @@ Kena batas laju menghasilkan pesan dengan waktu tunggu, mis. "Anda sudah mengiri
 | Jenis | Perintah | Cakupan |
 |---|---|---|
 | Unit | `npm test` | rupiah, skema validasi, waktu relatif, aturan dukungan, filter, skor kemiripan |
-| SQL (PGlite) | `npm test` | migrasi 0001 sampai 0004 + `seed.sql` + `seed_forum.sql`: dukung/batal atomik dan idempoten, admin dan akun tanpa `warga_id` ditolak, usulan `approved` tidak bisa didukung, batas laju, moderasi menulis log, `anon` tanpa hak `execute`, dan **`rekomendasi_resmi(300000000)` identik dengan sebelum migrasi** (baseline di `supabase/tests/baseline-rekomendasi.json`) |
+| SQL (PGlite) | `npm test` | migrasi 0001 sampai 0005 + `seed.sql` + `seed_forum.sql` (tes admin ada di [admin.md](admin.md#pengujian)): dukung/batal atomik dan idempoten, admin dan akun tanpa `warga_id` ditolak, usulan `approved` tidak bisa didukung, batas laju, moderasi menulis log, `anon` tanpa hak `execute`, dan **`rekomendasi_resmi(300000000)` identik dengan sebelum migrasi** (baseline di `supabase/tests/baseline-rekomendasi.json`) |
 | E2E + axe | `npm run e2e` | alur lengkap di Chromium dengan build produksi; lihat catatan di bawah |
 
 **E2E tidak memakai Supabase.** `e2e/supabase-palsu.ts` adalah server tiruan subset PostgREST di
@@ -333,8 +345,6 @@ dengan PostgREST asli, dan database Supabase milik pemilik (tidak boleh disentuh
 - **Pengujian:** E2E memakai tiruan PostgREST, bukan PostgREST/Supabase sungguhan. Belum diuji
   dengan pembaca layar (NVDA/VoiceOver) dan perangkat sentuh nyata; axe dan pemeriksaan
   keyboard otomatis tidak menggantikannya.
-- **Tidak ada** layar admin untuk memindahkan usulan ke `voting`, menilai urgensi, atau
-  menampilkan kembali konten yang disembunyikan.
 - **Batas daftar:** forum membaca maksimal 500 usulan terbaru sekali jalan.
 - `seed.sql` menjalankan `truncate ... warga cascade`, yang juga mengosongkan tabel `akun`
   (referensi ke `warga`). Jalankan `seed.sql` hanya **sebelum** membuat akun.
@@ -345,10 +355,14 @@ dengan PostgREST asli, dan database Supabase milik pemilik (tidak boleh disentuh
 
 1. **Penilaian urgensi oleh AI** (di luar cakupan fitur ini). Terjadi saat admin memindahkan
    usulan ke `voting`: skor 1 sampai 10 beserta alasan tertulis yang bisa diperiksa, hanya
-   sebagai bahan musyawarah. Kolom `urgency_score` dan `urgency_reason` sudah siap, dan batasan
+   sebagai bahan musyawarah. Kolom `urgency_score` dan `urgency_reason` sudah siap, formulir
+   admin sudah punya tempatnya (belum tampil), dan batasan
    `proposals_urgensi_wajib_setelah_forum` memastikan nilainya terisi.
-2. Layar admin: akun, pagu, bobot, perpindahan status, dan menampilkan kembali konten.
+2. Fitur Keputusan: penetapan hasil musyawarah (`voting` ke `approved`/`rejected`, `approved`
+   ke `done`).
 3. Putuskan aturan dukungan (jatah terbatas atau tidak).
 4. Kalibrasi ulang kemiripan dengan usulan nyata; pertimbangkan model yang lebih besar atau
    gabungan makna + kata bila perlu.
 5. Jalankan E2E melawan PostgREST/Supabase sungguhan di proyek uji.
+
+Halaman admin sudah ada: lihat [admin.md](admin.md).

@@ -4,7 +4,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import { NAMA_COOKIE, bacaTokenSesi } from "@/lib/sesi-token";
 
 // /forum/usul hanya untuk yang sudah masuk. Forum lainnya terbuka untuk dibaca siapa pun.
-const DILINDUNGI = ["/akun", "/forum/usul"];
+// /admin: yang belum masuk dialihkan ke /masuk. Yang sudah masuk tetapi bukan admin TIDAK dialihkan
+// di sini (proxy hanya membaca token, bukan peran yang berlaku): halaman admin sendiri memeriksa
+// perannya di server dan menampilkan "Halaman ini khusus admin desa".
+const DILINDUNGI = ["/akun", "/forum/usul", "/admin"];
 
 export async function proxy(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
@@ -22,7 +25,9 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (pathname === "/masuk" && sesi) {
+  // Yang sudah masuk tidak perlu halaman masuk. Pengecualian: ?sesi=berakhir, dari halaman yang baru saja
+  // menemukan bahwa akun di tokennya sudah tidak berlaku (proxy tidak bisa tahu: ia tidak membaca database).
+  if (pathname === "/masuk" && sesi && req.nextUrl.searchParams.get("sesi") !== "berakhir") {
     return NextResponse.redirect(new URL("/akun", req.nextUrl));
   }
 
@@ -30,5 +35,5 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/akun/:path*", "/forum/usul", "/masuk"],
+  matcher: ["/akun/:path*", "/forum/usul", "/admin/:path*", "/masuk"],
 };

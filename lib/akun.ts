@@ -13,6 +13,8 @@ export interface AkunMasuk {
   peran: Peran;
   aktif: boolean;
   versi_sesi: number;
+  /** Kata sandi dibuat atau diatur ulang admin; pemilik akun diminta menggantinya saat masuk. */
+  harus_ganti_sandi: boolean;
 }
 
 export type AkunPublik = Omit<AkunMasuk, "hash_kata_sandi"> & {
@@ -37,7 +39,7 @@ export async function cariAkunUntukMasuk(nama: string): Promise<AkunMasuk | null
   const data = periksa(
     await supabaseServer
       .from("akun")
-      .select("id, nama_pengguna, hash_kata_sandi, peran, aktif, versi_sesi")
+      .select("id, nama_pengguna, hash_kata_sandi, peran, aktif, versi_sesi, harus_ganti_sandi")
       .eq("nama_pengguna", nama)
       .abortSignal(sinyal())
       .maybeSingle(),
@@ -50,7 +52,7 @@ export async function cariAkunById(id: string): Promise<AkunPublik | null> {
   const data = periksa(
     await supabaseServer
       .from("akun")
-      .select("id, nama_pengguna, peran, aktif, versi_sesi, warga_id")
+      .select("id, nama_pengguna, peran, aktif, versi_sesi, warga_id, harus_ganti_sandi")
       .eq("id", id)
       .abortSignal(sinyal())
       .maybeSingle(),

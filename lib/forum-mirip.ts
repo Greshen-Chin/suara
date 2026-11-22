@@ -32,6 +32,11 @@ export interface MasukanMirip {
   deskripsi: string;
   rw: number;
   kategori: string;
+  /**
+   * Usulan yang dikecualikan dari hasil. Dipakai halaman admin: usulan yang sedang ditinjau pasti
+   * paling mirip dengan dirinya sendiri, dan itu bukan duplikat.
+   */
+  kecuali?: string;
 }
 
 const KANDIDAT = 20;
@@ -61,8 +66,9 @@ export async function cariUsulanMirip(masukan: MasukanMirip): Promise<HasilMirip
     console.warn("Embedding tidak dipakai, turun ke kemiripan kata:", err instanceof Error ? err.message : err);
   }
 
-  const { data: baris, error } = await teksRpc;
+  const { data: semuaBaris, error } = await teksRpc;
   if (error) throw new Error(`Database: ${error.message}`);
+  const baris = masukan.kecuali ? semuaBaris.filter((r) => r.id !== masukan.kecuali) : semuaBaris;
 
   const lebar = { ...DEFAULT_KEMIRIPAN, maksTampil: KANDIDAT };
   const baru = { judul: masukan.judul, deskripsi: masukan.deskripsi, rw: masukan.rw, kategori: masukan.kategori };

@@ -1,18 +1,12 @@
-import type { BarisLog, JenisLog } from "@/lib/data";
+import type { BarisLog } from "@/lib/data";
 import type { DetailUsulan } from "@/lib/forum-data";
+import { LABEL_JENIS_LOG as JENIS } from "@/lib/jenis-log";
 import { tanggalPanjang } from "@/lib/waktu";
 import styles from "./Detail.module.css";
 
-const JENIS: Record<JenisLog, string> = {
-  weight_change: "Bobot diubah",
-  status_change: "Status berubah",
-  selection: "Rekomendasi dihitung",
-  note: "Catatan",
-  moderation: "Moderasi",
-};
-
 interface Props {
-  usulan: DetailUsulan;
+  /** Hanya yang dibutuhkan untuk baris "Diajukan"; juga dipakai halaman admin dengan data dari view admin. */
+  usulan: Pick<DetailUsulan, "source" | "created_at" | "pengusul_nama_depan" | "pengusul_rw">;
   log: BarisLog[];
 }
 

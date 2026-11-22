@@ -32,9 +32,12 @@ const GAMBAR: Record<string, React.ReactNode> = {
   done: <path d="M3 7.5l3.2 3.2L13 4M3 13.5h10" />,
 };
 
-/** Ikon dan teks selalu berdampingan: status tidak pernah hanya warna. */
-export function StatusSiklus({ status }: { status: string }) {
-  const teks = TEKS_SIKLUS[status] ?? status;
+/**
+ * Ikon dan teks selalu berdampingan: status tidak pernah hanya warna. `teks` menimpa kata bawaan
+ * (mis. "Tidak dilanjutkan" untuk usulan forum yang ditolak sebelum dinilai) tanpa mengubah ikon dan warna.
+ */
+export function StatusSiklus({ status, teks: teksGanti }: { status: string; teks?: string }) {
+  const teks = teksGanti ?? TEKS_SIKLUS[status] ?? status;
   return (
     <span className={`${styles.label} ${styles[status] ?? ""}`}>
       <svg

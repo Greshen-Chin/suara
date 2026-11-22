@@ -52,7 +52,12 @@ export async function masuk(_sebelum: StatusMasuk, form: FormData): Promise<Stat
   if (hasil.status === "gagal") return { pesan: PESAN_SALAH, nama };
 
   await simpanSesi(hasil.sesi);
-  redirect(tujuan); // di luar try: redirect() bekerja dengan melempar
+  // Akun yang kata sandinya dibuat atau diatur ulang admin langsung diarahkan ke formulir ganti
+  // kata sandi; tujuan semula tetap ikut supaya mereka bisa melanjutkannya sesudahnya.
+  // (Bawaan amankanTujuan sudah /akun; tujuan lain diteruskan lewat ?lanjut=.)
+  const ke =
+    hasil.harusGantiSandi && tujuan !== RUTE.akun ? `${RUTE.akun}?lanjut=${encodeURIComponent(tujuan)}` : hasil.harusGantiSandi ? RUTE.akun : tujuan;
+  redirect(ke); // di luar try: redirect() bekerja dengan melempar
 }
 
 export async function keluar(): Promise<void> {

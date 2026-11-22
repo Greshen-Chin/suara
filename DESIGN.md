@@ -119,6 +119,14 @@ anggaran**: sebuah usulan yang masuk hitungan anggaran menampilkan peringkat dan
 (Terbiayai, Ditunda, Tidak terpilih) dengan ikon, teks, dan warna status yang sama seperti Garis
 Pagu di halaman utama.
 
+Halaman admin memperluasnya sekali lagi sebagai **buku register di meja perangkat desa**: bukan dunia
+visual baru, melainkan papan pengumuman yang sama dilihat dari sisi yang menulis. Isinya baris bergaris,
+kolom angka rata, dan setiap entri membawa tanggal dan alasan. Admin adalah pengguna yang bekerja lama
+dan teliti (mode *operate*), jadi kepadatan dan keterbacaan lebih penting daripada ekspresi. Pembedanya
+adalah **pratinjau dampak**: dua Garis Pagu kecil, "Sekarang" dan "Sesudah disimpan", sebelum keputusan
+berlaku. Satu-satunya permukaan gelap di aplikasi adalah **pita mode admin** di puncak halaman, supaya
+admin tidak pernah ragu sedang berada di mana.
+
 **Key Characteristics:**
 - Datar: kedalaman dari garis (3 px tinta, 2 px, 1 px halus), bukan bayangan.
 - Daftar berupa baris bergaris, bukan kartu. Tidak ada kartu di dalam kartu.
@@ -148,10 +156,14 @@ status yang dipakai sama di seluruh aplikasi.
 - **Abu Semen** (#5b655f): teks redam. Kontras 5,3:1 di atas kapur.
 - **Garis Halus** (#c9d0c6): pemisah baris, bukan teks.
 
-### Galat (dipakai di formulir masuk dan forum)
-- **Tepi Galat** (#a4231a), **Teks Galat** (#7a1a13), **Latar Galat** (#fdf1f0). Awalnya hanya
-  ada di formulir masuk; forum memakainya lagi untuk galat isian. Belum menjadi token di
-  `globals.css`; sebaiknya dijadikan token (`--galat-*`) pada perapian berikutnya.
+### Galat (dipakai di formulir masuk, forum, dan admin)
+- **Tepi Galat** (#a4231a, `--galat-tepi`), **Teks Galat** (#7a1a13, `--galat-teks`), **Latar Galat**
+  (#fdf1f0, `--galat-latar`). Awalnya hanya ada di formulir masuk dan disalin per berkas; kini token di
+  `app/globals.css` dan dipakai semua formulir. Kontras yang dihitung: teks galat di atas latar galat
+  9,58:1; teks galat di atas papan 10,58:1; tepi galat di atas papan 7,41:1; tepi galat di atas kapur 6,75:1
+  (semuanya melewati 4,5:1 untuk teks dan 3:1 untuk garis).
+- Pesan galat berupa kotak berbingkai penuh (garis `--galat-tepi`, latar `--galat-latar`), tidak pernah
+  garis tebal di satu sisi saja.
 
 ### Named Rules
 **The Never-Color-Alone Rule.** Status tidak pernah hanya warna: setiap status memiliki ikon dan
@@ -194,6 +206,9 @@ tinta 2 px di atas daftar.
 - **Detail usulan:** satu lajur di ponsel dengan blok dukungan paling atas; di ≥ 62rem dua kolom
   (isi | samping 17rem, lengket). Di DOM samping ada lebih dulu, supaya urutan fokus sama dengan
   urutan visual.
+- **Tinjau usulan (admin):** isi, dukungan, dan usulan serupa di kolom utama, kotak "Keputusan" di samping
+  (`<aside>`); formulir "Masukkan ke hitungan anggaran" di bawahnya selebar halaman karena memuat rubrik
+  dan pratinjau; komentar dan riwayat **di bawah formulir**, supaya keputusan tidak terdorong ke dasar halaman.
 - **Kerangka pemuatan** meniru tinggi isi sebenarnya agar tidak ada lompatan (CLS 0 pada
   Lighthouse). Kerangka detail setinggi layar supaya footer tidak sempat terlihat lalu terdorong.
 
@@ -209,8 +224,10 @@ warna dan garis, bukan bayangan.
 
 ## Shapes
 
-Satu radius: `--radius` 0.375rem untuk tombol, kolom isian, cap, dan blok. Cap status
-berbingkai 2 px berwarna sesuai maknanya. Status "Tidak terpilih" berbingkai putus-putus
+Dua radius, keduanya rendah: `--radius` 0.375rem untuk tombol, kolom isian, dialog, dan blok; 0.25rem
+untuk cap kecil dan penanda yang berdiri di dalam baris teks (cap status, cap perisai admin, penanda
+jumlah bobot). Pemindai `impeccable detect` menandai radius kecil ini sebagai advisory; sengaja dipertahankan
+karena sama dengan cap di beranda dan forum. Cap status berbingkai 2 px berwarna sesuai maknanya. Status "Tidak terpilih" berbingkai putus-putus
 (bentuk, bukan hanya warna, yang membedakannya). Ikon digambar sendiri di kotak 16 px, garis
 2,25 px, ujung bulat, tanpa isi.
 
@@ -258,18 +275,72 @@ Garis 2 px tinta di atas daftar, 1 px halus di antara baris. Judul Barlow 1.75re
 Komentar admin berlabel "Admin desa" (cap biru dengan ikon perisai). Komentar atau usulan yang
 disembunyikan diganti kotak berbingkai putus-putus berisi tanggal dan alasan.
 
-### Dialog moderasi
-`<dialog>` asli, `showModal()`. Garis 3 px tinta, latar papan, lebar maksimum 32rem. Alasan wajib;
-tombol "Batal" dan "Sembunyikan".
+### Dialog alasan
+`<dialog>` asli, `showModal()`. Garis 3 px tinta, latar papan, lebar maksimum 32rem. Alasan wajib dengan
+penghitung karakter; tombol "Batal" dan tombol aksi. Satu komponen bersama (`components/ui/DialogAlasan`)
+dipakai untuk menyembunyikan (forum), menampilkan kembali, tidak melanjutkan, mengembalikan ke pembahasan,
+menonaktifkan akun, dan mengatur ulang kata sandi; tiap pemakai hanya mengisi judul, penjelasan, dan teks
+tombol. Isinya dipasang ulang dengan `key` setiap dibuka, jadi isian dan galat lama tidak terbawa. Saat
+berhasil, dialog bisa menampilkan layar hasil sendiri (`tampilanBerhasil`) dan tetap bernama aksesibel
+(judulnya ber-id yang diteruskan ke layar hasil). Esc menutup dan fokus kembali ke pemicu.
+
+### Pita mode admin dan navigasi bagian
+Pita gelap (latar tinta, teks putih, tinggi ±33 px) di atas header, hanya untuk admin: cap perisai biru
+yang sama dengan label "Admin desa" di forum, dibalik (putih berbingkai biru) supaya terbaca, lalu nama
+pengguna. Di bawahnya navigasi bagian (Ringkasan, Usulan, Anggaran, Akun, Moderasi) berlatar kapur dengan
+garis 1 px; tautan aktif bergaris bawah 3 px dengan `aria-current="page"`, bukan hanya warna. Pita dan
+navigasi dibaca dari sesi di dalam `Suspense` dengan kerangka setinggi aslinya, jadi tidak ada lompatan.
+
+### Baris register (daftar kerja admin)
+Garis 2 px tinta di atas, 1 px halus di antara baris. Di layar lebar: kolom angka rata kanan (4,5rem,
+Barlow, tabular) lalu isi; di ponsel angka dan isi ditumpuk. Judul baris memakai huruf isi tebal
+(bukan Barlow, karena `h2` Barlow pada ukuran isi terlihat kerdil). Tabel data (usulan, akun) memakai
+`<table>` asli dengan `<caption>` dan `th scope`; di 360 px sel dipecah menjadi pasangan label-nilai dua kolom.
+Tautan aksi di baris dan tautan yang berdiri sendiri bertinggi minimal 2.75rem.
+
+### Rubrik urgensi
+Empat tingkat (bukan sepuluh) dalam daftar bergaris di bawah kelompok pilihan 1–10: rentang angka (Barlow
+tabular) lalu nama tingkat dan keterangan kecil abu. Tingkat yang sesuai dengan angka terpilih
+**ditebalkan dan rentangnya digarisbawahi 3 px**, bukan hanya diwarnai. Kelompok radio diberi `key` supaya
+pilihan tidak kembali ke nilai awal saat React mereset formulir. Tidak ada nilai bawaan.
+
+### Pratinjau dampak
+Blok berbingkai 3 px berjudul "Pratinjau dampak": dua `PaguBar` varian `ringkas` ("Sekarang",
+"Sesudah disimpan") dengan nama di tiap blok (elipsis bila terlalu sempit) dan biaya hanya untuk pembaca
+layar, satu kalimat ringkasan, kalimat khusus perpindahan status, lalu daftar usulan yang berubah dengan
+`StatusLabel` sebelum dan sesudah. Yang tidak berubah dilipat. Dihitung ulang dengan jeda 300 ms; hasilnya
+diumumkan lewat live region `role="status"` yang dibatasi frekuensinya, jadi pembaca layar tidak dibanjiri
+saat admin mengetik. Bila gagal atau lambat: "Pratinjau belum bisa dihitung. Anda tetap bisa menyimpan."
+Komponennya (`PratinjauDampak`) tidak tahu soal admin, supaya halaman Simulasi bisa memakainya.
+
+### Penunjuk jumlah bobot
+Tiga kolom bilangan bulat dan satu penunjuk yang selalu terlihat, di antara dua garis 2 px tinta. Maknanya
+ada di kalimatnya, bukan di warna: "Jumlah 95. Kurang 5.", "Jumlah 105. Lebih 5.", atau "Jumlah 100. Siap
+disimpan." Warna (teks galat atau hijau sawah) hanya menyertai kalimat itu. Bila ada selisih, tombol "Isi
+sisanya ke urgensi (n)" menawarkan jalan pintas. Dua salinan sengaja ada: yang terlihat berubah seketika
+(`aria-hidden`), dan satu `role="status"` untuk pembaca layar yang baru berubah setelah jeda 0,6 detik.
+Tombol "Simpan bobot" tidak dimatikan sebelum jumlahnya pas: kalau ditekan terlalu dini, galatnya ditulis
+di tempat yang sama. Selama menyimpan ia memakai `aria-disabled`, bukan `disabled`.
+
+### Layar kata sandi sekali tampil
+Dipakai setelah membuat akun atau mengatur ulang kata sandi. Nama pengguna dan kata sandi acak
+(`xxxx-xxxx-xxxx`, tanpa karakter mirip) dalam huruf lebar tetap, `white-space: nowrap` dengan `clamp()`
+supaya tidak pecah di 360 px. Dua tombol: "Salin kata sandi" dan "Salin keduanya" (nama pengguna dan kata
+sandi); bila penyalinan gagal, ada petunjuk memilih dengan tangan. Peringatan tebal "Serahkan langsung ke
+warga" bahwa kata sandi tidak akan tampil lagi dan tidak tersimpan di mana pun. Hanya ada di memori
+komponen: tidak ke URL, penyimpanan peramban, atau cache.
 
 ### Formulir bertahap (Ajukan usulan)
 Penunjuk tiga langkah (Isi usulan, Periksa serupa, Tinjau dan kirim) dengan `aria-current="step"`.
-Satu blok berbingkai 3 px per langkah; judul langkah menerima fokus saat langkah berganti.
+Satu blok berbingkai 3 px per langkah; judul langkah menerima fokus saat langkah berganti. Alur
+membuat akun di admin memakai pola yang sama, dengan empat langkah (Pilih warga, Nama pengguna,
+Kata sandi awal, Hasil).
 
 ### Navigation
 Header putih dengan garis tinta 3 px di bawahnya. Merek SUARA (Barlow 2rem, jarak huruf .06em).
 Tautan aktif bergaris bawah 3 px (`aria-current="page"`), bukan hanya beda warna. Sudah masuk:
-tombol berisi nama pengguna ke `/akun`.
+tombol berisi nama pengguna ke `/akun`. Untuk admin ada tautan "Admin" ke `/admin`; warga dan pengunjung
+tidak melihatnya.
 
 ## Do's and Don'ts
 
@@ -281,6 +352,10 @@ tombol berisi nama pengguna ke `/akun`.
 - **Do** garis bawahi tautan di tengah kalimat. Preflight Tailwind menghapus garis bawah
   tautan; tautan yang hanya dibedakan lewat warna gagal WCAG 1.4.1.
 - **Do** ukur ulang kerangka pemuatan setiap kali isi berubah bentuk; CLS harus tetap 0.
+- **Do** pakai token galat (`--galat-tepi/-teks/-latar`) untuk semua pesan galat, dengan bingkai penuh.
+- **Do** wajibkan alasan pada setiap keputusan admin, dan tunjukkan pratinjau dampaknya sebelum tombol simpan.
+- **Do** tulis tabel data sebagai `<table>` asli dengan `<caption>` dan `th scope`; pecah menjadi pasangan
+  label-nilai di 360 px, jangan menggulir ke samping.
 
 ### Don't:
 - **Don't** tambahkan bayangan, gradasi, atau kartu bersarang.
@@ -290,3 +365,7 @@ tombol berisi nama pengguna ke `/akun`.
 - **Don't** memakai `disabled` untuk tombol yang sedang memproses; pakai `aria-disabled` agar
   fokus tidak hilang.
 - **Don't** menambah warna atau huruf baru tanpa mencatat alasannya di sini.
+- **Don't** menampilkan penanda "AI", "segera hadir", atau tempat kosong untuk fitur yang belum berjalan
+  (mis. saran urgensi AI di formulir admin): klaim di antarmuka harus sudah ada fiturnya.
+- **Don't** menaruh kata sandi (atau apa pun yang rahasia) di URL, penyimpanan peramban, atau cache.
+- **Don't** memakai garis tebal di satu sisi sebagai penanda galat atau peringatan; pakai bingkai penuh.

@@ -6,7 +6,14 @@ export const RUTE = {
   simulasi: "/simulasi",
   keputusan: "/keputusan",
   masuk: "/masuk",
+  /**
+   * Halaman masuk untuk yang tokennya masih sah tetapi akunnya sudah tidak berlaku (dinonaktifkan atau
+   * sesinya dicabut). Parameter ini menghentikan pengalihan /masuk -> /akun di proxy.ts; tanpanya
+   * keduanya saling mengalihkan tanpa henti.
+   */
+  masukSesiBerakhir: "/masuk?sesi=berakhir",
   akun: "/akun",
+  admin: "/admin",
 } as const;
 
 export const URL_KODE_SUMBER = "https://github.com/Greshen-Chin/suara";

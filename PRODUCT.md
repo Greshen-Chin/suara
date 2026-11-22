@@ -40,12 +40,22 @@ Produk ini berhasil kalau warga RW kecil bisa melihat dengan angka kenapa usulan
   - ada komentar per usulan;
   - usulan baru langsung tampil, dan admin bisa menyembunyikannya dengan alasan tercatat;
   - satu dukungan per usulan per warga, boleh mendukung banyak usulan.
+- Keputusan yang sudah diambil untuk halaman admin (2026-11-22):
+  - admin meninjau usulan forum: `forum → voting` (urgensi 1–10 dengan alasan), `forum → rejected` ("Tidak dilanjutkan"), dan `voting → forum`; semuanya wajib beralasan, dan alasannya terbaca publik;
+  - `voting → approved/rejected` dan `approved → done` sengaja bukan bagian admin: itu fitur Keputusan (hasil musyawarah);
+  - pagu (Rp 10 juta sampai Rp 10 miliar) dan bobot (tiga bilangan bulat, jumlah 100) diatur admin dengan alasan, dan admin melihat pratinjau dampaknya pada Garis Pagu sebelum menyimpan;
+  - akun warga dibuat admin dari antarmuka (tertaut ke warga yang belum punya akun, kata sandi acak tampil sekali, wajib diganti saat masuk pertama); akun admin hanya lewat skrip terminal;
+  - perubahan akun masuk jejak admin yang tertutup, bukan jejak publik, karena menyangkut data pribadi.
 - **Keputusan terbuka:** aturan dukungan bersifat sementara. Pemilik produk ingin menimbang ulang jatah dukungan terbatas (misalnya 3 per warga per periode).
-- **Sudah ada:** forum (daftar, detail, ajukan usulan, komentar, moderasi), termasuk deteksi usulan mirip dengan embedding (`multilingual-e5-small`, 384 dimensi) dan cadangan `pg_trgm`. Lihat `docs/forum.md`.
+- **Sudah ada:**
+  - forum (daftar, detail, ajukan usulan, komentar, moderasi), termasuk deteksi usulan mirip dengan embedding (`multilingual-e5-small`, 384 dimensi) dan cadangan `pg_trgm`. Lihat `docs/forum.md`;
+  - halaman admin desa: ringkasan, usulan, anggaran (pagu dan bobot dengan pratinjau dampak), akun, dan moderasi, plus ganti kata sandi di `/akun` untuk semua peran. Lihat `docs/admin.md`.
 - **Belum ada:**
-  - Simulasi, Keputusan, dan halaman admin (masih halaman stub);
+  - Simulasi dan Keputusan (masih halaman stub); pratinjau dampak di admin dibuat supaya komponennya bisa dipakai ulang oleh Simulasi;
   - pengisian `location` pada usulan (deteksi mirip memakai RW);
-  - penilaian urgensi oleh AI (usulan forum memang belum bernilai urgensi; diisi saat dipindahkan ke `voting`).
+  - penilaian urgensi oleh AI (admin mengisi urgensi dengan rubrik empat tingkat; tempat untuk saran AI sudah disiapkan di formulir tetapi tidak tampil sampai fiturnya ada);
+  - pengaturan data wilayah (penduduk, anggaran periode lalu) dari antarmuka;
+  - pengujian dengan pembaca layar dan perangkat sentuh nyata.
 
 ## Brand Commitments
 
@@ -61,7 +71,7 @@ Produk ini berhasil kalau warga RW kecil bisa melihat dengan angka kenapa usulan
 
 ## Product Principles
 
-1. **Keputusan selalu punya alasan yang bisa dibaca.** Setiap perubahan status, bobot, atau moderasi dicatat di jejak keputusan.
+1. **Keputusan selalu punya alasan yang bisa dibaca.** Setiap perubahan status, bobot, pagu, atau moderasi dicatat di jejak keputusan. Admin tidak bisa menyimpan keputusan anggaran tanpa alasan, dan melihat dampaknya lebih dulu.
 2. **RW kecil tidak boleh kalah hanya karena penduduknya sedikit.** Angka dukungan dinormalkan per penduduk.
 3. **AI memberi bahan, manusia memutuskan.** Klaim tentang AI di antarmuka hanya boleh ada kalau fiturnya benar-benar berjalan.
 4. **Terbuka untuk dibaca semua orang, tertutup untuk diubah tanpa akun.**

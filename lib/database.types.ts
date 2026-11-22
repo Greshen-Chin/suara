@@ -13,6 +13,8 @@ export type Database = {
         Row: {
           aktif: boolean;
           created_at: string;
+          dibuat_oleh: string | null;
+          harus_ganti_sandi: boolean;
           hash_kata_sandi: string;
           id: string;
           nama_pengguna: string;
@@ -25,6 +27,8 @@ export type Database = {
         Insert: {
           aktif?: boolean;
           created_at?: string;
+          dibuat_oleh?: string | null;
+          harus_ganti_sandi?: boolean;
           hash_kata_sandi: string;
           id?: string;
           nama_pengguna: string;
@@ -36,6 +40,8 @@ export type Database = {
         Update: {
           aktif?: boolean;
           created_at?: string;
+          dibuat_oleh?: string | null;
+          harus_ganti_sandi?: boolean;
           hash_kata_sandi?: string;
           id?: string;
           nama_pengguna?: string;
@@ -46,10 +52,82 @@ export type Database = {
         };
         Relationships: [
           {
+            foreignKeyName: "akun_dibuat_oleh_fkey";
+            columns: ["dibuat_oleh"];
+            isOneToOne: false;
+            referencedRelation: "akun";
+            referencedColumns: ["id"];
+          },
+          {
             foreignKeyName: "akun_warga_id_fkey";
             columns: ["warga_id"];
             isOneToOne: false;
             referencedRelation: "warga";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      pengaturan_anggaran: {
+        Row: {
+          id: number;
+          pagu: number;
+          updated_at: string;
+          versi: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          id?: number;
+          pagu: number;
+          updated_at?: string;
+          versi?: number;
+        };
+        Update: {
+          id?: number;
+          pagu?: number;
+          updated_at?: string;
+          versi?: number;
+        };
+        Relationships: [];
+      };
+      jejak_admin: {
+        Row: {
+          akun_id: string;
+          aksi: string;
+          created_at: string;
+          detail: NonNullable<Json>;
+          id: number;
+          sasaran_akun_id: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          akun_id: string;
+          aksi: string;
+          created_at?: string;
+          detail?: NonNullable<Json>;
+          id?: never;
+          sasaran_akun_id?: string | null;
+        };
+        Update: {
+          akun_id?: string;
+          aksi?: string;
+          created_at?: string;
+          detail?: NonNullable<Json>;
+          id?: never;
+          sasaran_akun_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "jejak_admin_akun_id_fkey";
+            columns: ["akun_id"];
+            isOneToOne: false;
+            referencedRelation: "akun";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "jejak_admin_sasaran_akun_id_fkey";
+            columns: ["sasaran_akun_id"];
+            isOneToOne: false;
+            referencedRelation: "akun";
             referencedColumns: ["id"];
           },
         ];
@@ -265,6 +343,7 @@ export type Database = {
           catatan: string | null;
           id: number;
           updated_at: string;
+          versi: number;
           w_pemerataan: number;
           w_popularitas: number;
           w_urgensi: number;
@@ -274,6 +353,7 @@ export type Database = {
           catatan?: string | null;
           id?: number;
           updated_at?: string;
+          versi?: number;
           w_pemerataan: number;
           w_popularitas: number;
           w_urgensi: number;
@@ -282,6 +362,7 @@ export type Database = {
           catatan?: string | null;
           id?: number;
           updated_at?: string;
+          versi?: number;
           w_pemerataan?: number;
           w_popularitas?: number;
           w_urgensi?: number;
@@ -443,6 +524,81 @@ export type Database = {
         ComputedFields: never;
         Relationships: [];
       };
+      v_admin_usulan: {
+        Row: {
+          alasan_disembunyikan: string | null;
+          category: string | null;
+          created_at: string | null;
+          description: string | null;
+          disembunyikan_pada: string | null;
+          estimated_budget: number | null;
+          id: string | null;
+          jumlah_komentar: number | null;
+          nama_singkat: string | null;
+          penduduk: number | null;
+          pengusul_nama_depan: string | null;
+          pengusul_rw: number | null;
+          rw: number | null;
+          source: string | null;
+          status: string | null;
+          suara_per_1000: number | null;
+          title: string | null;
+          updated_at: string | null;
+          urgency_reason: string | null;
+          urgency_score: number | null;
+          vote_count: number | null;
+        };
+        ComputedFields: never;
+        Relationships: [];
+      };
+      v_admin_akun: {
+        Row: {
+          aktif: boolean | null;
+          created_at: string | null;
+          dibuat_oleh: string | null;
+          dibuat_oleh_nama: string | null;
+          harus_ganti_sandi: boolean | null;
+          id: string | null;
+          nama_pengguna: string | null;
+          peran: string | null;
+          warga_nama: string | null;
+          warga_nomor: number | null;
+          warga_rt: number | null;
+          warga_rw: number | null;
+        };
+        ComputedFields: never;
+        Relationships: [];
+      };
+      v_admin_komentar: {
+        Row: {
+          alasan_disembunyikan: string | null;
+          created_at: string | null;
+          dari_admin: boolean | null;
+          disembunyikan_pada: string | null;
+          id: string | null;
+          isi: string | null;
+          penulis_nama_depan: string | null;
+          penulis_rw: number | null;
+          proposal_id: string | null;
+          proposal_judul: string | null;
+        };
+        ComputedFields: never;
+        Relationships: [];
+      };
+      v_jejak_admin: {
+        Row: {
+          akun_id: string | null;
+          aksi: string | null;
+          created_at: string | null;
+          detail: Json | null;
+          id: number | null;
+          pelaku_nama: string | null;
+          sasaran_akun_id: string | null;
+          sasaran_nama: string | null;
+        };
+        ComputedFields: never;
+        Relationships: [];
+      };
       v_wilayah: {
         Row: {
           anggaran_lalu: number | null;
@@ -508,6 +664,58 @@ export type Database = {
       };
       sembunyikan: {
         Args: { p_akun: string; p_alasan: string; p_id: string; p_jenis: string };
+        Returns: Json;
+      };
+      pindahkan_status: {
+        Args: {
+          p_akun: string;
+          p_alasan: string | null;
+          p_alasan_urgensi: string | null;
+          p_ke: string;
+          p_nama_singkat: string | null;
+          p_proposal: string;
+          p_status_dibaca: string;
+          p_urgensi: number | null;
+        };
+        Returns: Json;
+      };
+      ubah_pagu: {
+        Args: { p_akun: string; p_alasan: string; p_pagu: number; p_versi_dibaca: number };
+        Returns: Json;
+      };
+      ubah_bobot: {
+        Args: {
+          p_akun: string;
+          p_alasan: string;
+          p_pemerataan: number;
+          p_popularitas: number;
+          p_urgensi: number;
+          p_versi_dibaca: number;
+        };
+        Returns: Json;
+      };
+      tampilkan_kembali: {
+        Args: { p_akun: string; p_alasan: string; p_id: string; p_jenis: string };
+        Returns: Json;
+      };
+      cari_warga_bebas: {
+        Args: { p_akun: string; p_batas?: number; p_cari: string };
+        Returns: Json;
+      };
+      buat_akun_warga: {
+        Args: { p_akun: string; p_hash: string; p_nama_pengguna: string; p_warga: string };
+        Returns: Json;
+      };
+      atur_ulang_sandi: {
+        Args: { p_akun: string; p_hash: string; p_sasaran: string };
+        Returns: Json;
+      };
+      atur_aktif: {
+        Args: { p_akun: string; p_aktif: boolean; p_sasaran: string };
+        Returns: Json;
+      };
+      ganti_sandi_sendiri: {
+        Args: { p_akun: string; p_hash: string };
         Returns: Json;
       };
       tambah_komentar: {

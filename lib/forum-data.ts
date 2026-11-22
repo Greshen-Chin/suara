@@ -11,8 +11,8 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import {
-  PAGU_DEFAULT,
   denganFallback,
+  getPagu,
   getRekomendasi,
   getWilayah,
   logDariDb,
@@ -236,8 +236,10 @@ export async function muatForum(): Promise<DataForum> {
   cacheLife({ stale: 30, revalidate: 60, expire: 3600 });
   // forum: jumlah dukungan dan komentar. beranda: peringkat berasal dari perhitungan yang sama
   // dengan Garis Pagu, jadi ikut berubah bila dukungan pada usulan voting berubah.
-  cacheTag(TAG.forum, TAG.beranda);
+  // pengaturan: pagu dan bobot yang dipakai perhitungan itu.
+  cacheTag(TAG.forum, TAG.beranda, TAG.pengaturan);
 
+  const pagu = await getPagu();
   const [forum, rekomendasi, wilayah] = await Promise.all([
     denganFallback<BarisForum[]>(
       async (sinyal) => {
@@ -254,14 +256,14 @@ export async function muatForum(): Promise<DataForum> {
           .filter((u) => u.disembunyikan_pada === null)
           .map(keBarisForum),
     ),
-    getRekomendasi(PAGU_DEFAULT),
+    getRekomendasi(pagu.data),
     getWilayah(),
   ]);
 
   return {
     usulan: gabungPosisi(forum.data, rekomendasi.data),
     wilayah: wilayah.data.map((w) => ({ rw: w.rw, nama: w.nama })),
-    dataCadangan: [forum, rekomendasi, wilayah].some((h) => h.source === "fallback"),
+    dataCadangan: [pagu, forum, rekomendasi, wilayah].some((h) => h.source === "fallback"),
   };
 }
 
@@ -292,8 +294,11 @@ function gabungPosisi(forum: BarisForum[], rekomendasi: Rekomendasi): ItemForum[
 export async function muatUsulan(id: string): Promise<DataUsulan> {
   "use cache";
   cacheLife({ stale: 30, revalidate: 60, expire: 3600 });
-  cacheTag(TAG.usulan(id), TAG.forum);
+  // beranda dan pengaturan juga: posisi anggaran usulan ini bergantung pada pagu, bobot, dan usulan
+  // lain yang masuk hitungan, jadi berubah saat admin memindahkan usulan lain atau mengubah angka.
+  cacheTag(TAG.usulan(id), TAG.forum, TAG.beranda, TAG.pengaturan);
 
+  const pagu = await getPagu();
   const [usulan, komentar, riwayat, rekomendasi] = await Promise.all([
     denganFallback<{ baris: DetailUsulan | null }>(
       async (sinyal) => {
@@ -333,7 +338,7 @@ export async function muatUsulan(id: string): Promise<DataUsulan> {
       },
       () => CADANGAN.log.filter((l) => l.proposal_id === id).map(logDariDb),
     ),
-    getRekomendasi(PAGU_DEFAULT),
+    getRekomendasi(pagu.data),
   ]);
 
   const posisi = usulan.data.baris?.status === "voting" ? (petaPosisi(rekomendasi.data).get(id) ?? null) : null;
@@ -342,7 +347,7 @@ export async function muatUsulan(id: string): Promise<DataUsulan> {
     komentar: komentar.data,
     riwayat: riwayat.data,
     posisi,
-    dataCadangan: [usulan, komentar, riwayat, rekomendasi].some((h) => h.source === "fallback"),
+    dataCadangan: [pagu, usulan, komentar, riwayat, rekomendasi].some((h) => h.source === "fallback"),
   };
 }
 

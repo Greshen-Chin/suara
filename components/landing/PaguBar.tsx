@@ -7,6 +7,12 @@ import styles from "./PaguBar.module.css";
 interface Props {
   pagu: number;
   mode: ModePagu;
+  /**
+   * Varian ringkas untuk dua batang yang dibandingkan (pratinjau dampak di halaman admin):
+   * lebih pendek dan hanya nama di tiap blok, tanpa rincian biaya. Tanpa prop ini tampilannya
+   * sama dengan di halaman utama.
+   */
+  ringkas?: boolean;
 }
 
 /**
@@ -14,12 +20,12 @@ interface Props {
  * persis sebanding dengan biayanya; ukurannya datang dari hitungTataPagu.
  * Blok dan ruang sisa memakai data-flip supaya bisa dianimasikan saat mode berganti.
  */
-export function PaguBar({ pagu, mode }: Props) {
+export function PaguBar({ pagu, mode, ringkas = false }: Props) {
   const { tata, terpilih } = mode;
   const barisBlok = new Map(tata.blok.map((b) => [b.id, b]));
 
   return (
-    <div className={styles.pita}>
+    <div className={ringkas ? `${styles.pita} ${styles.ringkas}` : styles.pita}>
       <div className={styles.skala} aria-hidden="true">
         {titikSkala(pagu).map((t) => (
           <span
@@ -46,11 +52,17 @@ export function PaguBar({ pagu, mode }: Props) {
               <span className={styles.nama}>
                 <IkonStatus status="terpilih" />
                 <span className="sr-only">Terpilih: </span>
-                {item.nama}
+                <span className={styles.namaTeks}>{item.nama}</span>
               </span>
-              <span className={styles.meta}>
-                {item.rw}, {rupiah(item.biaya)}
-              </span>
+              {ringkas ? (
+                <span className="sr-only">
+                  {item.rw}, {rupiah(item.biaya)}
+                </span>
+              ) : (
+                <span className={styles.meta}>
+                  {item.rw}, {rupiah(item.biaya)}
+                </span>
+              )}
             </div>
           </li>
         ))}
