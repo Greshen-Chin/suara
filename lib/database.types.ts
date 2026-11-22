@@ -9,6 +9,73 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      akun: {
+        Row: {
+          aktif: boolean;
+          created_at: string;
+          hash_kata_sandi: string;
+          id: string;
+          nama_pengguna: string;
+          peran: string;
+          updated_at: string;
+          versi_sesi: number;
+          warga_id: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          aktif?: boolean;
+          created_at?: string;
+          hash_kata_sandi: string;
+          id?: string;
+          nama_pengguna: string;
+          peran: string;
+          updated_at?: string;
+          versi_sesi?: number;
+          warga_id?: string | null;
+        };
+        Update: {
+          aktif?: boolean;
+          created_at?: string;
+          hash_kata_sandi?: string;
+          id?: string;
+          nama_pengguna?: string;
+          peran?: string;
+          updated_at?: string;
+          versi_sesi?: number;
+          warga_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "akun_warga_id_fkey";
+            columns: ["warga_id"];
+            isOneToOne: false;
+            referencedRelation: "warga";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      percobaan_masuk: {
+        Row: {
+          gagal: number;
+          jendela_mulai: string;
+          nama_pengguna: string;
+          terkunci_sampai: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          gagal?: number;
+          jendela_mulai?: string;
+          nama_pengguna: string;
+          terkunci_sampai?: string | null;
+        };
+        Update: {
+          gagal?: number;
+          jendela_mulai?: string;
+          nama_pengguna?: string;
+          terkunci_sampai?: string | null;
+        };
+        Relationships: [];
+      };
       accountability_logs: {
         Row: {
           actor: string;
@@ -290,6 +357,15 @@ export type Database = {
       };
     };
     Functions: {
+      catat_gagal_masuk: {
+        Args: {
+          p_batas?: number;
+          p_jendela?: string;
+          p_kunci?: string;
+          p_nama_pengguna: string;
+        };
+        Returns: string | null;
+      };
       greedy_pilih: {
         Args: {
           p_mode?: string;

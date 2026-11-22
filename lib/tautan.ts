@@ -5,6 +5,8 @@ export const RUTE = {
   forum: "/forum",
   simulasi: "/simulasi",
   keputusan: "/keputusan",
+  masuk: "/masuk",
+  akun: "/akun",
 } as const;
 
 // TODO: ganti dengan alamat repositori publik.

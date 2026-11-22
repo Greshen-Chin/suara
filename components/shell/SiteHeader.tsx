@@ -2,8 +2,7 @@ import Link from "next/link";
 import { RUTE } from "@/lib/tautan";
 import styles from "./SiteHeader.module.css";
 
-// TODO: ganti kedua tombol dengan login demo (warga dan admin desa) bila sudah ada.
-// Sementara, warga diarahkan ke forum dan admin desa ke layar keputusan.
+// "Coba sebagai warga" membuka forum (bisa dibaca tanpa akun); admin desa masuk lewat /masuk.
 export function SiteHeader() {
   return (
     <header className={styles.kepala}>
@@ -22,7 +21,7 @@ export function SiteHeader() {
           <Link href={RUTE.forum} className="tombol tombol-utama">
             Coba sebagai warga
           </Link>
-          <Link href={RUTE.keputusan} className="tombol tombol-kedua">
+          <Link href={RUTE.masuk} className="tombol tombol-kedua">
             Masuk sebagai admin desa
           </Link>
         </div>
