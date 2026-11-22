@@ -1,0 +1,42 @@
+.hero {
+  display: grid;
+  gap: 1.75rem;
+  padding-block: clamp(1.75rem, 5vw, 3.5rem) clamp(2.5rem, 6vw, 4rem);
+}
+
+.atas {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.judul {
+  font-size: var(--t-hero);
+  line-height: 0.98;
+  letter-spacing: -0.005em;
+}
+
+.penjelas {
+  max-width: 36ch;
+  font-size: var(--t-lg);
+  line-height: 1.4;
+}
+
+.bawah {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+}
+
+.catatan {
+  font-size: var(--t-sm);
+  color: var(--abu-semen);
+}
+
+@media (min-width: 62rem) {
+  .atas {
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    align-items: end;
+    gap: 3rem;
+  }
+}

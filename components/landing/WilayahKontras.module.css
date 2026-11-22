@@ -1,0 +1,73 @@
+.bagian {
+  background: var(--papan);
+}
+
+.pasangan {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.panel {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  padding-top: 0.75rem;
+  border-top: var(--tebal) solid var(--tinta);
+}
+
+.nama {
+  font-size: var(--t-xl);
+}
+
+.data {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+}
+
+.data > div {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.data dt {
+  font-size: var(--t-sm);
+  color: var(--abu-semen);
+}
+
+.data dd {
+  display: grid;
+  gap: 0.375rem;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Batang proporsional: kedua RW memakai skala yang sama, jadi bisa dibandingkan. */
+.batang {
+  display: block;
+  height: 0.625rem;
+  background: var(--kapur);
+  border: 1px solid var(--garis-halus);
+}
+
+.batang > span {
+  display: block;
+  height: 100%;
+  background: var(--tinta);
+}
+
+.usulan {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-weight: 400;
+}
+
+@media (min-width: 40rem) {
+  .pasangan {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}

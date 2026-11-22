@@ -1,0 +1,52 @@
+.kelompok {
+  display: grid;
+  gap: 0.5rem;
+}
+
+/* Panel memakai warna status "ditunda" di tepi kiri, seperti marka kuning di pinggir papan. */
+.panel {
+  border: 2px solid var(--tinta);
+  border-left: 0.75rem solid var(--status-ditunda-latar);
+  border-radius: var(--radius);
+  background: var(--papan);
+}
+
+.pertanyaan {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.875rem;
+  font-weight: 700;
+  color: var(--biru-stempel);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+  list-style: none;
+}
+
+.pertanyaan::-webkit-details-marker {
+  display: none;
+}
+
+.pertanyaan::before {
+  content: "";
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 3px solid currentColor;
+  border-bottom: 3px solid currentColor;
+  rotate: -45deg;
+  transition: rotate 0.2s var(--gerak-tenang);
+}
+
+.panel[open] > .pertanyaan::before {
+  rotate: 45deg;
+}
+
+.jawaban {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 62ch;
+  padding: 0.25rem 0.875rem 1rem 2.4rem;
+}

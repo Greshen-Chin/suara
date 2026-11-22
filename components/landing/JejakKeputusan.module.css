@@ -1,0 +1,68 @@
+.bagian {
+  background: var(--papan);
+}
+
+.daftar {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--tinta);
+}
+
+.entri {
+  display: grid;
+  gap: 0.5rem 1.5rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--garis-halus);
+}
+
+.waktu {
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--abu-semen);
+}
+
+.isi {
+  display: grid;
+  gap: 0.375rem;
+  justify-items: start;
+  max-width: 62ch;
+}
+
+/* Jenis catatan berbingkai biru, seperti cap pada berita acara. */
+.jenis {
+  padding: 0.125rem 0.625rem;
+  border: 2px solid var(--biru-stempel);
+  border-radius: 0.25rem;
+  color: var(--biru-stempel);
+  font-size: var(--t-sm);
+  font-weight: 700;
+}
+
+.subjek {
+  font-weight: 700;
+}
+
+.rincian {
+  font-size: var(--t-sm);
+}
+
+.pencatat {
+  font-size: var(--t-xs);
+  color: var(--abu-semen);
+}
+
+.semua {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-top: 0.75rem;
+  font-weight: 700;
+}
+
+@media (min-width: 40rem) {
+  .entri {
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+  }
+}

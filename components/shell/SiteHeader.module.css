@@ -1,0 +1,78 @@
+.kepala {
+  background: var(--papan);
+  border-bottom: var(--tebal) solid var(--tinta);
+}
+
+/* Mobile: merek dan navigasi di baris pertama, dua tombol berdampingan di baris kedua. */
+.isi {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "merek navigasi"
+    "tombol tombol";
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  padding-block: 0.5rem 0.75rem;
+}
+
+.merek {
+  grid-area: merek;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--tinta);
+  font-family: var(--f-judul);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+}
+
+.navigasi {
+  grid-area: navigasi;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+.navigasi a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-inline: 0.5rem;
+  color: var(--tinta);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.navigasi a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.35em;
+}
+
+.tombol {
+  grid-area: tombol;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+@media (min-width: 52rem) {
+  .isi {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "merek navigasi tombol";
+    gap: 2rem;
+    padding-block: 0.625rem;
+  }
+
+  .navigasi {
+    justify-content: flex-start;
+  }
+
+  .tombol {
+    display: flex;
+    gap: 0.625rem;
+  }
+}

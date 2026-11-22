@@ -1,0 +1,230 @@
+@import "tailwindcss";
+
+/* -----------------------------------------------------------------------------
+   Token SUARA. Warna diambil dari papan proyek dan cat tembok kantor desa.
+   Tiga warna status (terpilih, ditunda, tidak terpilih) dipakai sama di seluruh
+   aplikasi. Status selalu disertai ikon dan teks, tidak pernah hanya warna.
+   ----------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  /* Warna dasar */
+  --kapur: #f3f5ef; /* latar halaman, cat tembok */
+  --papan: #ffffff; /* permukaan papan proyek */
+  --tinta: #14261e; /* teks dan garis tebal papan */
+  --abu-semen: #5b655f; /* teks redam, kontras 5,3:1 di atas kapur */
+  --biru-stempel: #27409b; /* tautan, fokus, stempel */
+  --garis-halus: #c9d0c6; /* garis pembantu non-teks */
+
+  /* Status */
+  --hijau-sawah: #1b7048;
+  --kuning-marka: #f2b600;
+  --status-terpilih-latar: var(--hijau-sawah);
+  --status-terpilih-teks: #ffffff;
+  --status-ditunda-latar: var(--kuning-marka);
+  --status-ditunda-teks: var(--tinta);
+  --status-tidak-garis: var(--abu-semen);
+  --status-tidak-teks: var(--abu-semen);
+
+  /* Huruf */
+  --f-judul: var(--font-judul), "Arial Narrow", sans-serif;
+  --f-isi: var(--font-isi), system-ui, sans-serif;
+
+  /* Skala tipe */
+  --t-xs: 0.8125rem;
+  --t-sm: 0.9375rem;
+  --t-md: 1.0625rem;
+  --t-lg: 1.25rem;
+  --t-xl: 1.75rem;
+  --t-2xl: 2.5rem;
+  --t-hero: clamp(2.5rem, 1.1rem + 6vw, 4.75rem);
+
+  /* Ruang */
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --lebar-maks: 76rem;
+  --radius: 0.375rem;
+  --tebal: 3px;
+
+  /* Gerak */
+  --gerak-tenang: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Warna yang sama tersedia sebagai kelas Tailwind (bg-kapur, text-tinta, ...) untuk layar lain. */
+@theme inline {
+  --color-kapur: var(--kapur);
+  --color-papan: var(--papan);
+  --color-tinta: var(--tinta);
+  --color-abu-semen: var(--abu-semen);
+  --color-biru-stempel: var(--biru-stempel);
+  --color-hijau-sawah: var(--hijau-sawah);
+  --color-kuning-marka: var(--kuning-marka);
+  --font-judul: var(--f-judul);
+  --font-isi: var(--f-isi);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--kapur);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--kapur);
+  color: var(--tinta);
+  font-family: var(--f-isi);
+  font-size: var(--t-md);
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--f-judul);
+  font-weight: 700;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--biru-stempel);
+  text-underline-offset: 0.2em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--biru-stempel);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.lompat {
+  position: absolute;
+  left: var(--gutter);
+  top: 0;
+  z-index: 10;
+  padding: 0.75rem 1rem;
+  background: var(--tinta);
+  color: var(--papan);
+  transform: translateY(-100%);
+}
+
+.lompat:focus-visible {
+  transform: none;
+}
+
+/* Wadah isi: lebar maksimum dan gutter yang sama di semua bagian. */
+.wadah {
+  width: 100%;
+  max-width: calc(var(--lebar-maks) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* -----------------------------------------------------------------------------
+   Tombol. Sentuhan minimal 44 x 44 px. Dipakai pada <a> dan <button>.
+   ----------------------------------------------------------------------------- */
+.tombol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0.5rem 1.125rem;
+  border: var(--tebal) solid var(--tinta);
+  border-radius: var(--radius);
+  font: 600 var(--t-sm) / 1.2 var(--f-isi);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.tombol-utama {
+  background: var(--tinta);
+  color: var(--papan);
+}
+
+.tombol-utama:hover {
+  background: var(--biru-stempel);
+  border-color: var(--biru-stempel);
+}
+
+.tombol-kedua {
+  background: transparent;
+  color: var(--tinta);
+}
+
+.tombol-kedua:hover {
+  background: var(--tinta);
+  color: var(--papan);
+}
+
+/* -----------------------------------------------------------------------------
+   Bagian halaman: garis tinta tebal sebagai pembuka, seperti batas pada papan.
+   Judul di kolom kiri, isi di kolom kanan pada layar lebar.
+   ----------------------------------------------------------------------------- */
+.bagian {
+  border-top: 6px solid var(--tinta);
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.bagian-kepala {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.bagian-kepala h2 {
+  font-size: var(--t-2xl);
+}
+
+.bagian-kepala p {
+  max-width: 34ch;
+  color: var(--abu-semen);
+}
+
+@media (min-width: 62rem) {
+  .bagian-dua-kolom {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: 3rem;
+  }
+}
+
+@media (max-width: 61.99rem) {
+  .bagian-dua-kolom > * + * {
+    margin-top: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

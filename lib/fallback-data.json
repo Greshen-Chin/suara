@@ -1,0 +1,133 @@
+{
+  "dibuat": "2026-11-22T00:00:00.000Z",
+  "pagu_contoh": 300000000,
+  "bobot_resmi": { "popularitas": 30, "urgensi": 40, "pemerataan": 30 },
+  "wilayah": [
+    { "rw": 1, "nama": "RW 01", "penduduk": 3000, "anggaran_lalu": 250000000 },
+    { "rw": 3, "nama": "RW 03", "penduduk": 2000, "anggaran_lalu": 60000000 },
+    { "rw": 7, "nama": "RW 07", "penduduk": 400, "anggaran_lalu": 0 }
+  ],
+  "usulan_voting": [
+    {
+      "id": "6f1b3d0a-0001-4c8e-9a10-000000000001",
+      "title": "Gapura dan taman gerbang desa",
+      "nama_singkat": "Gapura",
+      "category": "fasilitas",
+      "rw": 1,
+      "estimated_budget": 180000000,
+      "vote_count": 60,
+      "urgency_score": 3
+    },
+    {
+      "id": "6f1b3d0a-0002-4c8e-9a10-000000000002",
+      "title": "Pengecatan ulang balai warga",
+      "nama_singkat": "Balai warga",
+      "category": "fasilitas",
+      "rw": 1,
+      "estimated_budget": 110000000,
+      "vote_count": 45,
+      "urgency_score": 2
+    },
+    {
+      "id": "6f1b3d0a-0003-4c8e-9a10-000000000003",
+      "title": "Perbaikan jalan berlubang depan SDN 03",
+      "nama_singkat": "Jalan SDN 03",
+      "category": "infrastruktur",
+      "rw": 3,
+      "estimated_budget": 85000000,
+      "vote_count": 30,
+      "urgency_score": 8
+    },
+    {
+      "id": "6f1b3d0a-0004-4c8e-9a10-000000000004",
+      "title": "Talud penahan longsor tebing RW 07",
+      "nama_singkat": "Talud",
+      "category": "infrastruktur",
+      "rw": 7,
+      "estimated_budget": 220000000,
+      "vote_count": 8,
+      "urgency_score": 10
+    },
+    {
+      "id": "6f1b3d0a-0005-4c8e-9a10-000000000005",
+      "title": "Normalisasi drainase yang sering banjir",
+      "nama_singkat": "Drainase",
+      "category": "lingkungan",
+      "rw": 7,
+      "estimated_budget": 90000000,
+      "vote_count": 8,
+      "urgency_score": 9
+    },
+    {
+      "id": "6f1b3d0a-0006-4c8e-9a10-000000000006",
+      "title": "Jembatan kecil penghubung ke sekolah",
+      "nama_singkat": "Jembatan",
+      "category": "infrastruktur",
+      "rw": 7,
+      "estimated_budget": 70000000,
+      "vote_count": 5,
+      "urgency_score": 8
+    },
+    {
+      "id": "6f1b3d0a-0007-4c8e-9a10-000000000007",
+      "title": "Lampu PJU jalan setapak RW 07",
+      "nama_singkat": "Lampu PJU",
+      "category": "infrastruktur",
+      "rw": 7,
+      "estimated_budget": 40000000,
+      "vote_count": 6,
+      "urgency_score": 7
+    }
+  ],
+  "forum": [],
+  "log_terbaru": [
+    {
+      "id": 10,
+      "log_type": "selection",
+      "proposal_id": "6f1b3d0a-0004-4c8e-9a10-000000000004",
+      "actor": "sistem",
+      "message": "Talud penahan longsor ditunda. Biaya Rp 220 juta menghabiskan pagu yang cukup untuk empat kebutuhan dasar. Disarankan diajukan ke sumber dana lain.",
+      "detail": { "pagu": 300000000, "status": "ditunda" },
+      "created_at": "2026-11-21T00:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "log_type": "weight_change",
+      "proposal_id": null,
+      "actor": "admin",
+      "message": "Bobot ditetapkan musyawarah desa: popularitas 30, urgensi 40, pemerataan 30",
+      "detail": {
+        "sebelum": { "popularitas": 35, "urgensi": 30, "pemerataan": 35 },
+        "sesudah": { "popularitas": 30, "urgensi": 40, "pemerataan": 30 }
+      },
+      "created_at": "2026-11-19T00:00:00.000Z"
+    },
+    {
+      "id": 9,
+      "log_type": "status_change",
+      "proposal_id": "6f1b3d0a-0007-4c8e-9a10-000000000007",
+      "actor": "admin",
+      "message": "Usulan dibuka untuk pemungutan suara",
+      "detail": { "dari": "forum", "ke": "voting" },
+      "created_at": "2026-11-08T00:00:00.000Z"
+    },
+    {
+      "id": 8,
+      "log_type": "status_change",
+      "proposal_id": "6f1b3d0a-0006-4c8e-9a10-000000000006",
+      "actor": "admin",
+      "message": "Usulan dibuka untuk pemungutan suara",
+      "detail": { "dari": "forum", "ke": "voting" },
+      "created_at": "2026-11-08T00:00:00.000Z"
+    },
+    {
+      "id": 1,
+      "log_type": "note",
+      "proposal_id": null,
+      "actor": "admin",
+      "message": "Pagu anggaran tahun berjalan ditetapkan Rp 300.000.000",
+      "detail": { "pagu": 300000000 },
+      "created_at": "2026-11-02T00:00:00.000Z"
+    }
+  ]
+}

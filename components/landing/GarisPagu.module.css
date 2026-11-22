@@ -1,0 +1,44 @@
+/* Papan proyek: bingkai tinta tebal di atas permukaan putih. */
+.papan {
+  display: grid;
+  gap: 1.25rem;
+  padding: clamp(1rem, 3vw, 1.75rem);
+  background: var(--papan);
+  border: var(--tebal) solid var(--tinta);
+  border-radius: var(--radius);
+}
+
+.kepala {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+
+.judul {
+  font-size: var(--t-xl);
+  line-height: 1.05;
+}
+
+.ringkasan {
+  max-width: 60ch;
+  /* Tinggi tetap untuk dua sampai tiga baris agar batang tidak melompat saat mode berganti. */
+  min-height: 4.6em;
+  font-size: var(--t-lg);
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+@media (min-width: 52rem) {
+  .kepala {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.5rem;
+  }
+
+  .judul {
+    font-size: var(--t-2xl);
+  }
+
+  .ringkasan {
+    min-height: 2.7em;
+  }
+}

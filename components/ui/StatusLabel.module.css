@@ -1,0 +1,35 @@
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.125rem 0.5rem;
+  border: 2px solid currentColor;
+  border-radius: var(--radius);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.ikon {
+  flex: none;
+}
+
+.terpilih {
+  background: var(--status-terpilih-latar);
+  border-color: var(--status-terpilih-latar);
+  color: var(--status-terpilih-teks);
+}
+
+.ditunda {
+  background: var(--status-ditunda-latar);
+  border-color: var(--tinta);
+  color: var(--status-ditunda-teks);
+}
+
+.tidak-terpilih {
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--status-tidak-garis);
+  color: var(--status-tidak-teks);
+}
