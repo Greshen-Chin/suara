@@ -9,8 +9,8 @@ export const RUTE = {
   akun: "/akun",
 } as const;
 
-// TODO: ganti dengan alamat repositori publik.
-export const URL_KODE_SUMBER = "#";
+export const URL_KODE_SUMBER = "https://github.com/Greshen-Chin/suara";
 
-// TODO: ganti dengan tautan video demo setelah diunggah.
-export const URL_VIDEO_DEMO = "#";
+// Isi dengan tautan video demo setelah diunggah. Selama masih null, tautannya tidak
+// ditampilkan di footer (lebih baik tidak ada tautan daripada tautan yang tidak ke mana-mana).
+export const URL_VIDEO_DEMO: string | null = null;

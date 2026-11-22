@@ -2,7 +2,8 @@ import Link from "next/link";
 import { RUTE } from "@/lib/tautan";
 import styles from "./SiteHeader.module.css";
 
-// "Coba sebagai warga" membuka forum (bisa dibaca tanpa akun); admin desa masuk lewat /masuk.
+// "Coba sebagai warga" membuka forum (bisa dibaca tanpa akun). Warga dan admin desa
+// masuk lewat halaman yang sama (/masuk); perannya ditentukan oleh akun.
 export function SiteHeader() {
   return (
     <header className={styles.kepala}>
@@ -22,7 +23,7 @@ export function SiteHeader() {
             Coba sebagai warga
           </Link>
           <Link href={RUTE.masuk} className="tombol tombol-kedua">
-            Masuk sebagai admin desa
+            Masuk
           </Link>
         </div>
       </div>

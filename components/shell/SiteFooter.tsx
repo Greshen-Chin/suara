@@ -13,9 +13,11 @@ export function SiteFooter() {
           <li>
             <a href={URL_KODE_SUMBER}>Kode sumber</a>
           </li>
-          <li>
-            <a href={URL_VIDEO_DEMO}>Video demo</a>
-          </li>
+          {URL_VIDEO_DEMO && (
+            <li>
+              <a href={URL_VIDEO_DEMO}>Video demo</a>
+            </li>
+          )}
         </ul>
       </div>
     </footer>
