@@ -1,0 +1,337 @@
+/* Formulir mengajukan usulan: tiga langkah. Bahasa visual sama dengan formulir masuk. */
+
+.halaman {
+  padding-block: clamp(1rem, 4vw, 2.5rem) 3rem;
+}
+
+.kembali {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.judulHalaman {
+  font-size: var(--t-2xl);
+}
+
+.pengantar {
+  max-width: 52ch;
+  margin-top: 0.5rem;
+  color: var(--abu-semen);
+}
+
+.bungkus {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 44rem;
+  margin-top: 1.5rem;
+}
+
+.kerangkaForm {
+  max-width: 44rem;
+  min-height: 46rem;
+  margin-top: 1.5rem;
+  border: var(--tebal) solid var(--garis-halus);
+  border-radius: var(--radius);
+  background: var(--papan);
+}
+
+.catatan {
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+  max-width: 52ch;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 2px solid var(--tinta);
+  border-radius: var(--radius);
+  background: var(--papan);
+}
+
+/* ---- Langkah ---- */
+
+.langkah {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--abu-semen);
+}
+
+.langkah li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.langkahAktif {
+  color: var(--tinta);
+}
+
+.nomorLangkah {
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  font-size: var(--t-xs);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.langkahAktif .nomorLangkah {
+  background: var(--tinta);
+  color: var(--papan);
+}
+
+/* ---- Formulir ---- */
+
+.form {
+  display: grid;
+  gap: 1.25rem;
+  padding: clamp(1rem, 4vw, 1.5rem);
+  border: var(--tebal) solid var(--tinta);
+  border-radius: var(--radius);
+  background: var(--papan);
+}
+
+.kolom {
+  display: grid;
+  gap: 0.25rem;
+  align-content: start;
+}
+
+.kolom label {
+  font-weight: 600;
+}
+
+.kolom input,
+.kolom select,
+.kolom textarea {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--tinta);
+  border-radius: var(--radius);
+  background: var(--papan);
+  color: var(--tinta);
+  /* 16px ke atas mencegah iOS memperbesar halaman saat kolom disentuh. */
+  font: inherit;
+  font-size: max(1rem, var(--t-md));
+}
+
+.kolom textarea {
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.kolom [aria-invalid="true"] {
+  border-color: #a4231a;
+}
+
+.bantu {
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+}
+
+.tambahan {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.hitung {
+  color: var(--abu-semen);
+  font-size: var(--t-xs);
+}
+
+.dua {
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 36rem) {
+  .dua {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.pratinjau {
+  min-height: 1.5rem;
+  font-size: var(--t-sm);
+}
+
+.galatKolom {
+  color: #7a1a13;
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+.ringkasGalat {
+  padding: 0.75rem 0.875rem;
+  border: 2px solid #a4231a;
+  border-radius: var(--radius);
+  background: #fdf1f0;
+  color: #7a1a13;
+  font-weight: 600;
+}
+
+.ringkasGalat a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.pulih {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  padding: 0.5rem 0.875rem;
+  border: 2px solid var(--hijau-sawah);
+  border-radius: var(--radius);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+.tautanTombol {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 0.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--biru-stempel);
+  font: inherit;
+  font-size: var(--t-sm);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.tombolBaris {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+
+.tombolBaris :global(.tombol[aria-disabled="true"]) {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+.menunggu {
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+}
+
+/* ---- Langkah 2 ---- */
+
+.judulLangkah {
+  font-size: var(--t-xl);
+}
+
+.judulLangkah:focus-visible {
+  outline-offset: 4px;
+}
+
+.catatanMirip {
+  max-width: 62ch;
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+}
+
+.hasilMirip {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--tinta);
+}
+
+.itemMirip {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--garis-halus);
+}
+
+.isiMirip {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.judulMirip {
+  font-size: var(--t-lg);
+  line-height: 1.15;
+}
+
+.metaMirip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+}
+
+.sudahDukung {
+  color: var(--hijau-sawah);
+  font-weight: 700;
+}
+
+@media (min-width: 36rem) {
+  .itemMirip {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 1.5rem;
+  }
+}
+
+/* ---- Langkah 3 ---- */
+
+.ringkasan {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: 2px solid var(--tinta);
+}
+
+.ringkasan > div {
+  display: grid;
+  gap: 0.125rem 1.5rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--garis-halus);
+}
+
+.ringkasan dt {
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+.ringkasan dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.cerita {
+  white-space: pre-line;
+}
+
+@media (min-width: 36rem) {
+  .ringkasan > div {
+    grid-template-columns: 9rem minmax(0, 1fr);
+  }
+}

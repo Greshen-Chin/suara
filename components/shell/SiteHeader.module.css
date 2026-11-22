@@ -46,6 +46,13 @@
   text-decoration: none;
 }
 
+/* Halaman yang sedang dibuka: garis bawah tebal tetap, bukan hanya perbedaan warna. */
+.navigasi a.aktif {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.35em;
+}
+
 .navigasi a:hover {
   text-decoration: underline;
   text-decoration-thickness: 3px;
@@ -55,7 +62,7 @@
 .tombol {
   grid-area: tombol;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   gap: 0.5rem;
 }
 

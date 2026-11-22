@@ -1,6 +1,7 @@
 // Menyimpan, membaca, dan menghapus cookie sesi. Hanya untuk server.
 import "server-only";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 import {
   NAMA_COOKIE,
   UMUR_SESI_DETIK,
@@ -29,5 +30,9 @@ export async function hapusSesi(): Promise<void> {
 }
 
 export async function bacaSesi(): Promise<IsiSesi | null> {
+  // Memeriksa masa berlaku token memakai jam saat ini. connection() menandai pembacaan sesi
+  // sebagai dinamis lebih dulu; tanpanya, rute yang diprerender statis (mis. beranda, karena
+  // header membaca sesi) ditandai Next memakai nilai tak stabil (new Date()) saat prerender.
+  await connection();
   return bacaTokenSesi((await cookies()).get(NAMA_COOKIE)?.value);
 }

@@ -41,10 +41,11 @@ Produk ini berhasil kalau warga RW kecil bisa melihat dengan angka kenapa usulan
   - usulan baru langsung tampil, dan admin bisa menyembunyikannya dengan alasan tercatat;
   - satu dukungan per usulan per warga, boleh mendukung banyak usulan.
 - **Keputusan terbuka:** aturan dukungan bersifat sementara. Pemilik produk ingin menimbang ulang jatah dukungan terbatas (misalnya 3 per warga per periode).
+- **Sudah ada:** forum (daftar, detail, ajukan usulan, komentar, moderasi), termasuk deteksi usulan mirip dengan embedding (`multilingual-e5-small`, 384 dimensi) dan cadangan `pg_trgm`. Lihat `docs/forum.md`.
 - **Belum ada:**
-  - Forum, Simulasi, Keputusan, dan halaman admin (masih halaman stub);
-  - pengisian `embedding` dan `location` pada usulan;
-  - penilaian urgensi oleh AI.
+  - Simulasi, Keputusan, dan halaman admin (masih halaman stub);
+  - pengisian `location` pada usulan (deteksi mirip memakai RW);
+  - penilaian urgensi oleh AI (usulan forum memang belum bernilai urgensi; diisi saat dipindahkan ke `voting`).
 
 ## Brand Commitments
 

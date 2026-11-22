@@ -1,0 +1,98 @@
+{
+  "catatan": "Hasil rekomendasi_resmi(300000000) dari 0001-0003 + seed.sql, sebelum migrasi 0004.",
+  "jumlahUsulan": 7,
+  "jumlahDukungan": 162,
+  "rekomendasi": [
+    {
+      "peringkat": 1,
+      "title": "Talud penahan longsor tebing RW 07",
+      "nama_singkat": "Talud",
+      "category": "infrastruktur",
+      "rw": 7,
+      "estimated_budget": 220000000,
+      "vote_count": 8,
+      "urgency_score": 10,
+      "skor": "10.0000",
+      "selected": false,
+      "total_berjalan": 0
+    },
+    {
+      "peringkat": 2,
+      "title": "Normalisasi drainase yang sering banjir",
+      "nama_singkat": "Drainase",
+      "category": "lingkungan",
+      "rw": 7,
+      "estimated_budget": 90000000,
+      "vote_count": 8,
+      "urgency_score": 9,
+      "skor": "9.6000",
+      "selected": true,
+      "total_berjalan": 90000000
+    },
+    {
+      "peringkat": 3,
+      "title": "Jembatan kecil penghubung ke sekolah",
+      "nama_singkat": "Jembatan",
+      "category": "infrastruktur",
+      "rw": 7,
+      "estimated_budget": 70000000,
+      "vote_count": 5,
+      "urgency_score": 8,
+      "skor": "8.0750",
+      "selected": true,
+      "total_berjalan": 160000000
+    },
+    {
+      "peringkat": 4,
+      "title": "Lampu PJU jalan setapak RW 07",
+      "nama_singkat": "Lampu PJU",
+      "category": "infrastruktur",
+      "rw": 7,
+      "estimated_budget": 40000000,
+      "vote_count": 6,
+      "urgency_score": 7,
+      "skor": "8.0500",
+      "selected": true,
+      "total_berjalan": 200000000
+    },
+    {
+      "peringkat": 5,
+      "title": "Perbaikan jalan berlubang depan SDN 03",
+      "nama_singkat": "Jalan SDN 03",
+      "category": "infrastruktur",
+      "rw": 3,
+      "estimated_budget": 85000000,
+      "vote_count": 30,
+      "urgency_score": 8,
+      "skor": "7.3700",
+      "selected": true,
+      "total_berjalan": 285000000
+    },
+    {
+      "peringkat": 6,
+      "title": "Gapura dan taman gerbang desa",
+      "nama_singkat": "Gapura",
+      "category": "fasilitas",
+      "rw": 1,
+      "estimated_budget": 180000000,
+      "vote_count": 60,
+      "urgency_score": 3,
+      "skor": "4.2000",
+      "selected": false,
+      "total_berjalan": 285000000
+    },
+    {
+      "peringkat": 7,
+      "title": "Pengecatan ulang balai warga",
+      "nama_singkat": "Balai warga",
+      "category": "fasilitas",
+      "rw": 1,
+      "estimated_budget": 110000000,
+      "vote_count": 45,
+      "urgency_score": 2,
+      "skor": "3.0500",
+      "selected": false,
+      "total_berjalan": 285000000
+    }
+  ]
+}

@@ -15,7 +15,10 @@ export interface AkunMasuk {
   versi_sesi: number;
 }
 
-export type AkunPublik = Omit<AkunMasuk, "hash_kata_sandi">;
+export type AkunPublik = Omit<AkunMasuk, "hash_kata_sandi"> & {
+  /** Warga yang ditautkan ke akun ini. Kosong untuk admin dan akun warga yang belum tertaut. */
+  warga_id: string | null;
+};
 
 const sinyal = () => AbortSignal.timeout(BATAS_WAKTU_MS);
 
@@ -47,7 +50,7 @@ export async function cariAkunById(id: string): Promise<AkunPublik | null> {
   const data = periksa(
     await supabaseServer
       .from("akun")
-      .select("id, nama_pengguna, peran, aktif, versi_sesi")
+      .select("id, nama_pengguna, peran, aktif, versi_sesi, warga_id")
       .eq("id", id)
       .abortSignal(sinyal())
       .maybeSingle(),

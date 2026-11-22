@@ -21,6 +21,19 @@ export interface Pengguna {
   id: string;
   nama: string;
   peran: Peran;
+  /**
+   * Warga yang tertaut ke akun ini; null untuk admin dan akun warga yang belum tertaut.
+   * Hanya untuk server: jangan dikirim ke klien. Komponen klien cukup menerima boolean.
+   */
+  wargaId: string | null;
+}
+
+function keAkunPengguna(
+  sesi: IsiSesi,
+  akun: Awaited<ReturnType<typeof cariAkunById>>,
+): Pengguna | null {
+  if (!akun || !akun.aktif || akun.versi_sesi !== sesi.versi) return null;
+  return { id: akun.id, nama: akun.nama_pengguna, peran: akun.peran, wargaId: akun.warga_id };
 }
 
 /**
@@ -30,9 +43,25 @@ export interface Pengguna {
 export const ambilPengguna = cache(async (): Promise<Pengguna | null> => {
   const sesi = await bacaSesi();
   if (!sesi) return null;
-  const akun = await cariAkunById(sesi.id);
-  if (!akun || !akun.aktif || akun.versi_sesi !== sesi.versi) return null;
-  return { id: akun.id, nama: akun.nama_pengguna, peran: akun.peran };
+  return keAkunPengguna(sesi, await cariAkunById(sesi.id));
+});
+
+/**
+ * Seperti ambilPengguna, tetapi gangguan database dianggap "tidak diketahui siapa yang
+ * masuk" (null), bukan error. Untuk header dan halaman baca: forum harus tetap bisa dibaca
+ * saat database bermasalah. JANGAN dipakai untuk memutuskan boleh-tidaknya sebuah aksi.
+ *
+ * Pembacaan cookie sengaja di LUAR try/catch: saat prerender, Next menghentikan render lewat
+ * sinyal yang dilempar dari cookies(), dan catch yang menelannya merusak penandaan halaman dinamis.
+ */
+export const ambilPenggunaUntukBaca = cache(async (): Promise<Pengguna | null> => {
+  const sesi = await bacaSesi();
+  if (!sesi) return null;
+  try {
+    return keAkunPengguna(sesi, await cariAkunById(sesi.id));
+  } catch {
+    return null;
+  }
 });
 
 /** Arahkan ke halaman masuk bila belum masuk. */

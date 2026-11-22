@@ -1,0 +1,453 @@
+/* Halaman detail usulan dan komponen di dalamnya (komentar, formulir, dialog). */
+
+.halaman {
+  padding-block: clamp(1rem, 4vw, 2.5rem) 3rem;
+}
+
+.kembali {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+/* ---- Kepala ---------------------------------------------------------------- */
+
+.kepala {
+  display: grid;
+  gap: 0.75rem;
+  padding-bottom: 1.5rem;
+}
+
+.baris {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem 0.75rem;
+}
+
+.lokasi {
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+.judul {
+  max-width: 24ch;
+  font-size: clamp(2rem, 1.2rem + 3.5vw, 3.25rem);
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.125rem 0.875rem;
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+}
+
+.biaya {
+  color: var(--tinta);
+  font-weight: 700;
+}
+
+/* ---- Konfirmasi setelah mengirim atau menggabung --------------------------- */
+
+.konfirmasi {
+  display: grid;
+  gap: 0.25rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  border: var(--tebal) solid var(--hijau-sawah);
+  border-radius: var(--radius);
+  background: var(--papan);
+}
+
+.konfirmasi strong {
+  font-family: var(--f-judul);
+  font-size: var(--t-lg);
+  line-height: 1.1;
+}
+
+/* ---- Tata letak dua kolom di layar lebar ----------------------------------- */
+
+.tata {
+  display: grid;
+  gap: 2rem;
+  border-top: 6px solid var(--tinta);
+  padding-top: 1.5rem;
+}
+
+.utama {
+  display: grid;
+  gap: 2rem;
+  min-width: 0;
+  align-content: start;
+}
+
+.samping {
+  display: grid;
+  gap: 1.25rem;
+  align-content: start;
+}
+
+@media (min-width: 62rem) {
+  .tata {
+    grid-template-columns: minmax(0, 1fr) 17rem;
+    gap: 3rem;
+  }
+
+  /* Di DOM, samping ada lebih dulu (urutan fokus = urutan visual di ponsel); di layar lebar
+     ia ditempatkan di kolom kanan. */
+  .utama {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .samping {
+    grid-column: 2;
+    grid-row: 1;
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+.bagian h2 {
+  margin-bottom: 0.75rem;
+  font-size: var(--t-xl);
+}
+
+.deskripsi {
+  max-width: 65ch;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.urgensi {
+  display: grid;
+  gap: 0.375rem;
+  max-width: 65ch;
+}
+
+.nilaiUrgensi {
+  font-weight: 700;
+}
+
+.catatanUrgensi {
+  color: var(--abu-semen);
+}
+
+/* ---- Posisi di sisi ---- */
+
+.sisi {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem 0;
+  border-block: 1px solid var(--garis-halus);
+}
+
+.sisi h2 {
+  font-size: var(--t-lg);
+}
+
+.sisi p {
+  font-size: var(--t-sm);
+}
+
+/* Preflight Tailwind menghapus garis bawah tautan. Tautan di tengah kalimat harus tetap
+   terbedakan tanpa bergantung pada warna (WCAG 1.4.1), jadi digarisbawahi lagi. */
+.sisi p a {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+/* ---- Usulan tersembunyi ---- */
+
+.disembunyikan {
+  display: grid;
+  gap: 0.25rem;
+  padding: 1rem;
+  border: 2px dashed var(--abu-semen);
+  border-radius: var(--radius);
+  background: var(--papan);
+  color: var(--tinta);
+}
+
+.disembunyikan:focus-visible {
+  outline-offset: 2px;
+}
+
+/* ---- Riwayat ---- */
+
+.riwayat {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--tinta);
+}
+
+.langkah {
+  display: grid;
+  gap: 0.375rem 1.5rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--garis-halus);
+}
+
+.langkah > div {
+  display: grid;
+  gap: 0.25rem;
+  justify-items: start;
+  max-width: 62ch;
+}
+
+.tanggalLangkah {
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+/* Jenis catatan berbingkai biru seperti cap, sama dengan "Jejak keputusan" di halaman utama. */
+.jenis {
+  padding: 0.125rem 0.625rem;
+  border: 2px solid var(--biru-stempel);
+  border-radius: 0.25rem;
+  color: var(--biru-stempel);
+  font-size: var(--t-sm);
+  font-weight: 700;
+}
+
+.pencatat {
+  color: var(--abu-semen);
+  font-size: var(--t-xs);
+}
+
+@media (min-width: 40rem) {
+  .langkah {
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+  }
+}
+
+/* ---- Komentar ---- */
+
+.daftarKomentar {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--tinta);
+}
+
+.komentar {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--garis-halus);
+}
+
+.komentarIsi {
+  display: grid;
+  gap: 0.375rem;
+  justify-items: start;
+  max-width: 65ch;
+}
+
+.penulis {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.625rem;
+  font-size: var(--t-sm);
+}
+
+.nama {
+  font-weight: 700;
+}
+
+.labelAdmin {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.0625rem 0.5rem;
+  border: 2px solid var(--biru-stempel);
+  border-radius: 0.25rem;
+  color: var(--biru-stempel);
+  font-size: var(--t-xs);
+  font-weight: 700;
+}
+
+.waktuKomentar {
+  color: var(--abu-semen);
+}
+
+.teks {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.kosongKomentar {
+  padding: 1rem 0;
+  border-top: 2px solid var(--tinta);
+  color: var(--abu-semen);
+}
+
+.tombolModerasi {
+  min-height: 2.75rem;
+  font-size: var(--t-xs);
+}
+
+/* ---- Formulir komentar ---- */
+
+.formKomentar {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 65ch;
+  margin-top: 1.5rem;
+}
+
+.kolom {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.kolom label {
+  font-weight: 600;
+}
+
+.kolom textarea {
+  width: 100%;
+  min-height: 7rem;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--tinta);
+  border-radius: var(--radius);
+  background: var(--papan);
+  color: var(--tinta);
+  font: inherit;
+  font-size: max(1rem, var(--t-md));
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.kolom textarea[aria-invalid="true"] {
+  border-color: #a4231a;
+}
+
+.hitungBaris {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.hitung {
+  color: var(--abu-semen);
+  font-size: var(--t-xs);
+}
+
+.hitungLebih {
+  color: #7a1a13;
+  font-weight: 700;
+}
+
+.galatKolom {
+  color: #7a1a13;
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+.galatUmum {
+  padding: 0.75rem 0.875rem;
+  border: 2px solid #a4231a;
+  border-radius: var(--radius);
+  background: #fdf1f0;
+  color: #7a1a13;
+  font-weight: 600;
+}
+
+.kirimBaris {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+
+.kirimBaris :global(.tombol[aria-disabled="true"]) {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+.hasil {
+  color: var(--hijau-sawah);
+  font-weight: 700;
+}
+
+.ajakMasuk {
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+  max-width: 65ch;
+  margin-top: 1.5rem;
+}
+
+.ajakMasuk p {
+  color: var(--abu-semen);
+}
+
+/* ---- Dialog moderasi ---- */
+
+.dialog {
+  width: min(32rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  padding: 0;
+  border: var(--tebal) solid var(--tinta);
+  border-radius: var(--radius);
+  background: var(--papan);
+  color: var(--tinta);
+}
+
+.dialog::backdrop {
+  background: rgb(20 38 30 / 0.55);
+}
+
+.dialogIsi {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.dialogJudul {
+  font-size: var(--t-xl);
+}
+
+.bantu {
+  color: var(--abu-semen);
+  font-size: var(--t-xs);
+}
+
+.dialogTombol {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.dialogTombol :global(.tombol[aria-disabled="true"]) {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+/* ---- Kerangka pemuatan detail ---- */
+
+/* Setinggi layar: footer tidak boleh sempat terlihat di bawah kerangka lalu terdorong jauh ke
+   bawah saat isi sungguhan datang (itu pergeseran tata letak, CLS). */
+.kerangkaDetail {
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+  min-height: 100svh;
+}
+
+.blok {
+  height: 1rem;
+  border-radius: var(--radius);
+  background: var(--garis-halus);
+}

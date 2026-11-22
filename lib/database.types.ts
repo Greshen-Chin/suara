@@ -122,6 +122,52 @@ export type Database = {
           },
         ];
       };
+      komentar: {
+        Row: {
+          akun_id: string;
+          alasan_disembunyikan: string | null;
+          created_at: string;
+          disembunyikan_pada: string | null;
+          id: string;
+          isi: string;
+          proposal_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          akun_id: string;
+          alasan_disembunyikan?: string | null;
+          created_at?: string;
+          disembunyikan_pada?: string | null;
+          id?: string;
+          isi: string;
+          proposal_id: string;
+        };
+        Update: {
+          akun_id?: string;
+          alasan_disembunyikan?: string | null;
+          created_at?: string;
+          disembunyikan_pada?: string | null;
+          id?: string;
+          isi?: string;
+          proposal_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "komentar_akun_id_fkey";
+            columns: ["akun_id"];
+            isOneToOne: false;
+            referencedRelation: "akun";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "komentar_proposal_id_fkey";
+            columns: ["proposal_id"];
+            isOneToOne: false;
+            referencedRelation: "proposals";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       proposals: {
         Row: {
           category: string;
@@ -141,7 +187,9 @@ export type Database = {
           title: string;
           updated_at: string;
           urgency_reason: string | null;
-          urgency_score: number;
+          urgency_score: number | null;
+          disembunyikan_pada: string | null;
+          alasan_disembunyikan: string | null;
         };
         ComputedFields: never;
         Insert: {
@@ -162,7 +210,9 @@ export type Database = {
           title: string;
           updated_at?: string;
           urgency_reason?: string | null;
-          urgency_score: number;
+          urgency_score?: number | null;
+          disembunyikan_pada?: string | null;
+          alasan_disembunyikan?: string | null;
         };
         Update: {
           category?: string;
@@ -182,7 +232,9 @@ export type Database = {
           title?: string;
           updated_at?: string;
           urgency_reason?: string | null;
-          urgency_score?: number;
+          urgency_score?: number | null;
+          disembunyikan_pada?: string | null;
+          alasan_disembunyikan?: string | null;
         };
         Relationships: [
           {
@@ -331,14 +383,62 @@ export type Database = {
     Views: {
       v_forum: {
         Row: {
-          category: string;
-          created_at: string;
-          description: string | null;
-          estimated_budget: number;
-          id: string;
-          pengusul: string | null;
-          title: string;
+          category: string | null;
+          created_at: string | null;
+          estimated_budget: number | null;
+          id: string | null;
+          jumlah_komentar: number | null;
+          nama_singkat: string | null;
+          penduduk: number | null;
+          pengusul_nama_depan: string | null;
+          pengusul_rw: number | null;
+          rw: number | null;
+          source: string | null;
+          status: string | null;
+          suara_per_1000: number | null;
+          title: string | null;
           vote_count: number | null;
+        };
+        ComputedFields: never;
+        Relationships: [];
+      };
+      v_usulan: {
+        Row: {
+          alasan_disembunyikan: string | null;
+          category: string | null;
+          created_at: string | null;
+          description: string | null;
+          disembunyikan_pada: string | null;
+          estimated_budget: number | null;
+          id: string | null;
+          jumlah_komentar: number | null;
+          nama_singkat: string | null;
+          penduduk: number | null;
+          pengusul_nama_depan: string | null;
+          pengusul_rw: number | null;
+          rw: number | null;
+          source: string | null;
+          status: string | null;
+          suara_per_1000: number | null;
+          title: string | null;
+          urgency_reason: string | null;
+          urgency_score: number | null;
+          vote_count: number | null;
+        };
+        ComputedFields: never;
+        Relationships: [];
+      };
+      v_komentar: {
+        Row: {
+          alasan_disembunyikan: string | null;
+          created_at: string | null;
+          dari_admin: boolean | null;
+          disembunyikan_pada: string | null;
+          id: string | null;
+          isi: string | null;
+          penulis_nama_depan: string | null;
+          penulis_rw: number | null;
+          proposal_id: string | null;
         };
         ComputedFields: never;
         Relationships: [];
@@ -357,6 +457,63 @@ export type Database = {
       };
     };
     Functions: {
+      ajukan_usulan: {
+        Args: {
+          p_akun: string;
+          p_biaya: number;
+          p_deskripsi: string;
+          p_embedding?: string | null;
+          p_judul: string;
+          p_kategori: string;
+          p_nama_singkat: string | null;
+          p_rw: number;
+        };
+        Returns: Json;
+      };
+      batal_dukung: {
+        Args: { p_akun: string; p_proposal: string };
+        Returns: Json;
+      };
+      cari_usulan_mirip: {
+        Args: { p_batas?: number; p_embedding: string };
+        Returns: {
+          category: string;
+          description: string | null;
+          id: string;
+          kosinus: number;
+          rw: number | null;
+          status: string;
+          title: string;
+          vote_count: number;
+        }[];
+      };
+      cari_usulan_mirip_teks: {
+        Args: { p_batas?: number; p_deskripsi: string; p_judul: string };
+        Returns: {
+          category: string;
+          description: string | null;
+          id: string;
+          punya_embedding: boolean;
+          rw: number | null;
+          sim_isi: number;
+          sim_judul: number;
+          status: string;
+          title: string;
+          vote_count: number;
+        }[];
+      };
+      dukung_usulan: {
+        Args: { p_akun: string; p_proposal: string };
+        Returns: Json;
+      };
+      sembunyikan: {
+        Args: { p_akun: string; p_alasan: string; p_id: string; p_jenis: string };
+        Returns: Json;
+      };
+      tambah_komentar: {
+        Args: { p_akun: string; p_isi: string; p_proposal: string };
+        Returns: Json;
+      };
       catat_gagal_masuk: {
         Args: {
           p_batas?: number;

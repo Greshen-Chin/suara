@@ -1,0 +1,361 @@
+/* Daftar forum. Bahasa visual yang sama dengan halaman utama: garis tinta tebal sebagai
+   pembuka, baris bergaris tipis (bukan kartu), huruf judul Barlow Condensed. */
+
+.halaman {
+  padding-block: clamp(1.5rem, 5vw, 3rem) 2rem;
+}
+
+.kepala {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.kepala h1 {
+  font-size: var(--t-2xl);
+}
+
+.pengantar {
+  max-width: 52ch;
+  margin-top: 0.5rem;
+  color: var(--abu-semen);
+}
+
+/* Tombol ajukan: di ponsel menempel di dasar layar (lihat .ajukanMengambang), di layar lebar di kepala. */
+.ajukan {
+  display: none;
+}
+
+.ajukanMengambang {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  margin-top: 1.5rem;
+  margin-inline: calc(-1 * var(--gutter));
+  padding: 0.75rem var(--gutter) calc(0.75rem + env(safe-area-inset-bottom));
+  border-top: var(--tebal) solid var(--tinta);
+  background: var(--kapur);
+}
+
+.ajukanMengambang :global(.tombol) {
+  width: 100%;
+}
+
+@media (min-width: 52rem) {
+  .kepala {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+  }
+
+  .ajukan {
+    display: inline-flex;
+  }
+
+  .ajukanMengambang {
+    display: none;
+  }
+}
+
+/* ---- Filter ---------------------------------------------------------------- */
+
+.filterBungkus {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Tombol pelipat hanya di ponsel; di layar lebar filter selalu terbuka. */
+.tombolBuka {
+  justify-content: space-between;
+}
+
+@media (min-width: 52rem) {
+  .tombolBuka {
+    display: none;
+  }
+}
+
+@media (max-width: 51.99rem) {
+  .filter.filterTutup {
+    display: none;
+  }
+}
+
+.filter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 1rem;
+  border: var(--tebal) solid var(--tinta);
+  border-radius: var(--radius);
+  background: var(--papan);
+}
+
+.kolom {
+  display: grid;
+  gap: 0.25rem;
+  align-content: start;
+}
+
+.kolom label {
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+.kolom select,
+.kolom input,
+.kolom textarea {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--tinta);
+  border-radius: var(--radius);
+  background: var(--papan);
+  color: var(--tinta);
+  /* 16px ke atas mencegah iOS memperbesar halaman saat kolom disentuh. */
+  font: inherit;
+  font-size: max(1rem, var(--t-md));
+}
+
+/* Status dan urutan punya pilihan panjang: di ponsel masing-masing selebar baris. */
+.penuh {
+  grid-column: 1 / -1;
+}
+
+.tombolFilter {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+}
+
+.hapus {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-weight: 700;
+}
+
+@media (min-width: 52rem) {
+  .filter {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+    align-items: end;
+  }
+
+  .penuh {
+    grid-column: auto;
+  }
+
+  .tombolFilter {
+    grid-column: auto;
+  }
+}
+
+/* ---- Cadangan -------------------------------------------------------------- */
+
+.cadangan {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--tinta);
+  border-radius: var(--radius);
+  background: var(--papan);
+  font-size: var(--t-sm);
+}
+
+.cadangan svg {
+  margin-top: 0.125rem;
+}
+
+/* ---- Daftar ---------------------------------------------------------------- */
+
+.ringkasan {
+  margin-bottom: 0.5rem;
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+}
+
+.daftar {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--tinta);
+}
+
+.item {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--garis-halus);
+  /* Tombol dukung memakai alamat #u-<id> untuk kembali ke tempat yang sama setelah masuk. */
+  scroll-margin-top: 1rem;
+}
+
+.isi {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  min-width: 0;
+}
+
+.baris {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem 0.75rem;
+}
+
+.lokasi {
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+.judul {
+  font-size: var(--t-xl);
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.judul a {
+  color: var(--tinta);
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--garis-halus);
+}
+
+.judul a:hover {
+  text-decoration-color: var(--biru-stempel);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.125rem 0.75rem;
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+}
+
+.biaya {
+  color: var(--tinta);
+  font-weight: 700;
+}
+
+.komentar {
+  font-size: var(--t-sm);
+}
+
+.komentar a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-weight: 600;
+}
+
+/* Posisi terhadap pagu: satu baris tenang di antara dua garis halus. */
+.posisi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem 0.625rem;
+  padding: 0.5rem 0;
+  border-block: 1px solid var(--garis-halus);
+  font-size: var(--t-sm);
+}
+
+.peringkat {
+  font-weight: 700;
+}
+
+.keterangan {
+  color: var(--abu-semen);
+}
+
+.aksi {
+  align-self: start;
+}
+
+@media (min-width: 52rem) {
+  .item {
+    grid-template-columns: minmax(0, 1fr) 13rem;
+    gap: 2rem;
+    padding-block: 1.5rem;
+  }
+}
+
+/* ---- Kosong, muat lebih banyak -------------------------------------------- */
+
+.kosong {
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+  padding: 2rem 0;
+  border-top: 2px solid var(--tinta);
+}
+
+.kosong h2 {
+  font-size: var(--t-xl);
+}
+
+.kosong p {
+  max-width: 48ch;
+  color: var(--abu-semen);
+}
+
+.lagi {
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.lagi p {
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+}
+
+/* ---- Kerangka pemuatan: ukurannya mengikuti isi sebenarnya agar tidak ada lompatan ---- */
+
+.kerangka {
+  display: grid;
+}
+
+.kerangkaFilter {
+  height: 2.75rem;
+  margin-bottom: 1.25rem;
+  border: var(--tebal) solid var(--garis-halus);
+  border-radius: var(--radius);
+  background: var(--papan);
+}
+
+.kerangkaBaris {
+  display: grid;
+  gap: 0.625rem;
+  align-content: start;
+  height: 15rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--garis-halus);
+}
+
+.kerangkaBaris:first-of-type {
+  border-top: 2px solid var(--tinta);
+}
+
+.blok {
+  height: 1rem;
+  border-radius: var(--radius);
+  background: var(--garis-halus);
+}
+
+@media (min-width: 52rem) {
+  .kerangkaFilter {
+    height: 5.75rem;
+  }
+
+  .kerangkaBaris {
+    height: 11.5rem;
+    padding-block: 1.5rem;
+  }
+}

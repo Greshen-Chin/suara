@@ -41,12 +41,16 @@ export function IkonStatus({ status }: { status: StatusUsulan }) {
   );
 }
 
-/** Ikon dan teks selalu tampil bersama: status tidak pernah hanya mengandalkan warna. */
-export function StatusLabel({ status }: { status: StatusUsulan }) {
+/**
+ * Ikon dan teks selalu tampil bersama: status tidak pernah hanya mengandalkan warna.
+ * `teks` menggantikan kata bawaan bila konteksnya butuh kalimat lain (mis. "Terbiayai" di forum),
+ * tanpa mengubah ikon dan warna status.
+ */
+export function StatusLabel({ status, teks }: { status: StatusUsulan; teks?: string }) {
   return (
     <span className={`${styles.label} ${styles[status]}`}>
       <IkonStatus status={status} />
-      {TEKS[status]}
+      {teks ?? TEKS[status]}
     </span>
   );
 }

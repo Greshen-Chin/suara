@@ -56,12 +56,19 @@ async function utama() {
   const rl = createInterface({ input: stdin, output: stdout });
   const nama = (await rl.question("Nama pengguna (huruf kecil, angka, . _ -): ")).trim().toLowerCase();
   const peran = (await rl.question("Peran (warga/admin): ")).trim().toLowerCase();
+  // Akun warga HARUS tertaut ke data warga (nomor di tabel warga): hanya akun seperti itu yang
+  // boleh mendukung usulan. Admin tidak tertaut ke warga mana pun.
+  const nomorTeks = peran === "warga" ? (await rl.question("Nomor warga (kolom `nomor` di tabel warga): ")).trim() : "";
   rl.close();
 
   if (!POLA_NAMA.test(nama)) {
     throw new Error("Nama pengguna harus 3-32 karakter: huruf kecil, angka, titik, garis bawah, atau tanda hubung.");
   }
   if (peran !== "warga" && peran !== "admin") throw new Error("Peran harus 'warga' atau 'admin'.");
+  const nomor = Number(nomorTeks);
+  if (peran === "warga" && (!Number.isInteger(nomor) || nomor < 1)) {
+    throw new Error("Akun warga butuh nomor warga berupa bilangan bulat positif, mis. 70.");
+  }
 
   const sandi = await tanyaTersembunyi("Kata sandi: ");
   const alasan = periksaKataSandiBaru(sandi, nama);
@@ -73,10 +80,18 @@ async function utama() {
   const hash = await hashKataSandi(sandi);
   // Nama sudah divalidasi (tanpa tanda kutip) dan hash hanya berisi base64, jadi aman disisipkan.
   console.log("\n-- Jalankan di SQL editor Supabase:");
+  // Nomor sudah divalidasi sebagai bilangan bulat, jadi aman disisipkan.
+  const kolomWarga = peran === "warga" ? ", warga_id" : "";
+  const nilaiWarga = peran === "warga" ? `, (select id from warga where nomor = ${nomor})` : "";
   console.log(
-    `insert into akun (nama_pengguna, hash_kata_sandi, peran)\n` +
-      `values ('${nama}', '${hash}', '${peran}');\n`,
+    `insert into akun (nama_pengguna, hash_kata_sandi, peran${kolomWarga})\n` +
+      `values ('${nama}', '${hash}', '${peran}'${nilaiWarga});\n`,
   );
+  if (peran === "warga") {
+    console.log(
+      "-- Cek (harus satu baris): select a.nama_pengguna, w.rw from akun a join warga w on w.id = a.warga_id;\n",
+    );
+  }
 }
 
 utama().catch((err: unknown) => {

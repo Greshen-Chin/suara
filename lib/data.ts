@@ -56,22 +56,28 @@ export interface BarisWilayah {
   jumlah_suara: number;
 }
 
-export interface BarisForum {
-  id: string;
-  title: string;
-  description: string | null;
-  category: string;
-  estimated_budget: number;
-  created_at: string;
-  pengusul: string | null;
-  vote_count: number;
+/** Jenis catatan di jejak keputusan. 'moderation' = admin menyembunyikan usulan atau komentar. */
+export const JENIS_LOG = [
+  "weight_change",
+  "status_change",
+  "selection",
+  "note",
+  "moderation",
+] as const;
+export type JenisLog = (typeof JENIS_LOG)[number];
+
+type BarisLogDb = Database["public"]["Tables"]["accountability_logs"]["Row"];
+export type BarisLog = Omit<BarisLogDb, "log_type"> & { log_type: JenisLog };
+
+/** Jenis yang tidak dikenal (mis. kode lebih lama dari database) dibaca sebagai 'note', bukan merusak halaman. */
+export function logDariDb(r: BarisLogDb): BarisLog {
+  const jenis = (JENIS_LOG as readonly string[]).includes(r.log_type)
+    ? (r.log_type as JenisLog)
+    : "note";
+  return { ...r, log_type: jenis };
 }
 
-export type BarisLog =
-  Database["public"]["Tables"]["accountability_logs"]["Row"];
-
 type HasilPilihDb = Database["public"]["CompositeTypes"]["hasil_pilih"];
-type BarisForumDb = Database["public"]["Views"]["v_forum"]["Row"];
 type BarisWilayahDb = Database["public"]["Views"]["v_wilayah"]["Row"];
 
 interface UsulanFallback {
@@ -98,8 +104,7 @@ interface DataFallback {
   bobot_resmi: Bobot;
   wilayah: WilayahFallback[];
   usulan_voting: UsulanFallback[];
-  forum: BarisForum[];
-  log_terbaru: BarisLog[];
+  log_terbaru: BarisLogDb[];
 }
 
 const FALLBACK: DataFallback = fallbackJson;
@@ -114,7 +119,7 @@ interface Jawaban<T> {
 }
 
 /** Jalankan kueri dengan batas waktu; apa pun yang gagal jatuh ke fallback. */
-async function denganFallback<T>(
+export async function denganFallback<T>(
   kueri: (sinyal: AbortSignal) => PromiseLike<Jawaban<T>>,
   fallback: () => T,
 ): Promise<Hasil<T>> {
@@ -129,7 +134,7 @@ async function denganFallback<T>(
 }
 
 /** Kolom wajib ada dan tidak null. Kolom yang hilang berarti skema database belum cocok dengan kode. */
-function wajib<T>(nilai: T | null | undefined, nama: string): T {
+export function wajib<T>(nilai: T | null | undefined, nama: string): T {
   if (nilai === null || nilai === undefined)
     throw new Error(`kolom ${nama} kosong atau tidak ada`);
   return nilai;
@@ -160,19 +165,6 @@ function wilayahDariDb(r: BarisWilayahDb): BarisWilayah {
     anggaran_lalu: wajib(r.anggaran_lalu, "anggaran_lalu"),
     jumlah_usulan: wajib(r.jumlah_usulan, "jumlah_usulan"),
     jumlah_suara: wajib(r.jumlah_suara, "jumlah_suara"),
-  };
-}
-
-function forumDariDb(r: BarisForumDb): BarisForum {
-  return {
-    id: wajib(r.id, "id"),
-    title: wajib(r.title, "title"),
-    description: r.description,
-    category: wajib(r.category, "category"),
-    estimated_budget: wajib(r.estimated_budget, "estimated_budget"),
-    created_at: wajib(r.created_at, "created_at"),
-    pengusul: r.pengusul,
-    vote_count: wajib(r.vote_count, "vote_count"),
   };
 }
 
@@ -319,20 +311,6 @@ export function getWilayah(): Promise<Hasil<BarisWilayah[]>> {
   );
 }
 
-/** Usulan di forum warga (view v_forum). */
-export function getForum(): Promise<Hasil<BarisForum[]>> {
-  return denganFallback(
-    async (sinyal) => {
-      const { data, error } = await supabaseServer
-        .from("v_forum")
-        .select("*")
-        .abortSignal(sinyal);
-      return { data: data?.map(forumDariDb) ?? null, error };
-    },
-    () => FALLBACK.forum,
-  );
-}
-
 /** Log akuntabilitas, terbaru di atas. */
 export function getLogTerbaru(limit = 10): Promise<Hasil<BarisLog[]>> {
   const batas = Math.min(Math.max(Math.trunc(limit), 1), 100);
@@ -345,8 +323,8 @@ export function getLogTerbaru(limit = 10): Promise<Hasil<BarisLog[]>> {
         .order("id", { ascending: false })
         .limit(batas)
         .abortSignal(sinyal);
-      return { data, error };
+      return { data: data?.map(logDariDb) ?? null, error };
     },
-    () => FALLBACK.log_terbaru.slice(0, batas),
+    () => FALLBACK.log_terbaru.slice(0, batas).map(logDariDb),
   );
 }

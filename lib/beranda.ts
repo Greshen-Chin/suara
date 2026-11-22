@@ -1,7 +1,7 @@
 // Memuat semua data halaman utama sekali jalan, lalu menyimpannya di cache selama 1 menit.
 // Datanya sama untuk semua pengunjung, jadi halaman bisa diprerender dan tetap segar.
 import "server-only";
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import {
   PAGU_DEFAULT,
   getBobotResmi,
@@ -14,6 +14,7 @@ import {
   type BarisWilayah,
 } from "./data";
 import { susunModePagu, type ModePagu } from "./pagu-model";
+import { TAG } from "./tag-cache";
 import type { Bobot } from "./seleksi";
 
 export const JUMLAH_JEJAK = 3;
@@ -34,6 +35,9 @@ export interface DataBeranda {
 export async function muatBeranda(): Promise<DataBeranda> {
   "use cache";
   cacheLife({ stale: 30, revalidate: 60, expire: 3600 });
+  // Dukungan pada usulan voting mengubah angka di sini. Server Action forum memanggil
+  // updateTag(TAG.beranda), jadi angkanya langsung ikut berubah, tidak menunggu 60 detik.
+  cacheTag(TAG.beranda);
 
   const pagu = PAGU_DEFAULT;
   const [suara, rekomendasi, wilayah, bobot, log] = await Promise.all([

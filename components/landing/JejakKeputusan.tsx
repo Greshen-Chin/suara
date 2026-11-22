@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { BarisLog } from "@/lib/data";
+import type { BarisLog, JenisLog } from "@/lib/data";
 import type { Json } from "@/lib/database.types";
 import { RUTE } from "@/lib/tautan";
 import styles from "./JejakKeputusan.module.css";
@@ -10,11 +10,12 @@ interface Props {
   judulUsulan: ReadonlyMap<string, string>;
 }
 
-const JENIS: Record<string, string> = {
+const JENIS: Record<JenisLog, string> = {
   weight_change: "Bobot diubah",
   status_change: "Status berubah",
   selection: "Rekomendasi dihitung",
   note: "Catatan",
+  moderation: "Moderasi",
 };
 
 const tanggal = new Intl.DateTimeFormat("id-ID", {
@@ -66,7 +67,7 @@ export function JejakKeputusan({ log, judulUsulan }: Props) {
                       {tanggal.format(new Date(l.created_at))}
                     </time>
                     <div className={styles.isi}>
-                      <p className={styles.jenis}>{JENIS[l.log_type] ?? "Catatan"}</p>
+                      <p className={styles.jenis}>{JENIS[l.log_type]}</p>
                       {subjek && <p className={styles.subjek}>{subjek}</p>}
                       <p>{l.message}</p>
                       {rincian && <p className={styles.rincian}>{rincian}</p>}
