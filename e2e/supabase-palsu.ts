@@ -174,6 +174,28 @@ async function tangani(req: IncomingMessage, res: ServerResponse) {
     return kirim(res, 200, "{}");
   }
 
+  // Tiga usulan forum tambahan (id tetap) supaya halaman simulasi bisa diuji dengan 16 usulan: 7 voting + 9 forum.
+  // POST menambah, DELETE menghapus lagi (dukungan ikut terhapus lewat on delete cascade).
+  const ID_TAMBAHAN = ["6f1b3d0a-1001-4c8e-9a10-000000000091", "6f1b3d0a-1001-4c8e-9a10-000000000092", "6f1b3d0a-1001-4c8e-9a10-000000000093"];
+  if (url.pathname === "/__uji/usulan-tambahan" && req.method === "POST") {
+    await db.exec(`
+      insert into proposals (id, title, nama_singkat, description, category, estimated_budget, status, source, proposer_id, rw, created_at)
+      select v.id::uuid, v.title, v.nama_singkat, v.deskripsi, v.kategori, v.biaya, 'forum', 'forum',
+             (select w.id from warga w where w.nomor = v.nomor), v.rw, now() - v.umur
+        from (values
+          ('${ID_TAMBAHAN[0]}', 'Pagar sekolah RW 03 perlu dicat ulang', 'Pagar sekolah', 'Pagar sekolah dasar di RW 03 sudah mengelupas dan berkarat di beberapa tempat. Kami usul pengecatan ulang dan perbaikan engsel gerbang.', 'pendidikan', 9000000, 45, 3, interval '10 days'),
+          ('${ID_TAMBAHAN[1]}', 'Bangku taman dekat balai warga RW 01', 'Bangku taman', 'Bangku kayu di taman dekat balai RW 01 sudah lapuk dan berbahaya. Kami usul mengganti empat bangku dengan bahan yang tahan hujan.', 'fasilitas', 7000000, 10, 1, interval '11 days'),
+          ('${ID_TAMBAHAN[2]}', 'Selokan depan musala RW 07 tersumbat', 'Selokan musala', 'Selokan depan musala RW 07 tersumbat sampah dan meluap setiap hujan deras. Kami usul pengerukan dan pemasangan penutup berlubang.', 'lingkungan', 11000000, 63, 7, interval '12 days')
+        ) as v (id, title, nama_singkat, deskripsi, kategori, biaya, nomor, rw, umur)
+      on conflict (id) do nothing;
+    `);
+    return kirim(res, 200, "{}");
+  }
+  if (url.pathname === "/__uji/usulan-tambahan" && req.method === "DELETE") {
+    await db.query("delete from proposals where id = any($1::uuid[])", [ID_TAMBAHAN]);
+    return kirim(res, 200, "{}");
+  }
+
   const rpc = /^\/rest\/v1\/rpc\/([a-z_]+)$/.exec(url.pathname);
   if (rpc && req.method === "POST") {
     const args = JSON.parse((await bacaBadan(req)) || "{}") as Record<string, unknown>;

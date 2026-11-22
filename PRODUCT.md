@@ -47,11 +47,21 @@ Produk ini berhasil kalau warga RW kecil bisa melihat dengan angka kenapa usulan
   - akun warga dibuat admin dari antarmuka (tertaut ke warga yang belum punya akun, kata sandi acak tampil sekali, wajib diganti saat masuk pertama); akun admin hanya lewat skrip terminal;
   - perubahan akun masuk jejak admin yang tertutup, bukan jejak publik, karena menyangkut data pribadi.
 - **Keputusan terbuka:** aturan dukungan bersifat sementara. Pemilik produk ingin menimbang ulang jatah dukungan terbatas (misalnya 3 per warga per periode).
+- Keputusan yang sudah diambil untuk simulasi (2026-11-22):
+  - semua orang boleh memakainya tanpa masuk; tidak menyimpan apa pun ke database dan tidak mengubah rekomendasi resmi;
+  - dihitung di peramban dengan mesin yang sama dengan halaman utama (`pilihOptimal`), dan keadaannya (pagu, bobot, usulan
+    forum andaian) tinggal di alamat supaya bisa dibagikan;
+  - bobot di simulasi selalu berjumlah 100 (menggeser satu membagi ulang dua lainnya), sengaja berbeda dari halaman admin;
+  - **Peta Pagu** menunjukkan, untuk semua usulan sekaligus, pada rentang pagu mana tiap usulan terbiayai;
+  - **uji ketahanan** menghitung hasil untuk semua 231 kombinasi bobot kelipatan 5 dan menyebut berapa yang menghasilkan pilihan
+    sama, untuk menjawab "bobotnya dipilih-pilih?". Ini bukan bukti bahwa keputusannya benar.
 - **Sudah ada:**
   - forum (daftar, detail, ajukan usulan, komentar, moderasi), termasuk deteksi usulan mirip dengan embedding (`multilingual-e5-small`, 384 dimensi) dan cadangan `pg_trgm`. Lihat `docs/forum.md`;
-  - halaman admin desa: ringkasan, usulan, anggaran (pagu dan bobot dengan pratinjau dampak), akun, dan moderasi, plus ganti kata sandi di `/akun` untuk semua peran. Lihat `docs/admin.md`.
+  - halaman admin desa: ringkasan, usulan, anggaran (pagu dan bobot dengan pratinjau dampak), akun, dan moderasi, plus ganti kata sandi di `/akun` untuk semua peran. Lihat `docs/admin.md`;
+  - halaman Simulasi (`/simulasi`): pagu dan bobot yang bisa digeser, Peta Pagu, uji ketahanan bobot, tabel per RW, dan usulan forum
+    andaian, tanpa menyimpan. Lihat `docs/simulasi.md`.
 - **Belum ada:**
-  - Simulasi dan Keputusan (masih halaman stub); pratinjau dampak di admin dibuat supaya komponennya bisa dipakai ulang oleh Simulasi;
+  - Keputusan (masih halaman stub);
   - pengisian `location` pada usulan (deteksi mirip memakai RW);
   - penilaian urgensi oleh AI (admin mengisi urgensi dengan rubrik empat tingkat; tempat untuk saran AI sudah disiapkan di formulir tetapi tidak tampil sampai fiturnya ada);
   - pengaturan data wilayah (penduduk, anggaran periode lalu) dari antarmuka;

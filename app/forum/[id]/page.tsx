@@ -166,6 +166,13 @@ async function IsiUsulan({ params, searchParams }: Props) {
                   </p>
                 </div>
               )}
+
+              {/* Usulan yang masih dibahas belum ikut hitungan anggaran. Simulasi menghitungnya hanya di peramban. */}
+              {usulan.status === "forum" && (
+                <Link href={`${RUTE.simulasi}?tambah=${id}.5`} className={styles.tautanSimulasi}>
+                  Lihat kalau usulan ini dihitung
+                </Link>
+              )}
             </>
           )}
 

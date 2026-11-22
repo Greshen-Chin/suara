@@ -26,7 +26,7 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   projects: [
-    { name: "publik", testMatch: /(aksesibilitas|forum|tangkap)\.spec\.ts/ },
+    { name: "publik", testMatch: /(aksesibilitas|forum|tangkap|simulasi.*)\.spec\.ts/ },
     { name: "admin", testMatch: /admin.*\.spec\.ts/, dependencies: ["publik"] },
   ],
   webServer: [
@@ -48,6 +48,20 @@ export default defineConfig({
       cwd: "..",
       env: {
         SUPABASE_URL: `http://localhost:${PORT_DB}`,
+        SUPABASE_SERVICE_ROLE_KEY: "uji-lokal",
+        SESSION_SECRET: process.env.SESSION_SECRET ?? "rahasia-uji-e2e-tidak-untuk-produksi-123456",
+      },
+    },
+    {
+      // Server ketiga hanya untuk simulasi-cadangan.spec.ts: database "tidak terjangkau" (port yang tidak melayani apa pun),
+      // jadi halaman publik jatuh ke data cadangan. Server dev, bukan build, karena HTML build sudah memegang data tiruan.
+      command: "npx next dev -p 3101",
+      url: "http://localhost:3101/masuk",
+      reuseExistingServer: true,
+      timeout: 180_000,
+      cwd: "..",
+      env: {
+        SUPABASE_URL: "http://127.0.0.1:9",
         SUPABASE_SERVICE_ROLE_KEY: "uji-lokal",
         SESSION_SECRET: process.env.SESSION_SECRET ?? "rahasia-uji-e2e-tidak-untuk-produksi-123456",
       },

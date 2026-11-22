@@ -1,18 +1,11 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { panjang } from "@/lib/usulan-skema";
 import styles from "./Admin.module.css";
 
-/** Nilai yang baru dipakai setelah `ms` tanpa perubahan. Untuk pengumuman pembaca layar yang tidak membanjiri saat mengetik. */
-export function useDitunda<T>(nilai: T, ms = 600): T {
-  const [tunda, setTunda] = useState(nilai);
-  useEffect(() => {
-    const t = setTimeout(() => setTunda(nilai), ms);
-    return () => clearTimeout(t);
-  }, [nilai, ms]);
-  return tunda;
-}
+// useDitunda kini ada di components/ui supaya halaman simulasi bisa memakainya tanpa menarik CSS admin.
+export { useDitunda } from "@/components/ui/useDitunda";
 
 export interface GalatBertaut {
   /** Id kolom yang dituju tautan. */

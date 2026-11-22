@@ -7,6 +7,7 @@ import { ubahBobot } from "@/app/admin/aksi";
 import {
   KOLOM_BOBOT,
   LABEL_BOBOT,
+  PENJELASAN_BOBOT,
   keadaanJumlahBobot,
   periksaBobot,
   sisaUntukUrgensi,
@@ -22,13 +23,6 @@ interface Props {
   bobot: Record<KolomBobot, number>;
   versi: number;
 }
-
-/** Penjelasan tiap bobot dalam bahasa warga, bukan istilah anggaran. */
-const PENJELASAN: Record<KolomBobot, string> = {
-  popularitas: "Dukungan per 1.000 penduduk RW. RW kecil tidak kalah hanya karena penduduknya sedikit.",
-  urgensi: "Seberapa mendesak, dinilai admin dengan alasan tertulis.",
-  pemerataan: "RW yang periode lalu mendapat sedikit anggaran didahulukan.",
-};
 
 /** Struktur sama dengan FormPagu: pesan di luar, isian di dalam yang dipasang ulang tiap versi berubah. */
 export function FormBobot({ bobot, versi }: Props) {
@@ -148,7 +142,7 @@ function IsiFormBobot({
                   {LABEL_BOBOT[k]}
                 </label>
                 <p id={`bobot-${k}-bantu`} className={styles.petunjuk}>
-                  {PENJELASAN[k]}
+                  {PENJELASAN_BOBOT[k]}
                 </p>
                 {galatK && (
                   <p id={`bobot-${k}-galat`} className={styles.galatKolom}>

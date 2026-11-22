@@ -125,8 +125,12 @@ flowchart LR
 
 **Tidak ada rumus baru.** Pratinjau memakai `pilihOptimal`, kembaran TypeScript dari `pilih_optimal` di SQL.
 Logika pembandingnya ([lib/pratinjau.ts](../lib/pratinjau.ts)) adalah fungsi murni tanpa akses database dan
-tanpa `server-only`, supaya komponennya (`PratinjauDampak`) bisa dipakai ulang oleh halaman `/simulasi` nanti:
-warga bermain dengan pagu dan bobot tanpa menyimpan.
+tanpa `server-only`, jadi dipakai juga oleh halaman [`/simulasi`](simulasi.md) (warga bermain dengan pagu dan bobot tanpa
+menyimpan). Tampilan perbandingannya diekstrak dari `PratinjauDampak` menjadi
+[`PerbandinganPagu`](../components/anggaran/PerbandinganPagu.tsx) (label lewat props); `PratinjauDampak` sendiri tetap
+terikat ke Server Action admin (hitungan dan jeda 300 ms ada di situ), dan tampilan serta perilakunya di halaman admin tidak
+berubah. Satu perbaikan ikut: `HasilBanding.masuk` kini berupa daftar (sebelumnya hanya satu usulan, dan yang terakhir
+menimpa yang lain); kalimat untuk satu usulan yang dipakai admin tidak berubah.
 
 **Bukti bahwa hasilnya sama dengan halaman utama.** `supabase/tests/admin.test.ts`, bagian kesetaraan pratinjau:
 satu tes keadaan awal ("Sekarang" sama dengan `rekomendasi_resmi`) dan empat tes kombinasi yang menjalankan enam
@@ -318,4 +322,7 @@ Hal-hal yang brief tidak menentukan, dan pilihan yang diambil:
 3. **Data wilayah**: penduduk dan anggaran periode lalu belum bisa diubah dari antarmuka.
 4. **Jatah dukungan**: putuskan aturannya (lihat [forum.md](forum.md#aturan-dukungan-sementara)).
 5. **Uji dengan pembaca layar**, lalu E2E melawan PostgREST/Supabase sungguhan di proyek uji.
-6. **Halaman `/simulasi`** memakai ulang `PratinjauDampak` dan `lib/pratinjau.ts`.
+6. ~~Halaman `/simulasi`~~ sudah ada: lihat [simulasi.md](simulasi.md).
+
+Brief untuk fitur yang belum ada ada di [docs/prompts/](prompts/): `keputusan.md` dan `saran-urgensi.md`
+(`simulasi.md` sudah dikerjakan).

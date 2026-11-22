@@ -1,0 +1,391 @@
+/* Peta Pagu: satu baris per usulan; sumbu mendatar adalah pagu. Ruas hijau = usulan terbiayai pada rentang pagu
+   itu. Garis tebal = pagu Anda, garis putus-putus tipis = pagu resmi. Datar: garis, bukan kartu, tanpa bayangan.
+
+   Peta hanyalah gambar pendukung. Tiap baris punya kalimat dan penanda status di sebelahnya, dan ada tabel yang
+   setara di bawahnya; pagu diatur lewat geseran asli, bukan lewat peta (WCAG 2.5.7).
+
+   Letak baris ditentukan lebar petanya sendiri (container query), bukan lebar layar: peta tampil di kolom
+   kanan yang lebarnya bergantung pada tata letak halaman. */
+
+.peta {
+  --kolom-label: 10rem;
+  --kolom-kalimat: 17rem;
+  container-type: inline-size;
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.keterangan {
+  max-width: 66ch;
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+}
+
+.kisi {
+  --anda: 0;
+  --resmi: 0;
+  display: grid;
+  min-width: 0;
+}
+
+/* ---- Sumbu ---------------------------------------------------------------------------------------- */
+
+.sumbu {
+  display: grid;
+}
+
+.jalurSumbu {
+  position: relative;
+  min-width: 0;
+}
+
+.sumbuAtas .jalurSumbu {
+  min-height: 1.75rem;
+}
+
+.sumbuBawah .jalurSumbu {
+  min-height: 3.25rem;
+}
+
+/* Bendera pagu Anda: tepi yang sejajar dengan garis bergeser dari kiri ke kanan mengikuti nilainya, jadi bendera
+   tidak pernah keluar dari peta dan selalu tersambung ke garis. */
+.bendera {
+  position: absolute;
+  bottom: 0;
+  left: calc(var(--anda) * 1%);
+  translate: calc(var(--anda) * -1%) 0;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  background: var(--tinta);
+  color: var(--papan);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.tanda {
+  position: absolute;
+  top: 0.25rem;
+  left: calc(var(--p) * 1%);
+  translate: calc(var(--p) * -1%) 0;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.benderaResmi {
+  position: absolute;
+  top: 1.75rem;
+  left: calc(var(--resmi) * 1%);
+  translate: calc(var(--resmi) * -1%) 0;
+  padding: 0 0.5rem;
+  border: 1px solid var(--tinta);
+  border-radius: 0.25rem;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+/* ---- Baris ---------------------------------------------------------------------------------------- */
+
+.daftar {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-block: 2px solid var(--tinta);
+}
+
+.baris {
+  display: grid;
+  gap: 0.375rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--garis-halus);
+}
+
+.baris:last-child {
+  border-bottom: 0;
+}
+
+.label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.125rem 0.75rem;
+  min-width: 0;
+}
+
+.nama {
+  font-family: var(--f-judul);
+  font-size: var(--t-lg);
+  font-weight: 700;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.andaian {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0 0.375rem;
+  border: 2px dashed var(--abu-semen);
+  border-radius: 0.25rem;
+  color: var(--abu-semen);
+  font-family: var(--f-isi);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  line-height: 1.4;
+  vertical-align: middle;
+}
+
+.meta {
+  color: var(--abu-semen);
+  font-size: var(--t-xs);
+  font-weight: 600;
+}
+
+/* Jalur tiap baris: garis kisi tiap seperempat sumbu, garis dasar, dan ujung kanan. Garis pagu digambar di
+   sini (bukan satu lapisan di atas semua baris) supaya tetap benar saat baris bertumpuk di layar sempit. */
+.jalur {
+  position: relative;
+  height: 2rem;
+  background:
+    linear-gradient(var(--garis-halus), var(--garis-halus)) right / 1px 100% no-repeat,
+    linear-gradient(var(--garis-halus), var(--garis-halus)) center / 100% 2px no-repeat,
+    repeating-linear-gradient(to right, var(--garis-halus) 0 1px, transparent 1px 25%);
+}
+
+.ruas {
+  position: absolute;
+  top: 0.3125rem;
+  bottom: 0.3125rem;
+  background: var(--hijau-sawah);
+}
+
+/* Ruas yang tersentuh garis pagu Anda "menyala": berbingkai tinta (bentuk, bukan hanya warna). */
+.menyala {
+  z-index: 1;
+  outline: 3px solid var(--tinta);
+}
+
+.jalur::before,
+.jalur::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Pagu resmi: garis putus-putus tipis. */
+.jalur::before {
+  left: calc(var(--resmi) * 1%);
+  width: 2px;
+  margin-left: -1px;
+  background: repeating-linear-gradient(to bottom, var(--tinta) 0 4px, transparent 4px 7px);
+}
+
+/* Pagu Anda: garis tinta 3 px. */
+.jalur::after {
+  left: calc(var(--anda) * 1%);
+  width: 3px;
+  margin-left: -1.5px;
+  background: var(--tinta);
+}
+
+.kalimat {
+  display: grid;
+  gap: 0.375rem;
+  justify-items: start;
+  align-content: start;
+  min-width: 0;
+}
+
+.rentang {
+  white-space: nowrap;
+}
+
+.kalimat p {
+  max-width: 62ch;
+  font-size: var(--t-sm);
+  line-height: 1.45;
+}
+
+/* Peta cukup lebar: label, jalur, dan kalimat sebaris. Jalur menjangkau tinggi baris penuh, jadi garis pagu
+   tersambung dari baris ke baris. */
+@container (min-width: 54rem) {
+  .sumbu {
+    grid-template-columns: var(--kolom-label) minmax(0, 1fr) var(--kolom-kalimat);
+    column-gap: 1.25rem;
+  }
+
+  .jalurSumbu {
+    grid-column: 2;
+  }
+
+  .baris {
+    grid-template-columns: var(--kolom-label) minmax(0, 1fr) var(--kolom-kalimat);
+    gap: 0 1.25rem;
+    padding: 0;
+    border-bottom: 0;
+    align-items: stretch;
+  }
+
+  .label,
+  .kalimat {
+    padding-block: 0.625rem;
+    border-bottom: 1px solid var(--garis-halus);
+  }
+
+  .baris:last-child .label,
+  .baris:last-child .kalimat {
+    border-bottom: 0;
+  }
+
+  .label {
+    display: grid;
+    align-content: center;
+    justify-content: stretch;
+  }
+
+  .jalur {
+    height: auto;
+    min-height: 3rem;
+    background:
+      linear-gradient(var(--garis-halus), var(--garis-halus)) right / 1px 100% no-repeat,
+      linear-gradient(var(--garis-halus), var(--garis-halus)) bottom / 100% 1px no-repeat,
+      linear-gradient(var(--garis-halus), var(--garis-halus)) center / 100% 2px no-repeat,
+      repeating-linear-gradient(to right, var(--garis-halus) 0 1px, transparent 1px 25%);
+  }
+
+  .baris:last-child .jalur {
+    background:
+      linear-gradient(var(--garis-halus), var(--garis-halus)) right / 1px 100% no-repeat,
+      linear-gradient(var(--garis-halus), var(--garis-halus)) center / 100% 2px no-repeat,
+      repeating-linear-gradient(to right, var(--garis-halus) 0 1px, transparent 1px 25%);
+  }
+
+  .ruas {
+    top: 0.75rem;
+    bottom: 0.75rem;
+  }
+}
+
+/* ---- Penjelasan dan tabel setara ------------------------------------------------------------------ */
+
+.rincian summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Penanda buka-tutup yang digambar sendiri (chevron), supaya jelas bisa ditekan. Berputar sebagai jawaban atas aksi. */
+.rincian summary::before {
+  content: "";
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2.25px solid currentColor;
+  border-bottom: 2.25px solid currentColor;
+  rotate: -45deg;
+}
+
+.rincian[open] summary::before {
+  rotate: 45deg;
+}
+
+.rincian > p {
+  max-width: 66ch;
+  padding-bottom: 0.5rem;
+}
+
+.tabel {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-sm);
+}
+
+.tabel caption {
+  padding-bottom: 0.5rem;
+  color: var(--abu-semen);
+  text-align: left;
+}
+
+.tabel th,
+.tabel td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--garis-halus);
+  text-align: left;
+  vertical-align: top;
+}
+
+.tabel thead th {
+  border-block: 2px solid var(--tinta);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  vertical-align: bottom;
+}
+
+.tabel tbody th {
+  font-weight: 700;
+}
+
+/* Layar sempit: baris tabel menjadi blok bertumpuk berlabel, tanpa gulir horizontal. */
+@media (max-width: 47.99rem) {
+  .tabel,
+  .tabel tbody,
+  .tabel tr,
+  .tabel td,
+  .tabel th {
+    display: block;
+  }
+
+  .tabel caption {
+    display: block;
+  }
+
+  .tabel thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .tabel tr {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--garis-halus);
+  }
+
+  .tabel th,
+  .tabel td {
+    padding: 0.125rem 0;
+    border: 0;
+  }
+
+  .tabel td::before {
+    display: block;
+    color: var(--abu-semen);
+    font-size: var(--t-xs);
+    font-weight: 700;
+  }
+
+  .tabel td:nth-of-type(1)::before {
+    content: "Biaya";
+  }
+
+  .tabel td:nth-of-type(2)::before {
+    content: "Terbiayai pada pagu";
+  }
+
+  .tabel td:nth-of-type(3)::before {
+    content: "Pada pagu Anda";
+  }
+}

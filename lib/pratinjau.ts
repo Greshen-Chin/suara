@@ -95,8 +95,11 @@ export interface HasilBanding {
   berubah: BarisBanding[];
   /** Usulan yang ada di kedua keadaan dan statusnya sama. */
   tetap: BarisBanding[];
-  /** Usulan yang baru ikut dihitung (forum -> voting). */
-  masuk: BarisBanding | null;
+  /**
+   * Usulan yang baru ikut dihitung (forum -> voting), menurut peringkat sesudah. Admin memasukkan satu
+   * per satu, jadi paling banyak satu; simulasi bisa menambahkan beberapa sekaligus.
+   */
+  masuk: BarisBanding[];
   /** Usulan yang tidak lagi dihitung (voting -> forum). */
   keluar: BarisBanding | null;
   sisaSebelum: number;
@@ -131,7 +134,7 @@ export function bandingkan(
 
   const berubah: BarisBanding[] = [];
   const tetap: BarisBanding[] = [];
-  let masuk: BarisBanding | null = null;
+  const masuk: BarisBanding[] = [];
   let keluar: BarisBanding | null = null;
 
   // Urutan mengikuti peringkat sesudah (yang masih dihitung), lalu yang keluar.
@@ -154,7 +157,7 @@ export function bandingkan(
     };
     if (kejadian === "berubah") berubah.push(baris);
     else if (kejadian === "tetap") tetap.push(baris);
-    else if (kejadian === "masuk") masuk = baris;
+    else if (kejadian === "masuk") masuk.push(baris);
     else keluar = baris;
   }
 
@@ -187,7 +190,7 @@ export const namaDenganRw = (b: Pick<BarisBanding, "nama" | "rw">): string => `$
 
 /** Ringkasan satu baris: "2 usulan berubah status. Sisa pagu Rp 12 juta menjadi Rp 40 juta." */
 export function ringkasanBanding(b: HasilBanding): string {
-  const lain = b.masuk || b.keluar ? " lain" : "";
+  const lain = b.masuk.length > 0 || b.keluar ? " lain" : "";
   const n = b.berubah.length;
   const status = n === 0 ? `Tidak ada usulan${lain} yang berubah status.` : `${n} usulan${lain} berubah status.`;
   if (b.sisaSebelum === b.sisaSesudah) return n === 0 ? status : `${status} Sisa pagu tetap ${rupiah(b.sisaSesudah)}.`;
@@ -212,10 +215,15 @@ function kalimatGeser(berubah: readonly BarisBanding[]): string {
  * null bila perubahannya pagu atau bobot.
  */
 export function kalimatPerpindahan(b: HasilBanding, urgensi?: number): string | null {
-  if (b.masuk?.sesudah) {
-    const s = b.masuk.sesudah;
+  const masuk = b.masuk.filter((m) => m.sesudah !== null);
+  if (masuk.length === 1) {
+    const s = masuk[0].sesudah!;
     const awal = urgensi === undefined ? "Jika dimasukkan, usulan ini" : `Jika dimasukkan dengan urgensi ${urgensi}, usulan ini`;
     return `${awal} berada di peringkat ${s.peringkat} dari ${s.jumlah} rekomendasi: ${TEKS_STATUS[s.status]}.${kalimatGeser(b.berubah)}`;
+  }
+  if (masuk.length > 1) {
+    const bagian = masuk.map((m) => `${namaDenganRw(m)} berada di peringkat ${m.sesudah!.peringkat} dari ${m.sesudah!.jumlah} rekomendasi: ${TEKS_STATUS[m.sesudah!.status]}`);
+    return `Jika dimasukkan, ${bagian.join("; ")}.${kalimatGeser(b.berubah)}`;
   }
   if (b.keluar) {
     return `Jika dikembalikan ke pembahasan, usulan ini tidak lagi dihitung dalam anggaran.${kalimatGeser(b.berubah)}`;

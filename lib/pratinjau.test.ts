@@ -141,9 +141,10 @@ describe("pratinjau bobot", () => {
 describe("pratinjau perpindahan status", () => {
   it("forum -> voting: kalimat peringkat dan usulan yang bergeser", () => {
     const h = hitungPratinjau(dasar, { jenis: "masuk", usulan: lampuGang });
-    assert.equal(h.banding.masuk?.nama, "Lampu gang");
-    assert.equal(h.banding.masuk?.sebelum, null);
-    assert.equal(h.banding.masuk?.sesudah?.status, "terpilih");
+    assert.equal(h.banding.masuk.length, 1);
+    assert.equal(h.banding.masuk[0].nama, "Lampu gang");
+    assert.equal(h.banding.masuk[0].sebelum, null);
+    assert.equal(h.banding.masuk[0].sesudah?.status, "terpilih");
     assert.equal(
       h.perpindahan,
       "Jika dimasukkan dengan urgensi 8, usulan ini berada di peringkat 3 dari 8 rekomendasi: Terbiayai. Jalan SDN 03 RW 03 bergeser menjadi Tidak terpilih.",
@@ -154,7 +155,7 @@ describe("pratinjau perpindahan status", () => {
   it("usulan yang dimasukkan tidak dihitung sebagai 'berubah'; ia punya kejadian sendiri", () => {
     const h = hitungPratinjau(dasar, { jenis: "masuk", usulan: lampuGang });
     assert.ok(!h.banding.berubah.some((b) => b.id === lampuGang.id));
-    assert.equal(h.banding.masuk?.kejadian, "masuk");
+    assert.equal(h.banding.masuk[0].kejadian, "masuk");
     assert.equal(h.banding.keluar, null);
   });
 
@@ -191,7 +192,7 @@ describe("pratinjau perpindahan status", () => {
       {
         berubah: ["a", "b", "c", "d", "e"].map(baris),
         tetap: [],
-        masuk,
+        masuk: [masuk],
         keluar: null,
         sisaSebelum: 0,
         sisaSesudah: 0,
@@ -258,5 +259,48 @@ describe("bandingkan dan modePaguDari", () => {
   it("labelRw memberi nol di depan", () => {
     assert.equal(labelRw(7), "RW 07");
     assert.equal(labelRw(12), "RW 12");
+  });
+});
+
+describe("beberapa usulan masuk sekaligus (simulasi)", () => {
+  const atap: UsulanHitung = {
+    ...lampuGang,
+    id: "6f1b3d0a-1001-4c8e-9a10-000000000003",
+    title: "Atap pos ronda RW 01 bocor",
+    namaSingkat: "Atap pos",
+    rw: 1,
+    estimatedBudget: 8_000_000,
+    voteCount: 3,
+    urgencyScore: 6,
+    dibuat: "2026-11-21T00:00:00.000Z",
+  };
+  const dua = terapkanPerubahan(terapkanPerubahan(dasar, { jenis: "masuk", usulan: lampuGang }), { jenis: "masuk", usulan: atap });
+
+  it("keduanya tercatat, tidak ada yang menimpa yang lain", () => {
+    const banding = bandingkan(dasar, dua, hitungRekomendasi(dasar), hitungRekomendasi(dua));
+    assert.deepEqual(banding.masuk.map((m) => m.nama).sort(), ["Atap pos", "Lampu gang"]);
+    assert.ok(banding.masuk.every((m) => m.kejadian === "masuk" && m.sebelum === null && m.sesudah !== null));
+    assert.ok(!banding.berubah.some((b) => b.id === lampuGang.id || b.id === atap.id));
+  });
+
+  it("urutan masuk mengikuti peringkat sesudah", () => {
+    const banding = bandingkan(dasar, dua, hitungRekomendasi(dasar), hitungRekomendasi(dua));
+    const peringkat = banding.masuk.map((m) => m.sesudah!.peringkat);
+    assert.deepEqual(peringkat, [...peringkat].sort((a, b) => a - b));
+  });
+
+  it("ringkasan menyebut 'lain' dan kalimat perpindahan memuat kedua usulan", () => {
+    const banding = bandingkan(dasar, dua, hitungRekomendasi(dasar), hitungRekomendasi(dua));
+    assert.match(ringkasanBanding(banding), /usulan lain/);
+    const kalimat = kalimatPerpindahan(banding) ?? "";
+    assert.match(kalimat, /^Jika dimasukkan, /);
+    assert.match(kalimat, /Lampu gang RW 07 berada di peringkat \d+ dari 9 rekomendasi: /);
+    assert.match(kalimat, /Atap pos RW 01 berada di peringkat \d+ dari 9 rekomendasi: /);
+  });
+
+  it("satu usulan masuk tetap memakai kalimat lama (halaman admin tidak berubah)", () => {
+    const satu = terapkanPerubahan(dasar, { jenis: "masuk", usulan: lampuGang });
+    const banding = bandingkan(dasar, satu, hitungRekomendasi(dasar), hitungRekomendasi(satu));
+    assert.match(kalimatPerpindahan(banding, 8) ?? "", /^Jika dimasukkan dengan urgensi 8, usulan ini berada di peringkat 3 dari 8 rekomendasi: Terbiayai\./);
   });
 });

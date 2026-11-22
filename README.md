@@ -18,7 +18,8 @@ Di kebanyakan desa, usulan dengan suara terbanyak otomatis menang. Akibatnya RW 
 | **Masuk (login).** Peran warga dan admin desa, dengan sesi aman. Semua peran bisa mengganti kata sandinya di `/akun`. | Selesai |
 | **Forum warga.** Usulan, dukungan, komentar, deteksi usulan mirip (AI), dan moderasi. | Selesai, lihat [Forum warga](#forum-warga) dan [docs/forum.md](docs/forum.md) |
 | **Admin desa.** Meninjau usulan, mengatur pagu dan bobot dengan pratinjau dampak, mengelola akun warga, dan memoderasi. | Selesai, lihat [Admin desa](#admin-desa) dan [docs/admin.md](docs/admin.md). Perlu migrasi 0005 |
-| **Simulasi anggaran** dan **halaman Keputusan** (penetapan hasil musyawarah). | Direncanakan (halaman sementara) |
+| **Simulasi anggaran.** Warga mengubah pagu dan bobot dan langsung melihat usulan mana yang terbiayai, dengan Peta Pagu, uji ketahanan bobot, tabel per RW, dan usulan forum andaian. Tidak menyimpan apa pun. | Selesai, lihat [Simulasi anggaran](#simulasi-anggaran) dan [docs/simulasi.md](docs/simulasi.md). Tanpa SQL baru |
+| **Halaman Keputusan** (penetapan hasil musyawarah). | Direncanakan (halaman sementara) |
 
 ---
 
@@ -110,6 +111,34 @@ Alasan, rubrik urgensi, diagram status, jejak publik vs jejak tertutup, dan kete
 3. Di **Anggaran**, ubah pagu atau bobot dan perhatikan usulan yang bergeser status.
 4. Di **Akun**, buat akun untuk warga yang belum punya akun, catat kata sandi yang tampil (hanya sekali), lalu
    masuk sebagai akun itu di jendela lain: ia diminta mengganti kata sandinya.
+
+## Simulasi anggaran
+
+Halaman `/simulasi` terbuka untuk semua orang, tanpa masuk. **Tidak ada yang disimpan dan rekomendasi resmi tidak berubah.**
+Perhitungannya terjadi di peramban dengan `pilihOptimal` yang sama dengan halaman utama; keadaannya (pagu, bobot, usulan
+andaian) tinggal di alamat, jadi bisa dibagikan.
+
+- **Kendali.** Pagu (geseran Rp 10 juta sampai ujung peta, langkah Rp 5 juta, atau diketik) dan tiga bobot yang **selalu berjumlah
+  100** (menggeser satu membagi ulang dua lainnya), dengan pilihan cepat Resmi, Dukungan saja, Keselamatan dulu, dan Merata dulu.
+- **Hasil.** Batang Garis Pagu simulasi, kalimat ringkasan, dan apa yang berubah dari rekomendasi resmi ("Sama dengan
+  rekomendasi resmi" bila tidak ada).
+- **Peta Pagu.** Untuk semua usulan sekaligus: pada rentang pagu mana tiap usulan terbiayai ("Talud baru muat kalau pagunya Rp 505
+  juta"). Ruasnya bisa terputus-putus, dan halaman menjelaskan kenapa. Ada kalimat di tiap baris dan tabel setara.
+- **Uji ketahanan.** Hasilnya dihitung ulang untuk semua 231 kombinasi bobot, lalu halaman menyebut berapa yang menghasilkan
+  pilihan yang sama ("hasilnya sama untuk 231 dari 231 kombinasi bobot" pada pagu Rp 300 juta). Ini menjawab "bobotnya
+  dipilih-pilih?", dan **bukan** bukti bahwa keputusannya benar.
+- **Siapa yang kebagian.** Tabel per RW: rupiah, jumlah usulan, dan rupiah per penduduk, resmi dan simulasi berdampingan.
+- **Usulan forum andaian.** Tambahkan usulan yang masih dibahas dengan urgensi yang Anda andaikan untuk melihat posisinya.
+
+**Cara mencoba** (tanpa SQL dan tanpa variabel lingkungan baru):
+
+1. Buka `/simulasi` dan geser pagu ke **Rp 505 juta**: Talud menjadi *Terbiayai*.
+2. Kembalikan ke **Rp 300 juta**: kalimat uji ketahanan menyebut **231 dari 231**.
+3. Tekan **Dukungan saja**: yang terbiayai tetap sama, tetapi Gapura dan Balai warga menjadi *Ditunda*, dan halaman menyebutnya.
+4. Salin tautan lewat **Bagikan simulasi ini** dan buka di perangkat lain: keadaannya sama.
+
+Cara kerja Peta Pagu (diagram), bukti kesetaraan dengan `rekomendasi_resmi`, arti dan batas uji ketahanan, angka kinerja,
+dan keterbatasannya ada di **[docs/simulasi.md](docs/simulasi.md)**.
 
 ## Teknologi
 
@@ -264,19 +293,19 @@ Kedua akun ini **hanya untuk database demo**. Kata sandinya sengaja sederhana, j
 ## Pengujian
 
 ```bash
-npm test             # 388 tes: unit (lib/) dan SQL di PGlite (supabase/tests/)
+npm test             # 510 tes: unit (lib/) dan SQL di PGlite (supabase/tests/)
 npm run lint
 npx tsc --noEmit
 npm run build
-npm run e2e          # 78 tes Playwright + axe di build produksi, melawan server tiruan (lihat docs/forum.md dan docs/admin.md)
+npm run e2e          # 109 tes Playwright + axe di build produksi, melawan server tiruan (lihat docs/forum.md, docs/admin.md, dan docs/simulasi.md)
 ```
 
 `npm run e2e` perlu browser Playwright (`npx playwright install chromium`) dan model embedding terunduh (atau `E2E_TANPA_EMBEDDING=1`). Skrip lain: `npm run kemiripan:kalibrasi` (mengukur deteksi usulan mirip), `npm run fallback:buat` (membuat ulang data cadangan forum dari seed), `npm run embedding:isi`.
 
 Sudah diperiksa secara manual:
 - **SQL:** migrasi 0001 sampai 0005 dan kedua seed dijalankan di PGlite (Postgres di dalam Node, dengan pgvector, pg_trgm, dan PostGIS): dukung/batal atomik, penolakan admin dan akun tanpa `warga_id`, batas laju, moderasi, hak `execute`, dan `rekomendasi_resmi(300000000)` identik dengan sebelum migrasi forum **dan** sebelum migrasi admin. Tes admin (90 tes) juga memeriksa penolakan non-admin di setiap fungsi, bentrok versi, batas 16 usulan, jejak tertutup, dan bahwa pratinjau sama dengan `rekomendasi_resmi` setelah perubahan disimpan.
-- **Aksesibilitas:** axe-core (WCAG 2.2 AA) tanpa pelanggaran di 360 px dan 1440 px, juga untuk semua halaman `/admin/*` dan `/akun` termasuk dialog, galat, pratinjau, dan tiap langkah membuat akun. Ditambah reflow 320 px, keyboard, target sentuh 44 px, dan spasi teks WCAG 1.4.12.
-- **Kinerja:** Lighthouse mobile halaman utama mendapat 100 di keempat kategori, dengan CLS 0.
+- **Aksesibilitas:** axe-core (WCAG 2.2 AA) tanpa pelanggaran di 360 px dan 1440 px, juga untuk semua halaman `/admin/*` dan `/akun` termasuk dialog, galat, pratinjau, dan tiap langkah membuat akun, dan untuk `/simulasi` di semua keadaannya. Ditambah reflow 320 px, keyboard, target sentuh 44 px, spasi teks WCAG 1.4.12, dan (simulasi) satu pengumuman per jeda. Belum diuji dengan pembaca layar sungguhan.
+- **Kinerja:** Lighthouse mobile (build produksi lokal, 23 November 2026): halaman utama 97/100/100, `/forum` 97–98/100/100, `/simulasi` 96–97/100/100 (performa/aksesibilitas/best practices), CLS 0 di ketiganya. Simulasi dengan 16 usulan dan CPU diperlambat 4×: tugas utas utama terpanjang 54–72 ms saat menggeser pagu dan bobot (batas 100 ms); lihat [docs/simulasi.md](docs/simulasi.md#kinerja).
 - **Login:** diuji ujung ke ujung dengan Playwright: masuk, keluar, token palsu, dan `alg=none`.
 
 ---
@@ -287,18 +316,21 @@ Sudah diperiksa secara manual:
 app/                 rute (halaman utama, masuk, akun, forum, admin, simulasi, keputusan, api/health)
   forum/             daftar, [id] (detail), usul (formulir), aksi.ts (Server Actions)
   admin/             ringkasan, usulan, anggaran, akun, moderasi; aksi.ts (Server Actions) dan pratinjau.ts
+  simulasi/          halaman simulasi (satu komponen klien dengan status di alamat)
 components/
   landing/           bagian halaman utama (GarisPagu, WilayahKontras, CaraKerja, JejakKeputusan)
   forum/             daftar, tombol dukung, filter, komentar, dialog moderasi, formulir usulan
   admin/             pita mode, navigasi, tabel register, formulir pagu/bobot/status, pratinjau dampak, alur buat akun
+  anggaran/          PerbandinganPagu: dua Garis Pagu yang dibandingkan, dipakai pratinjau dampak dan simulasi
+  simulasi/          kendali pagu dan bobot, hasil, Peta Pagu, uji ketahanan, tabel per RW, usulan andaian, bagikan
   akun/              formulir ganti kata sandi
   shell/             header (dengan penanda halaman aktif dan sesi) dan footer
   ui/                komponen kecil yang dipakai ulang (StatusLabel, StatusSiklus, DialogAlasan, HalamanStub)
-lib/                 logika murni dan akses data (seleksi, pagu, format, data, auth, sesi, forum-*, admin-*, pratinjau, kemiripan, embedding)
+lib/                 logika murni dan akses data (seleksi, pagu, format, data, auth, sesi, forum-*, admin-*, pratinjau, simulasi*, peta-pagu, ketahanan, bobot-simulasi, kemiripan, embedding)
 scripts/             skrip baris perintah (buat-akun, isi-embedding, kalibrasi-kemiripan, buat-fallback)
 supabase/            migrasi dan seed SQL; tests/ berisi tes SQL (PGlite)
 e2e/                 tes Playwright dan server tiruan Supabase untuk pengujian
-docs/                forum.md, admin.md; prompts/ berisi brief fitur
+docs/                forum.md, admin.md, simulasi.md; prompts/ berisi brief fitur
 DESIGN.md            sistem visual (token, komponen, aturan)
 PRODUCT.md           pengguna, tujuan, prinsip, dan keputusan produk
 ```

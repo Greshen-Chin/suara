@@ -118,6 +118,40 @@
   white-space: nowrap;
 }
 
+/* Sisa nol: pada layar sempit tingginya nol dan labelnya menimpa tepi bawah batang. Labelnya disembunyikan secara
+   visual tetapi tetap terbaca pembaca layar; pada layar lebar ia tampil di bawah batang seperti biasa. */
+.sisa[data-kosong] .labelSisa {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* Nama dan keterangan satu baris dengan elipsis (prop potongNama). */
+.potongNama .nama {
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.potongNama .namaTeks {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.potongNama .meta {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Di ponsel batang vertikal setinggi 35 rem akan mendorong isi halaman jauh ke bawah; di simulasi ada banyak yang harus
+   terlihat di bawahnya (Peta Pagu), jadi lebih pendek. */
+.potongNama .batang {
+  height: 24rem;
+}
+
 /* ---- Layar lebar: horizontal ---- */
 @media (min-width: 45rem) {
   .pita {
@@ -154,6 +188,10 @@
     height: 8.75rem;
   }
 
+  .potongNama .batang {
+    height: 8.75rem;
+  }
+
   .blok,
   .sisa {
     height: auto;
@@ -181,6 +219,14 @@
 
   .sisa {
     overflow: visible;
+  }
+
+  .sisa[data-kosong] .labelSisa {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
   }
 
   .sisa .isi {

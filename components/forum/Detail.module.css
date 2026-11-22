@@ -163,6 +163,18 @@
   text-underline-offset: 0.2em;
 }
 
+/* Tautan tenang ke simulasi: tautan berdiri sendiri, jadi tingginya minimal 44 px, dan digarisbawahi (WCAG 1.4.1). */
+.tautanSimulasi {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-size: var(--t-sm);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
 /* ---- Usulan tersembunyi ---- */
 
 .disembunyikan {
