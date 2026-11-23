@@ -117,7 +117,7 @@
 
   .lengket {
     position: sticky;
-    top: 1rem;
+    top: 5.25rem;
   }
 }
 
@@ -125,7 +125,7 @@
 
 .papan {
   /* Sasaran tautan "ke pengatur pagu" di bilah bawah ponsel. */
-  scroll-margin-top: 1rem;
+  scroll-margin-top: 5.25rem;
   display: grid;
   gap: 0.75rem;
   align-content: start;
@@ -326,12 +326,67 @@
 .kepalaBobot {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 1rem;
+}
+
+.labelGrup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .kepalaBobot label {
   font-weight: 700;
+}
+
+.tombolKunci {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.625rem;
+  height: 1.625rem;
+  padding: 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--garis-sedang, #CBD5E1);
+  background: var(--papan);
+  color: var(--abu-semen);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tombolKunci:hover {
+  background: var(--kapur);
+  color: var(--tinta);
+  border-color: var(--tinta);
+}
+
+.tombolKunciAktif {
+  background: var(--pine-primary, #0F5132);
+  color: #FFFFFF;
+  border-color: var(--pine-primary, #0F5132);
+}
+
+.tombolKunciAktif:hover {
+  background: #0B3D26;
+  color: #FFFFFF;
+  border-color: #0B3D26;
+}
+
+.nilaiGrup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badgeKunci {
+  font-size: var(--t-xs, 0.75rem);
+  font-weight: 600;
+  color: var(--pine-primary, #0F5132);
+  background: rgba(15, 81, 50, 0.08);
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(15, 81, 50, 0.2);
 }
 
 .nilaiBobot {
@@ -339,6 +394,12 @@
   font-size: var(--t-xl);
   font-weight: 700;
   line-height: 1;
+}
+
+.geser:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.6);
 }
 
 /* ---- Hasil ------------------------------------------------------------------------------------------ */
@@ -460,6 +521,25 @@
   grid-area: angka;
   text-align: right;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  font-size: var(--t-sm);
+}
+
+.subAngkaKetahanan {
+  font-size: var(--t-xs);
+  color: var(--abu-semen);
+  font-weight: 500;
+}
+
+.penjelasanKetahanan {
+  font-size: var(--t-sm);
+  color: var(--abu-semen);
+  margin-top: -0.25rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.45;
 }
 
 .kadar {
@@ -510,38 +590,118 @@
   width: 100%;
   border-collapse: collapse;
   font-size: var(--t-sm);
+  background: transparent;
+  border: 2px solid var(--tinta);
 }
 
 .tabelRw caption {
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.75rem;
   color: var(--abu-semen);
+  font-size: var(--t-sm);
   text-align: left;
+  line-height: 1.4;
 }
 
+/* Seluruh sel kolom memiliki garis kisi hitam 1px */
 .tabelRw th,
 .tabelRw td {
   padding: 0.625rem 0.75rem;
-  vertical-align: top;
+  vertical-align: middle;
+  border: 1px solid var(--tinta);
+  background: transparent;
 }
 
+/* Header Tabel */
 .tabelRw thead th {
-  border-bottom: 2px solid var(--tinta);
   font-size: var(--t-xs);
   font-weight: 700;
-  text-align: left;
-  vertical-align: bottom;
+  border: 1px solid var(--tinta);
+  background: transparent;
 }
 
 .tabelRw thead tr:first-child th {
   border-top: 2px solid var(--tinta);
 }
 
+/* Kolom RW di thead */
+.thRw {
+  vertical-align: middle !important;
+  text-align: center !important;
+  font-size: var(--t-sm);
+  font-weight: 700;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--tinta);
+  border-bottom: 2px solid var(--tinta) !important;
+}
+
+/* Judul Golongan (Rekomendasi resmi vs Simulasi Anda) */
+.golongan {
+  text-align: center;
+  padding: 0.625rem 0.75rem;
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border: 1px solid var(--tinta);
+  border-bottom: 2px solid var(--tinta);
+}
+
+.golonganResmi {
+  color: var(--tinta);
+  background: rgba(15, 23, 42, 0.03);
+}
+
+.golonganSimulasi {
+  color: var(--pine-primary, #0F5132);
+  background: rgba(22, 101, 52, 0.06);
+}
+
+/* Baris sub-header: Anggaran, Usulan, Per penduduk */
+.subHeader {
+  font-size: 0.75rem !important;
+  font-weight: 700;
+  color: var(--tinta);
+  letter-spacing: 0.02em;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.625rem !important;
+  border: 1px solid var(--tinta);
+  border-top: 2px solid var(--tinta) !important;
+  border-bottom: 2px solid var(--tinta) !important;
+}
+
+/* Garis pemisah bawah header (garis bawah thead) */
+.tabelRw thead tr:last-child th {
+  border-bottom: 2px solid var(--tinta);
+}
+
+/* Pemisah vertikal antar grup: garis hitam 2px antara Rekomendasi Resmi dan Simulasi Anda */
+.mulaiSimulasi {
+  border-left: 2px solid var(--tinta) !important;
+}
+
+/* Aksen visual halus untuk kolom Simulasi Anda */
+.kolomSimulasi,
+td.mulaiSimulasi {
+  background: rgba(22, 101, 52, 0.025);
+}
+
+/* Baris pada tbody */
 .tabelRw tbody tr {
-  border-bottom: 1px solid var(--garis-halus);
+  border-bottom: 1px solid var(--tinta);
+  transition: background-color 0.15s ease;
+}
+
+.tabelRw tbody tr:hover {
+  background: rgba(15, 23, 42, 0.02);
+}
+
+.tabelRw tbody tr:last-child th,
+.tabelRw tbody tr:last-child td {
+  border-bottom: 2px solid var(--tinta);
 }
 
 .tabelRw .angka {
   text-align: right;
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
@@ -549,18 +709,18 @@
   text-align: right;
 }
 
-.golongan {
-  text-align: left;
-  border-left: 1px solid var(--garis-halus);
-}
-
-.mulaiGolongan {
-  border-left: 1px solid var(--garis-halus);
-}
-
 .selRw {
   font-weight: 700;
   text-align: left;
+  padding-left: 0.875rem;
+  vertical-align: middle;
+}
+
+.namaRw {
+  display: block;
+  font-size: var(--t-sm);
+  font-weight: 700;
+  color: var(--tinta);
 }
 
 .penduduk {
@@ -568,12 +728,26 @@
   color: var(--abu-semen);
   font-size: var(--t-xs);
   font-weight: 400;
+  margin-top: 0.125rem;
 }
 
 .selisih {
   display: block;
-  color: var(--abu-semen);
   font-size: var(--t-xs);
+  font-weight: 500;
+  margin-top: 0.125rem;
+}
+
+.selisihNaik {
+  color: var(--pine-primary, #0F5132);
+}
+
+.selisihTurun {
+  color: #B45309;
+}
+
+.selisihSama {
+  color: var(--abu-semen);
 }
 
 .labelSempit {
@@ -583,6 +757,10 @@
 /* Di bawah 64rem tabel menjadi blok bertumpuk berlabel (tanpa gulir horizontal), seperti tabel admin. Peran ARIA
    dipasang ulang di markup karena display: block membuat sebagian browser membuang semantik tabel. */
 @media (max-width: 63.99rem) {
+  .tabelRw {
+    border: 0;
+  }
+
   .tabelRw,
   .tabelRw tbody,
   .tabelRw tr,
@@ -674,7 +852,23 @@
     border-left: 0;
   }
 
+  .mulaiSimulasi {
+    border-left: 0 !important;
+  }
+
+  .kolomSimulasi,
+  td.mulaiSimulasi,
+  .golonganResmi,
+  .golonganSimulasi {
+    background: transparent;
+  }
+
   .tabelRw tbody tr {
+    border-bottom: 1px solid var(--garis-halus);
+  }
+
+  .tabelRw tbody tr:last-child th,
+  .tabelRw tbody tr:last-child td {
     border-bottom: 1px solid var(--garis-halus);
   }
 }

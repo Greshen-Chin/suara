@@ -26,6 +26,9 @@ export function KetahananBobot({ hasil, menghitung, ajakan, usulan, perubahanBob
   return (
     <div className={menghitung ? `${styles.ketahanan} ${styles.diredam}` : styles.ketahanan} aria-busy={menghitung}>
       <h3 className={styles.judulKecil}>Seberapa bergantung hasilnya pada bobot?</h3>
+      <p className={styles.penjelasanKetahanan}>
+        Menguji ketahanan usulan terhadap seluruh {hasil.total} kemungkinan variasi pembobotan prioritas.
+      </p>
       {/* Bukan wilayah langsung: yang diumumkan ke pembaca layar hanya ringkasan hasil (HasilSimulasi), supaya satu
           jeda menghasilkan satu pengumuman. Kalimat ini tetap terbaca di tempatnya. */}
       <p className={styles.kalimatUtama}>{kalimat}</p>
@@ -55,7 +58,10 @@ export function KetahananBobot({ hasil, menghitung, ajakan, usulan, perubahanBob
               </span>
               <span className={styles.angkaKetahanan}>
                 <span className="sr-only">terbiayai pada </span>
-                {n} dari {hasil.total}
+                <strong>{hasil.total === 0 ? 0 : Math.round((n / hasil.total) * 100)}%</strong>
+                <span className={styles.subAngkaKetahanan} title={`${n} dari ${hasil.total} kombinasi bobot`}>
+                  ({n}/{hasil.total})
+                </span>
                 <span className="sr-only"> kombinasi</span>
               </span>
             </li>

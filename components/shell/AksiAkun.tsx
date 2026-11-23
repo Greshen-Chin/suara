@@ -36,8 +36,8 @@ export async function AksiAkun() {
           </svg>
           Buat Usulan
         </Link>
-        <Link href={RUTE.akun} className="tombol tombol-kedua">
-          Warga: {pengguna.nama}
+        <Link href={RUTE.akun} className="tombol tombol-kedua" aria-label={`Akun ${pengguna.nama}`}>
+          Warga
         </Link>
       </>
     );

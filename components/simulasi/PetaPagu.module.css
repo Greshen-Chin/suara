@@ -27,6 +27,7 @@
   --resmi: 0;
   display: grid;
   min-width: 0;
+  margin-top: 0.5rem;
 }
 
 /* ---- Sumbu ---------------------------------------------------------------------------------------- */
@@ -41,7 +42,8 @@
 }
 
 .sumbuAtas .jalurSumbu {
-  min-height: 1.75rem;
+  min-height: 2.25rem;
+  padding-top: 0.25rem;
 }
 
 .sumbuBawah .jalurSumbu {
@@ -158,16 +160,36 @@
     repeating-linear-gradient(to right, var(--garis-halus) 0 1px, transparent 1px 25%);
 }
 
+/* Rel berarsir sebagai penanda rentang dana yang belum mencukupi */
+.relDasar {
+  position: absolute;
+  top: 0.3125rem;
+  bottom: 0.3125rem;
+  left: 0;
+  right: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    #F8FAFC,
+    #F8FAFC 6px,
+    #E2E8F0 6px,
+    #E2E8F0 12px
+  );
+  border: 1px solid var(--garis-sedang, #CBD5E1);
+  border-radius: 4px;
+}
+
 .ruas {
   position: absolute;
   top: 0.3125rem;
   bottom: 0.3125rem;
-  background: var(--hijau-sawah);
+  background: var(--hijau-sawah, #0F5132);
+  border-radius: 4px;
+  z-index: 1;
 }
 
 /* Ruas yang tersentuh garis pagu Anda "menyala": berbingkai tinta (bentuk, bukan hanya warna). */
 .menyala {
-  z-index: 1;
+  z-index: 2;
   outline: 3px solid var(--tinta);
 }
 
@@ -177,7 +199,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
 }
 
@@ -267,6 +289,11 @@
       linear-gradient(var(--garis-halus), var(--garis-halus)) right / 1px 100% no-repeat,
       linear-gradient(var(--garis-halus), var(--garis-halus)) center / 100% 2px no-repeat,
       repeating-linear-gradient(to right, var(--garis-halus) 0 1px, transparent 1px 25%);
+  }
+
+  .relDasar {
+    top: 0.75rem;
+    bottom: 0.75rem;
   }
 
   .ruas {
@@ -388,4 +415,362 @@
   .tabel td:nth-of-type(3)::before {
     content: "Pada pagu Anda";
   }
+}
+
+/* ---- Legenda Visual Diagram Rentang Pagu -------------------------------------------- */
+
+.legendaDiagram {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.625rem 0.875rem;
+  background: var(--papan);
+  border: 1px solid var(--garis-halus);
+  border-radius: var(--radius);
+  font-size: var(--t-xs, 0.75rem);
+  color: var(--tinta);
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.itemLegendaDiagram {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.kotakHijauLegenda {
+  width: 1rem;
+  height: 0.75rem;
+  background: var(--hijau-sawah, #0F5132);
+  border-radius: 2px;
+}
+
+.kotakArsirLegenda {
+  width: 1rem;
+  height: 0.75rem;
+  background: repeating-linear-gradient(
+    -45deg,
+    #F8FAFC,
+    #F8FAFC 3px,
+    #E2E8F0 3px,
+    #E2E8F0 6px
+  );
+  border: 1px solid var(--garis-sedang, #CBD5E1);
+  border-radius: 2px;
+}
+
+.garisHitamLegenda {
+  width: 3px;
+  height: 0.85rem;
+  background: var(--tinta, #0F172A);
+  border-radius: 1px;
+}
+
+/* ---- Tombol Pilihan Mode Tampilan (Warga vs Diagram) -------------------------------- */
+
+.wadahPilihanMode {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.kelompokPilihanMode {
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.3rem;
+  background: var(--papan);
+  border: 1px solid var(--garis-sedang);
+  border-radius: var(--radius);
+}
+
+.tombolPilihanMode {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  font-family: inherit;
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--abu-semen);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tombolPilihanMode:hover {
+  color: var(--tinta);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.tombolModeAktif {
+  color: #FFFFFF !important;
+  background: var(--pine-primary, #0F5132) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ---- Tampilan Ramah Warga Desa (Tangga Prioritas) ----------------------------------- */
+
+.tampilanWarga {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.seksiWarga {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--papan);
+  border: 1px solid var(--garis-halus);
+  border-radius: var(--radius);
+}
+
+.kepalaSeksiWarga {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid var(--garis-halus);
+}
+
+.judulGrupWarga {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ikonStatusLolos {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--hijau-sawah, #0F5132);
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.ikonStatusBelum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: #E2E8F0;
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.judulKelompok {
+  font-family: var(--f-judul);
+  font-size: var(--t-md, 1rem);
+  font-weight: 700;
+  color: var(--tinta);
+  margin: 0;
+}
+
+.totalTerpakai {
+  font-size: var(--t-sm);
+  color: var(--tinta);
+}
+
+.totalTerpakai strong {
+  color: var(--hijau-sawah, #0F5132);
+}
+
+.keteranganBelum {
+  font-size: var(--t-xs);
+  color: var(--abu-semen);
+}
+
+.daftarKartuWarga {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.kartuWarga {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #FFFFFF;
+  border: 1px solid var(--garis-halus);
+  border-radius: var(--radius);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kartuWarga:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.kartuLolos {
+  border-left: 5px solid var(--hijau-sawah, #0F5132);
+}
+
+.kartuBelum {
+  border-left: 5px solid #94A3B8;
+  opacity: 0.95;
+}
+
+.kartuWargaUtama {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.nomorUrut {
+  font-family: var(--f-judul);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  color: var(--abu-semen);
+  min-width: 1.5rem;
+}
+
+.infoUsulanWarga {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.namaUsulanWarga {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--t-base, 1rem);
+  color: var(--tinta);
+}
+
+.metaUsulanWarga {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--t-xs);
+  color: var(--abu-semen);
+}
+
+.biayaWarga {
+  color: var(--tinta);
+}
+
+.statusLolosWarga {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.statusBelumWarga {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.badgeLolos {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background: rgba(15, 81, 50, 0.1);
+  color: var(--hijau-sawah, #0F5132);
+  border: 1px solid rgba(15, 81, 50, 0.25);
+  border-radius: var(--radius);
+  font-size: var(--t-xs);
+  font-weight: 700;
+}
+
+.badgeBelum {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #CBD5E1;
+  border-radius: var(--radius);
+  font-size: var(--t-xs);
+  font-weight: 700;
+}
+
+.keteranganLolos {
+  font-size: var(--t-xs);
+  color: var(--abu-semen);
+}
+
+.keteranganKekurangan {
+  font-size: var(--t-xs);
+  color: #475569;
+}
+
+.keteranganKekurangan strong {
+  color: #B45309;
+}
+
+/* Pembatas Garis Pagu */
+.pembatasPaguWarga {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.25rem 0;
+}
+
+.garisPembatas {
+  flex: 1;
+  height: 2px;
+  background: repeating-linear-gradient(to right, var(--tinta) 0 6px, transparent 6px 10px);
+}
+
+.kotakBatasPagu {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.85rem;
+  background: var(--tinta);
+  color: #FFFFFF;
+  border-radius: var(--radius);
+  white-space: nowrap;
+}
+
+.labelBatasPagu {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.85;
+}
+
+.angkaBatasPagu {
+  font-family: var(--f-judul);
+  font-size: var(--t-sm, 0.875rem);
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.sisaPaguKecil {
+  font-size: 0.72rem;
+  color: #CBD5E1;
+  padding-left: 0.5rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.semuaTerbiayai {
+  margin: 0;
+  padding: 0.75rem;
+  font-size: var(--t-sm);
+  color: var(--hijau-sawah, #0F5132);
+  background: rgba(15, 81, 50, 0.08);
+  border-radius: var(--radius);
 }
