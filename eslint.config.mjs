@@ -20,6 +20,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Bahan desain (mockup HTML dan skripnya), bukan kode aplikasi.
+    "docs/**",
   ]),
 ]);
 

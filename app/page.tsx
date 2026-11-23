@@ -7,6 +7,7 @@ import { WilayahKontras } from "@/components/landing/WilayahKontras";
 import { JejakKeputusan } from "@/components/landing/JejakKeputusan";
 import { TanpaUsulan } from "@/components/landing/TanpaUsulan";
 import { muatBeranda } from "@/lib/beranda";
+import { saranAktif } from "@/lib/saran-urgensi-server";
 
 export default async function Beranda() {
   const data = await muatBeranda();
@@ -21,7 +22,11 @@ export default async function Beranda() {
       <BerandaHero dataContoh={data.dataContoh} />
 
       {data.usulan.length === 0 ? (
-        <TanpaUsulan pagu={data.pagu} periodeTerakhir={data.periodeTerakhir} />
+        // Dalam wadah halaman supaya kartu tidak menempel ke tepi layar. id sama dengan perbandingan agar tautan
+        // "#perbandingan" tetap punya tujuan.
+        <section id="perbandingan" aria-label="Perbandingan anggaran" className="wadah">
+          <TanpaUsulan pagu={data.pagu} periodeTerakhir={data.periodeTerakhir} />
+        </section>
       ) : (
         <>
           <BerandaSummary
@@ -43,7 +48,7 @@ export default async function Beranda() {
         </>
       )}
 
-      <BerandaProses />
+      <BerandaProses saranAi={saranAktif()} />
       <WilayahKontras wilayah={data.wilayah} usulan={data.usulan} />
       <JejakKeputusan log={data.log} judulUsulan={judulUsulan} />
     </main>

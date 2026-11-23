@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { rupiah, ribuan } from "@/lib/format";
+import { rupiah } from "@/lib/format";
 import type { ModePagu } from "@/lib/pagu-model";
 import type { Bobot } from "@/lib/seleksi";
 import { RUTE } from "@/lib/tautan";

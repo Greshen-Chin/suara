@@ -78,7 +78,7 @@
 .nomor {
   font-family: var(--f-judul);
   font-size: 12px;
-  color: #73917a;
+  color: #55705d;
   font-weight: 750;
 }
 
@@ -96,7 +96,7 @@
   font-weight: 400;
   display: block;
   margin-top: 3px;
-  color: #819085;
+  color: #5f6e64;
 }
 
 .wilayah {

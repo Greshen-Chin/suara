@@ -30,14 +30,14 @@
   max-width: 62ch;
 }
 
-/* Jenis catatan berbingkai biru, seperti cap pada berita acara. */
+/* Jenis catatan: pil hijau muda, sama dengan label di bagian lain beranda UI baru. */
 .jenis {
-  padding: 0.125rem 0.625rem;
-  border: 2px solid var(--biru-stempel);
-  border-radius: 0.25rem;
-  color: var(--biru-stempel);
-  font-size: var(--t-sm);
-  font-weight: 700;
+  padding: 0.1875rem 0.625rem;
+  border-radius: var(--radius-full);
+  background: #eaf3ec;
+  color: #176448;
+  font: 700 12px / 1.4 var(--f-isi);
+  letter-spacing: 0.02em;
 }
 
 .subjek {

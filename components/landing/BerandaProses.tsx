@@ -1,6 +1,11 @@
 import styles from "./BerandaProses.module.css";
 
-export function BerandaProses() {
+interface Props {
+  /** true bila saran urgensi dari AI aktif. Pernyataan tentang AI harus benar menurut keadaan ini. */
+  saranAi: boolean;
+}
+
+export function BerandaProses({ saranAi }: Props) {
   return (
     <section className={styles.proses} aria-labelledby="judul-proses">
       <div className={`wadah ${styles.inner}`}>
@@ -23,7 +28,7 @@ export function BerandaProses() {
             <span className={styles.nomor}>02</span>
             <strong className={styles.judulLangkah}>Bandingkan kebutuhan</strong>
             <p className={styles.deskripsiLangkah}>
-              Urgensi, dukungan, dan pemerataan dinilai oleh sistem.
+              Sistem membandingkan dukungan warga, urgensi yang dinilai admin desa, dan pemerataan.
             </p>
           </li>
           <li className={styles.langkah}>
@@ -42,6 +47,14 @@ export function BerandaProses() {
             className={styles.maskotProses}
           />
         </div>
+
+        <p className={styles.peranAi}>
+          <strong>Peran AI:</strong> mengenali usulan yang mirip dari maknanya{" "}
+          {saranAi
+            ? "dan menyarankan nilai urgensi beserta alasannya; admin desa tetap menetapkan nilainya sendiri."
+            : "supaya dukungan tidak terpecah. Urgensi dinilai admin desa, bukan AI."}{" "}
+          AI tidak ikut memutuskan.
+        </p>
       </div>
     </section>
   );

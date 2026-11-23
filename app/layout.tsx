@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
+import { Suspense } from "react";
 import { SiteFooter } from "@/components/shell/SiteFooter";
 import { SiteHeader } from "@/components/shell/SiteHeader";
-import { MobileBottomNav } from "@/components/shell/MobileBottomNav";
+import { MobileBottomNav, MobileBottomNavStatis } from "@/components/shell/MobileBottomNav";
 import "./globals.css";
 
 // Huruf judul, navigasi, dan UI: Plus Jakarta Sans (Master Design System)
@@ -56,7 +57,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteHeader />
         {children}
         <SiteFooter />
-        <MobileBottomNav />
+        {/* usePathname() di luar Suspense menggagalkan build produksi (halaman dinamis seperti /admin/akun/[id]). */}
+        <Suspense fallback={<MobileBottomNavStatis />}>
+          <MobileBottomNav />
+        </Suspense>
       </body>
     </html>
   );

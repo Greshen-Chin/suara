@@ -307,3 +307,36 @@ a:hover {
     color: #000;
   }
 }
+
+/* -----------------------------------------------------------------------------
+   Navigasi bawah ponsel (MobileBottomNav, tampil sampai 768 px). Halaman diberi ruang setinggi navigasi supaya
+   baris terakhir (footer) tidak tertutup, dan semua bilah yang menempel di dasar layar (ringkasan simulasi,
+   lembar keputusan admin, tombol Ajukan usulan) memakai --tinggi-nav-bawah supaya duduk DI ATAS navigasi.
+   ----------------------------------------------------------------------------- */
+:root {
+  --tinggi-nav-bawah: 0px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --tinggi-nav-bawah: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  body {
+    padding-bottom: var(--tinggi-nav-bawah);
+  }
+}
+
+@media print {
+  :root {
+    --tinggi-nav-bawah: 0px;
+  }
+
+  body {
+    padding-bottom: 0;
+  }
+
+  body > nav {
+    display: none !important;
+  }
+}

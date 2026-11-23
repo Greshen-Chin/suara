@@ -881,7 +881,7 @@
 
 .menempel {
   position: sticky;
-  bottom: 0;
+  bottom: var(--tinggi-nav-bawah);
   z-index: 5;
   display: flex;
   align-items: center;

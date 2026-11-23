@@ -2,22 +2,23 @@
   display: none;
 }
 
+/* Tinggi navigasi ini sama dengan --tinggi-nav-bawah di app/globals.css (4.25rem + area aman). Ubah keduanya bersama. */
 @media (max-width: 768px) {
   .navigasiBawah {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     z-index: 50;
-    background: rgba(255, 255, 255, 0.94);
+    height: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-top: 1px solid rgba(226, 232, 240, 0.85);
     box-shadow: 0 -4px 16px rgba(19, 59, 42, 0.08);
-    justify-content: space-around;
-    align-items: center;
-    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
   }
 
   .tombol {
@@ -26,25 +27,36 @@
     align-items: center;
     justify-content: center;
     gap: 3px;
-    padding: 6px 12px;
-    border-radius: 8px;
+    min-width: 0;
+    margin-inline: 2px;
+    border-radius: 10px;
     text-decoration: none;
-    color: #64746a;
-    transition: all 0.15s ease;
-    min-width: 60px;
+    color: #5b6b61;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .tombol:hover {
     color: #0f5132;
   }
 
+  .tombol:focus-visible {
+    outline: 3px solid var(--biru-stempel);
+    outline-offset: -3px;
+  }
+
   .ikon {
-    font-size: 18px;
-    line-height: 1;
     display: block;
+    width: 22px;
+    height: 22px;
+    flex: none;
   }
 
   .label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-family: var(--f-judul);
     font-size: 11px;
     font-weight: 600;
@@ -57,6 +69,12 @@
   }
 
   .aktif .label {
-    font-weight: 750;
+    font-weight: 700;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tombol {
+    transition: none;
   }
 }

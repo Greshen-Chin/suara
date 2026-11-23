@@ -203,7 +203,7 @@
 
 .ringkasan {
   position: sticky;
-  bottom: 0;
+  bottom: var(--tinggi-nav-bawah);
   z-index: 5;
   display: grid;
   gap: 0.25rem;
