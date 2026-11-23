@@ -1,0 +1,29 @@
+{
+  "logo": "assets/logo/suara-mark.svg",
+  "mascot_production_png": [
+    "assets/mascot/tunas-wave.png",
+    "assets/mascot/tunas-proposal.png",
+    "assets/mascot/tunas-analyze.png",
+    "assets/mascot/tunas-inspect.png",
+    "assets/mascot/tunas-explain.png",
+    "assets/mascot/tunas-thinking.png",
+    "assets/mascot/tunas-celebrate.png",
+    "assets/mascot/tunas-support.png",
+    "assets/mascot/tunas-happy.png",
+    "assets/mascot/tunas-curious.png",
+    "assets/mascot/tunas-sleep.png",
+    "assets/mascot/tunas-empty.png",
+    "assets/mascot/tunas-success.png",
+    "assets/mascot/tunas-warning.png",
+    "assets/mascot/tunas-error.png"
+  ],
+  "scene_assets": [
+    "assets/scenes/balai-desa.png",
+    "assets/scenes/sawah-desa.png",
+    "assets/scenes/jembatan-desa.png"
+  ],
+  "reference_only": [
+    "assets/reference/tunas-original-concept-board.png",
+    "assets/reference/homepage-approved-direction.png"
+  ]
+}

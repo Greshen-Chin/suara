@@ -1,0 +1,135 @@
+.pembungkus {
+  background: #fffdf9;
+  border-bottom: 1px solid var(--garis-halus);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  align-items: stretch;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.utama {
+  padding-right: 24px;
+  border-right: 1px solid var(--garis-halus);
+}
+
+.item {
+  padding-inline: 24px;
+  border-right: 1px solid var(--garis-halus);
+}
+
+.item:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.label {
+  display: block;
+  font-family: var(--f-judul);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.07em;
+  color: #68796e;
+  text-transform: uppercase;
+}
+
+.nilaiUtama {
+  display: block;
+  font-family: var(--f-judul);
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #125537;
+  margin-top: 6px;
+  white-space: nowrap;
+}
+
+.nilaiUtama small {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: #2e7d32;
+}
+
+.nilai {
+  display: block;
+  font-family: var(--f-judul);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #1b382b;
+  margin-top: 6px;
+  white-space: nowrap;
+}
+
+.nilai small {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: #68796e;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1.2fr 1fr 1fr 1fr;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .utama, .item {
+    padding-inline: 16px;
+  }
+  .utama {
+    padding-left: 0;
+  }
+  .nilaiUtama, .nilai {
+    font-size: 22px;
+  }
+}
+
+/* Mobile (<= 768px): 2x2 grid */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .utama, .item {
+    padding: 14px 10px !important;
+    border: none;
+    border-bottom: 1px solid var(--garis-halus);
+  }
+
+  .utama {
+    border-right: 1px solid var(--garis-halus);
+  }
+
+  .item:nth-child(2) {
+    border-right: none;
+  }
+
+  .item:nth-child(3) {
+    border-right: 1px solid var(--garis-halus);
+    border-bottom: none;
+  }
+
+  .item:nth-child(4) {
+    border-right: none;
+    border-bottom: none;
+  }
+
+  .nilaiUtama, .nilai {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 390px) {
+  .nilaiUtama, .nilai {
+    font-size: 20px;
+  }
+}

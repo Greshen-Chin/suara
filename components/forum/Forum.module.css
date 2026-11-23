@@ -194,6 +194,32 @@
   scroll-margin-top: 1rem;
 }
 
+.kolomKiri {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.iconBox {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #f0f5eb;
+  color: #176448;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+@media (max-width: 480px) {
+  .iconBox {
+    display: none;
+  }
+}
+
 .isi {
   display: grid;
   gap: 0.5rem;

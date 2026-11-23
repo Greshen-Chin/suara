@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import { SiteFooter } from "@/components/shell/SiteFooter";
 import { SiteHeader } from "@/components/shell/SiteHeader";
+import { MobileBottomNav } from "@/components/shell/MobileBottomNav";
 import "./globals.css";
 
 // Huruf judul, navigasi, dan UI: Plus Jakarta Sans (Master Design System)
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteHeader />
         {children}
         <SiteFooter />
+        <MobileBottomNav />
       </body>
     </html>
   );

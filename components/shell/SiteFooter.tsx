@@ -7,10 +7,13 @@ export function SiteFooter() {
       <div className={`wadah ${styles.isi}`}>
         <div className={styles.merek}>
           <div className={styles.logoRow}>
-            <svg className={styles.logoIcon} viewBox="0 0 48 48" fill="none" aria-hidden="true">
-              <path d="M8 38C7 26 14 14 38 7C38 21 34 35 18 39C14 40 10 40 8 38Z" fill="#E8F3E9" />
-              <path d="M10 37C15 26 23 18 36 9" stroke="#14261E" strokeWidth="3" strokeLinecap="round" />
-            </svg>
+            <img
+              src="/assets/logo/suara-mark.svg"
+              width={28}
+              height={28}
+              alt="Logo SUARA"
+              className={styles.logoIcon}
+            />
             <span className={styles.namaApp}>SUARA</span>
           </div>
           <p className={styles.batas}>
