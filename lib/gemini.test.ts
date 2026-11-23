@@ -59,6 +59,22 @@ describe("bacaKonfigurasiGemini", () => {
       location: "global",
     });
   });
+
+  it("backend hybrid: membaca AI_BACKEND_URL dan AI_BACKEND_SECRET", () => {
+    const k = bacaKonfigurasiGemini({
+      AI_BACKEND_URL: "https://vm-gcp.suara.desa.id/",
+      AI_BACKEND_SECRET: "rahasia-vm-123",
+    });
+    assert.deepEqual(k, {
+      kunci: "rahasia-vm-123",
+      model: "gemini-3.8-flash",
+      alamat: "https://vm-gcp.suara.desa.id",
+      berpikir: null,
+      mode: "backend",
+      backendUrl: "https://vm-gcp.suara.desa.id",
+      backendSecret: "rahasia-vm-123",
+    });
+  });
 });
 
 describe("susunBadanGemini (A-06)", () => {
@@ -223,5 +239,66 @@ describe("panggilGemini: hasil dan galat (A-09)", () => {
     });
     assert.ok(h.ok);
     if (h.ok) assert.equal(h.teks, '{"a":1}');
+  });
+
+  describe("backend hybrid (Vercel -> VM GCP)", () => {
+    const konfBackend: KonfigurasiGemini = {
+      kunci: "secret-key",
+      model: "gemini-3.8-flash",
+      alamat: "https://vm.desa.id",
+      berpikir: null,
+      mode: "backend",
+      backendUrl: "https://vm.desa.id",
+      backendSecret: "secret-key",
+    };
+
+    it("meneruskan request ke VM /api/ai/urgensi dengan header x-api-key", async () => {
+      let urlPanggilan = "";
+      let headerApiKey = "";
+      let bodyTerkirim = "";
+
+      const pengambilKustom: typeof fetch = async (input, init) => {
+        urlPanggilan = String(input);
+        headerApiKey = (init?.headers as Record<string, string>)?.["x-api-key"] || "";
+        bodyTerkirim = String(init?.body);
+        return new Response(JSON.stringify({ ok: true, teks: '{"nilai": 8}' }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        });
+      };
+
+      const res = await panggilGemini(konfBackend, permintaan, { pengambil: pengambilKustom });
+      assert.ok(res.ok);
+      if (res.ok) assert.equal(res.teks, '{"nilai": 8}');
+      assert.equal(urlPanggilan, "https://vm.desa.id/api/ai/urgensi");
+      assert.equal(headerApiKey, "secret-key");
+      const parsedBody = JSON.parse(bodyTerkirim);
+      assert.equal(parsedBody.sistem, "sistem");
+      assert.equal(parsedBody.pengguna, "pengguna");
+    });
+
+    it("menangani galat 401/403 dari VM sebagai kode kunci", async () => {
+      const res = await panggilGemini(konfBackend, permintaan, {
+        pengambil: async () => new Response(JSON.stringify({ error: "Tidak diizinkan" }), { status: 401 }),
+      });
+      assert.equal(res.ok, false);
+      if (!res.ok) assert.equal(res.kode, "kunci");
+    });
+
+    it("menangani galat 429 dari VM sebagai kode kuota", async () => {
+      const res = await panggilGemini(konfBackend, permintaan, {
+        pengambil: async () => new Response(JSON.stringify({ error: "Limit" }), { status: 429 }),
+      });
+      assert.equal(res.ok, false);
+      if (!res.ok) assert.equal(res.kode, "kuota");
+    });
+
+    it("menangani teks kosong dari VM sebagai kode kosong", async () => {
+      const res = await panggilGemini(konfBackend, permintaan, {
+        pengambil: async () => new Response(JSON.stringify({ ok: true, teks: "" }), { status: 200 }),
+      });
+      assert.equal(res.ok, false);
+      if (!res.ok) assert.equal(res.kode, "kosong");
+    });
   });
 });

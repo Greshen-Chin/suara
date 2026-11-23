@@ -30,28 +30,48 @@ export interface KonfigurasiGemini {
   model: string;
   alamat: string;
   berpikir: TingkatBerpikir | null;
-  mode?: "vertex" | "api_key";
+  mode?: "vertex" | "api_key" | "backend";
+  backendUrl?: string;
+  backendSecret?: string;
   project?: string;
   location?: string;
 }
 
 /**
  * Konfigurasi dari lingkungan, atau null bila kredensial tidak terpasang (fitur mati, tanpa jejak di antarmuka).
- * Mendukung Google Cloud Vertex AI (GOOGLE_CLOUD_PROJECT) maupun GEMINI_API_KEY.
+ * Mendukung Dedicated AI Backend (AI_BACKEND_URL), Google Cloud Vertex AI (GOOGLE_CLOUD_PROJECT), maupun GEMINI_API_KEY.
  * GEMINI_BASE_URL hanya diterima untuk alamat resmi atau mesin lokal (server tiruan E2E): alamat lain diabaikan
  * supaya kunci tidak pernah terkirim ke tujuan yang tidak dikenal karena salah ketik.
  */
 export function bacaKonfigurasiGemini(env: Record<string, string | undefined> = process.env): KonfigurasiGemini | null {
+  const backendUrl = env.AI_BACKEND_URL?.trim();
   const vertexProject = env.GOOGLE_CLOUD_PROJECT?.trim() || env.VERTEX_AI_PROJECT?.trim();
   const kunci = env.GEMINI_API_KEY?.trim();
 
-  // Bila tidak ada kredensial Vertex AI atau API Key Gemini, fitur nonaktif
-  if (!vertexProject && !kunci) return null;
+  // Bila tidak ada AI Backend URL, kredensial Vertex AI, atau API Key Gemini, fitur nonaktif
+  if (!backendUrl && !vertexProject && !kunci) return null;
 
-  const mode = vertexProject ? "vertex" : "api_key";
-  const modelBawaan = mode === "vertex" ? MODEL_VERTEX_BAWAAN : MODEL_BAWAAN;
-  const modelDiminta = mode === "vertex" ? (env.VERTEX_AI_MODEL?.trim() || env.GEMINI_MODEL?.trim()) : env.GEMINI_MODEL?.trim();
+  const mode = backendUrl ? "backend" : vertexProject ? "vertex" : "api_key";
+  const modelBawaan = mode === "vertex" || mode === "backend" ? MODEL_VERTEX_BAWAAN : MODEL_BAWAAN;
+  const modelDiminta =
+    mode === "vertex" || mode === "backend"
+      ? (env.VERTEX_AI_MODEL?.trim() || env.GEMINI_MODEL?.trim())
+      : env.GEMINI_MODEL?.trim();
   const model = /^[a-z0-9][a-z0-9._-]{1,60}$/i.test(modelDiminta ?? "") ? modelDiminta! : modelBawaan;
+
+  if (mode === "backend") {
+    const bersihUrl = backendUrl!.replace(/\/+$/, "");
+    const secret = env.AI_BACKEND_SECRET?.trim() || "";
+    return {
+      kunci: secret,
+      model,
+      alamat: bersihUrl,
+      berpikir: null,
+      mode: "backend",
+      backendUrl: bersihUrl,
+      backendSecret: secret,
+    };
+  }
 
   const diminta = env.GEMINI_BASE_URL?.trim().replace(/\/+$/, "");
   const diizinkan =
@@ -157,6 +177,62 @@ export async function panggilGemini(
     if (!h.ok) console.error(`gemini gagal: ${h.kode}${h.status ? ` ${h.status}` : ""} model=${k.model} ${durasiMs}ms`);
     return { ...h, durasiMs } as HasilGemini;
   };
+
+  // Jalur Dedicated AI Backend (Vercel -> VM GCP): aktif bila mode backend atau process.env.AI_BACKEND_URL terpasang
+  const targetBackend =
+    k.mode === "backend"
+      ? k.backendUrl
+      : !opsi.pengambil
+        ? process.env.AI_BACKEND_URL?.trim()?.replace(/\/+$/, "")
+        : undefined;
+
+  if (k.mode === "backend" || targetBackend) {
+    const baseUrl = k.backendUrl || targetBackend;
+    const secret = k.backendSecret || process.env.AI_BACKEND_SECRET?.trim() || k.kunci;
+    const ambil = opsi.pengambil ?? fetch;
+    const sinyal = AbortSignal.timeout(batas);
+
+    try {
+      const res = await ambil(`${baseUrl}/api/ai/urgensi`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-api-key": secret,
+        },
+        body: JSON.stringify({
+          sistem: p.sistem,
+          pengguna: p.pengguna,
+          skema: p.skema,
+        }),
+        signal: sinyal,
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          return selesai({ ok: false, kode: "kunci", status: res.status });
+        }
+        if (res.status === 429) {
+          return selesai({ ok: false, kode: "kuota", status: 429 });
+        }
+        if (res.status >= 500) {
+          return selesai({ ok: false, kode: "server", status: res.status });
+        }
+        return selesai({ ok: false, kode: "permintaan", status: res.status });
+      }
+
+      const data = (await res.json()) as { ok?: boolean; teks?: string; error?: string };
+      const teks = typeof data?.teks === "string" ? data.teks.trim() : "";
+      if (!teks) {
+        return selesai({ ok: false, kode: "kosong" });
+      }
+      return selesai({ ok: true, teks });
+    } catch (err) {
+      const habis = sinyal.aborted || (err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError"));
+      if (habis) return selesai({ ok: false, kode: "batas_waktu" });
+      return selesai({ ok: false, kode: "jaringan" });
+    }
+  }
 
   // Jalur Google Cloud Vertex AI: dipakai bila mode vertex, tanpa pengambil tiruan (unit test), dan alamat bawaan
   if (k.mode === "vertex" && !opsi.pengambil && k.alamat === ALAMAT_BAWAAN) {

@@ -12,8 +12,8 @@ function ambilKlienAI(): GoogleGenAI {
   if (!klienAI) {
     klienAI = new GoogleGenAI({
       vertexai: true,
-      project: process.env.GOOGLE_CLOUD_PROJECT || "suara-515516",
-      location: process.env.GOOGLE_CLOUD_LOCATION || "global",
+      project: process.env.GOOGLE_CLOUD_PROJECT || process.env.VERTEX_AI_PROJECT || "suara-515516",
+      location: process.env.GOOGLE_CLOUD_LOCATION || process.env.VERTEX_AI_LOCATION || "global",
     });
   }
   return klienAI;

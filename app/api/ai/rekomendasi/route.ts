@@ -2,8 +2,11 @@ import { NextResponse } from "next/server";
 import { jelaskanRekomendasiDenganAI } from "@/lib/ai";
 
 export async function POST(req: Request) {
-  const secret = process.env.AI_BACKEND_SECRET;
-  if (secret && req.headers.get("x-api-key") !== secret) {
+  // Fail-closed: Tolak jika AI_BACKEND_SECRET belum disetel di server atau x-api-key tidak cocok
+  const secret = process.env.AI_BACKEND_SECRET?.trim();
+  const apiKey = req.headers.get("x-api-key")?.trim();
+
+  if (!secret || !apiKey || apiKey !== secret) {
     return NextResponse.json({ error: "Tidak diizinkan" }, { status: 401 });
   }
 
@@ -27,7 +30,7 @@ export async function POST(req: Request) {
       ditunda: body.ditunda,
     });
 
-    return NextResponse.json({ penjelasan });
+    return NextResponse.json({ ok: true, penjelasan });
   } catch (error) {
     console.error("Vertex AI /api/ai/rekomendasi error:", error);
     return NextResponse.json(

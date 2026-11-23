@@ -179,6 +179,7 @@ export function Simulasi({ data, awal }: Props) {
               perubahan={perubahan}
               samaDenganResmi={hasil.samaDenganResmi}
               andaian={andaian}
+              bobot={tunda.bobot}
             />
           </section>
 
