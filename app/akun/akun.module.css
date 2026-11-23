@@ -1,0 +1,220 @@
+/* Halaman /akun - Desain Akun & Keamanan Warga (Master Civic Standard) */
+
+.halaman {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  max-width: 640px;
+  margin-inline: auto;
+  padding-block: clamp(2rem, 5vw, 4rem);
+}
+
+.kembaliLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--t-xs, 0.8125rem);
+  font-weight: 600;
+  color: var(--pine-primary, #0f5132);
+  text-decoration: none;
+  width: fit-content;
+  padding: 0.375rem 0.625rem;
+  border-radius: var(--radius, 8px);
+  background: rgba(15, 81, 50, 0.06);
+  transition: all 0.15s ease;
+}
+
+.kembaliLink:hover {
+  background: rgba(15, 81, 50, 0.12);
+  transform: translateX(-2px);
+}
+
+.kembaliLink svg {
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.kembaliLink:hover svg {
+  transform: translateX(-2px);
+}
+
+.kepala {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--f-judul);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #156c48;
+}
+
+.eyebrowDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #156c48;
+}
+
+.judul {
+  font-family: var(--f-judul);
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--tinta, #14261e);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.keterangan {
+  font-family: var(--f-isi);
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--abu-semen, #55665b);
+  margin: 0;
+}
+
+/* Kartu Profil Pengguna */
+.kartuProfil {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(15, 81, 50, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.profilKiri {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e8f3e9 0%, #d1e7d4 100%);
+  color: #0f5132;
+  font-family: var(--f-judul);
+  font-size: 1.25rem;
+  font-weight: 800;
+  border: 2px solid rgba(15, 81, 50, 0.15);
+  flex-shrink: 0;
+}
+
+.infoTeks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.namaPengguna {
+  font-family: var(--f-judul);
+  font-size: 1.0625rem;
+  font-weight: 750;
+  color: var(--tinta, #14261e);
+  line-height: 1.2;
+}
+
+.barisLabel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badgePeran {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 11.5px;
+  font-weight: 650;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  background: rgba(15, 81, 50, 0.08);
+  color: #0f5132;
+  border: 1px solid rgba(15, 81, 50, 0.18);
+}
+
+.badgePeranAdmin {
+  background: rgba(30, 41, 59, 0.08);
+  color: #1e293b;
+  border-color: rgba(30, 41, 59, 0.2);
+}
+
+.badgeStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 11px;
+  font-weight: 500;
+  color: #55665b;
+}
+
+.dotHijau {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+}
+
+/* Tombol Keluar */
+.tombolKeluar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-family: var(--f-judul);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tombolKeluar:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+  transform: translateY(-1px);
+}
+
+.tombolKeluar svg {
+  flex-shrink: 0;
+}
+
+.bagianForm {
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .kartuProfil {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .tombolKeluar {
+    width: 100%;
+    justify-content: center;
+  }
+}

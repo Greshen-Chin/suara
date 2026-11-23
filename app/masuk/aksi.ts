@@ -32,7 +32,7 @@ function pesanTerkunci(sampai: Date): string {
 export async function masuk(_sebelum: StatusMasuk, form: FormData): Promise<StatusMasuk> {
   const nama = String(form.get("nama_pengguna") ?? "").trim().toLowerCase();
   const kataSandi = String(form.get("kata_sandi") ?? "");
-  const tujuan = amankanTujuan(form.get("lanjut"));
+  const tujuan = amankanTujuan(form.get("lanjut"), RUTE.beranda);
 
   if (!nama || !kataSandi) return { pesan: PESAN_KOSONG, nama };
   // Format yang mustahil terdaftar ditolak tanpa menyentuh database.
@@ -52,12 +52,8 @@ export async function masuk(_sebelum: StatusMasuk, form: FormData): Promise<Stat
   if (hasil.status === "gagal") return { pesan: PESAN_SALAH, nama };
 
   await simpanSesi(hasil.sesi);
-  // Akun yang kata sandinya dibuat atau diatur ulang admin langsung diarahkan ke formulir ganti
-  // kata sandi; tujuan semula tetap ikut supaya mereka bisa melanjutkannya sesudahnya.
-  // (Bawaan amankanTujuan sudah /akun; tujuan lain diteruskan lewat ?lanjut=.)
-  const ke =
-    hasil.harusGantiSandi && tujuan !== RUTE.akun ? `${RUTE.akun}?lanjut=${encodeURIComponent(tujuan)}` : hasil.harusGantiSandi ? RUTE.akun : tujuan;
-  redirect(ke); // di luar try: redirect() bekerja dengan melempar
+  // Langsung arahkan ke halaman tujuan (bawaan: beranda / dashboard utama saat klik logo SUARA).
+  redirect(tujuan);
 }
 
 export async function keluar(): Promise<void> {

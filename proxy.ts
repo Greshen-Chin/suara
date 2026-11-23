@@ -28,7 +28,7 @@ export async function proxy(req: NextRequest) {
   // Yang sudah masuk tidak perlu halaman masuk. Pengecualian: ?sesi=berakhir, dari halaman yang baru saja
   // menemukan bahwa akun di tokennya sudah tidak berlaku (proxy tidak bisa tahu: ia tidak membaca database).
   if (pathname === "/masuk" && sesi && req.nextUrl.searchParams.get("sesi") !== "berakhir") {
-    return NextResponse.redirect(new URL("/akun", req.nextUrl));
+    return NextResponse.redirect(new URL("/", req.nextUrl));
   }
 
   return NextResponse.next();
