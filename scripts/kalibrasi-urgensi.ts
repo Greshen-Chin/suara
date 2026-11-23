@@ -11,7 +11,7 @@
 // JANGAN menyetel prompt sampai pas dengan tujuh data seed: tujuh contoh bukan bukti akurasi. Paling banyak dua
 // putaran perubahan prompt, dan tulis keduanya (naikkan VERSI_PROMPT di lib/saran-urgensi.ts tiap perubahan).
 // Keluaran tidak memuat kunci. Biaya: kuota paket gratis; jumlah panggilan dicetak lebih dulu.
-import { MODEL_BAWAAN, panggilGemini, type KonfigurasiGemini } from "../lib/gemini.ts";
+import { bacaKonfigurasiGemini, MODEL_BAWAAN, panggilGemini, type KonfigurasiGemini } from "../lib/gemini.ts";
 import { kutipanAda, normalisasi, skemaSaran, susunMasukan, susunPrompt, validasiSaran } from "../lib/saran-urgensi.ts";
 
 interface Kasus {
@@ -134,6 +134,7 @@ async function utama() {
   const args = process.argv.slice(2);
   const jalankan = args.includes("--jalankan");
   const kunci = process.env.GEMINI_API_KEY?.trim();
+  const vertex = process.env.GOOGLE_CLOUD_PROJECT?.trim();
   const models = bacaModel(args.find((a) => a.startsWith("--model="))?.slice(8));
   const panggilan = models.length * KASUS.length * ULANG;
 
@@ -143,13 +144,20 @@ async function utama() {
     console.log("\nTidak ada panggilan dibuat. Tambahkan --jalankan untuk memulai (memakai kuota paket gratis Anda).");
     return;
   }
-  if (!kunci) {
-    console.error("\nGEMINI_API_KEY tidak ada. Isi di .env.local (npm run menyertakan berkas itu), lalu ulangi.");
+  if (!kunci && !vertex) {
+    console.error("\nGEMINI_API_KEY atau GOOGLE_CLOUD_PROJECT tidak ada. Isi di .env.local (npm run menyertakan berkas itu), lalu ulangi.");
     process.exit(1);
   }
 
   for (const m of models) {
-    const konf: KonfigurasiGemini = { kunci, model: m.nama, alamat: "https://generativelanguage.googleapis.com", berpikir: m.berpikir };
+    const konf = bacaKonfigurasiGemini(process.env) ?? {
+      kunci: kunci || "vertex-ai",
+      model: m.nama,
+      alamat: "https://generativelanguage.googleapis.com",
+      berpikir: m.berpikir,
+    };
+    konf.model = m.nama;
+    konf.berpikir = m.berpikir;
     const hasil = new Map<string, Hasil[]>();
     for (const k of KASUS) {
       const daftar: Hasil[] = [];

@@ -1,5 +1,5 @@
-// Klien Gemini lewat REST dengan `fetch`, tanpa dependensi baru. Hanya untuk server: kunci dibaca dari
-// lingkungan dan TIDAK PERNAH dikembalikan, dicatat, atau dimasukkan ke pesan galat.
+// Klien Gemini lewat REST fetch atau Google Cloud Vertex AI (@google/genai). Hanya untuk server:
+// kredensial dibaca dari lingkungan dan TIDAK PERNAH dikembalikan, dicatat, atau dimasukkan ke pesan galat.
 //
 // Memakai `generateContent` (didukung penuh) dan bukan Interactions: bentuk keluaran terstruktur
 // (responseMimeType + responseSchema) dan cara menonaktifkan penyimpanan permintaan pada Interactions tidak
@@ -9,36 +9,69 @@
 //
 // Sengaja tanpa "server-only" supaya bisa diuji; modul ini tidak boleh diimpor dari komponen klien.
 
+export const MODEL_VERTEX_BAWAAN = "gemini-3.8-flash";
 export const MODEL_BAWAAN = "gemini-3.5-flash-lite";
 export const ALAMAT_BAWAAN = "https://generativelanguage.googleapis.com";
 /** Batas waktu keseluruhan satu permintaan, termasuk satu kali ulang. Cloud Run bawaannya 300 detik. */
-export const BATAS_WAKTU_MS = 12_000;
+export const BATAS_WAKTU_MS = 25_000;
 
 const TINGKAT_BERPIKIR = ["minimal", "low", "medium", "high"] as const;
 type TingkatBerpikir = (typeof TINGKAT_BERPIKIR)[number];
+
+const PETA_THINKING_VERTEX: Record<TingkatBerpikir, string> = {
+  minimal: "MINIMAL",
+  low: "LOW",
+  medium: "MEDIUM",
+  high: "HIGH",
+};
 
 export interface KonfigurasiGemini {
   kunci: string;
   model: string;
   alamat: string;
   berpikir: TingkatBerpikir | null;
+  mode?: "vertex" | "api_key";
+  project?: string;
+  location?: string;
 }
 
 /**
- * Konfigurasi dari lingkungan, atau null bila kunci tidak terpasang (fitur mati, tanpa jejak di antarmuka).
+ * Konfigurasi dari lingkungan, atau null bila kredensial tidak terpasang (fitur mati, tanpa jejak di antarmuka).
+ * Mendukung Google Cloud Vertex AI (GOOGLE_CLOUD_PROJECT) maupun GEMINI_API_KEY.
  * GEMINI_BASE_URL hanya diterima untuk alamat resmi atau mesin lokal (server tiruan E2E): alamat lain diabaikan
  * supaya kunci tidak pernah terkirim ke tujuan yang tidak dikenal karena salah ketik.
  */
 export function bacaKonfigurasiGemini(env: Record<string, string | undefined> = process.env): KonfigurasiGemini | null {
+  const vertexProject = env.GOOGLE_CLOUD_PROJECT?.trim() || env.VERTEX_AI_PROJECT?.trim();
   const kunci = env.GEMINI_API_KEY?.trim();
-  if (!kunci) return null;
-  const model = /^[a-z0-9][a-z0-9._-]{1,60}$/i.test(env.GEMINI_MODEL?.trim() ?? "") ? env.GEMINI_MODEL!.trim() : MODEL_BAWAAN;
+
+  // Bila tidak ada kredensial Vertex AI atau API Key Gemini, fitur nonaktif
+  if (!vertexProject && !kunci) return null;
+
+  const mode = vertexProject ? "vertex" : "api_key";
+  const modelBawaan = mode === "vertex" ? MODEL_VERTEX_BAWAAN : MODEL_BAWAAN;
+  const modelDiminta = mode === "vertex" ? (env.VERTEX_AI_MODEL?.trim() || env.GEMINI_MODEL?.trim()) : env.GEMINI_MODEL?.trim();
+  const model = /^[a-z0-9][a-z0-9._-]{1,60}$/i.test(modelDiminta ?? "") ? modelDiminta! : modelBawaan;
+
   const diminta = env.GEMINI_BASE_URL?.trim().replace(/\/+$/, "");
   const diizinkan =
     diminta !== undefined &&
     (diminta === ALAMAT_BAWAAN || /^http:\/\/(?:127\.0\.0\.1|localhost)(?::\d{2,5})?$/.test(diminta));
   const berpikir = TINGKAT_BERPIKIR.find((t) => t === env.GEMINI_THINKING?.trim()) ?? null;
-  return { kunci, model, alamat: diizinkan ? diminta : ALAMAT_BAWAAN, berpikir };
+
+  if (mode === "api_key") {
+    return { kunci: kunci!, model, alamat: diizinkan ? diminta : ALAMAT_BAWAAN, berpikir };
+  }
+
+  return {
+    kunci: kunci || "vertex-ai",
+    model,
+    alamat: diizinkan ? diminta : ALAMAT_BAWAAN,
+    berpikir,
+    mode: "vertex",
+    project: vertexProject,
+    location: env.GOOGLE_CLOUD_LOCATION?.trim() || env.VERTEX_AI_LOCATION?.trim() || "global",
+  };
 }
 
 export type KodeGalatGemini =
@@ -116,18 +149,113 @@ export async function panggilGemini(
   p: PermintaanGemini,
   opsi: { pengambil?: Pengambil; batasMs?: number; sekarang?: () => number } = {},
 ): Promise<HasilGemini> {
-  const ambil = opsi.pengambil ?? fetch;
   const batas = opsi.batasMs ?? BATAS_WAKTU_MS;
   const sekarang = opsi.sekarang ?? (() => performance.now());
   const mulai = sekarang();
-  const sinyal = AbortSignal.timeout(batas);
-  const alamat = `${k.alamat}/v1beta/models/${encodeURIComponent(k.model)}:generateContent`;
-  const badan = JSON.stringify(susunBadanGemini(k, p));
   const selesai = (h: Omit<Extract<HasilGemini, { ok: false }>, "durasiMs"> | { ok: true; teks: string }): HasilGemini => {
     const durasiMs = Math.round(sekarang() - mulai);
     if (!h.ok) console.error(`gemini gagal: ${h.kode}${h.status ? ` ${h.status}` : ""} model=${k.model} ${durasiMs}ms`);
     return { ...h, durasiMs } as HasilGemini;
   };
+
+  // Jalur Google Cloud Vertex AI: dipakai bila mode vertex, tanpa pengambil tiruan (unit test), dan alamat bawaan
+  if (k.mode === "vertex" && !opsi.pengambil && k.alamat === ALAMAT_BAWAAN) {
+    try {
+      const { GoogleGenAI } = await import("@google/genai");
+      const ai = new GoogleGenAI({
+        vertexai: true,
+        project: k.project || process.env.GOOGLE_CLOUD_PROJECT || "suara-515516",
+        location: k.location || process.env.GOOGLE_CLOUD_LOCATION || "global",
+      });
+
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          const err = new Error("Batas waktu terlampaui");
+          err.name = "TimeoutError";
+          reject(err);
+        }, batas);
+      });
+
+      const callPromise = ai.models.generateContent({
+        model: k.model,
+        contents: p.pengguna,
+        config: {
+          systemInstruction: p.sistem,
+          responseMimeType: "application/json",
+          responseSchema: p.skema,
+          temperature: 0.2,
+          maxOutputTokens: 4096,
+          ...(k.berpikir && {
+            thinkingConfig: {
+              thinkingLevel: PETA_THINKING_VERTEX[k.berpikir] as unknown as undefined,
+            },
+          }),
+        },
+      });
+
+      const resp = await Promise.race([callPromise, timeoutPromise]);
+      const kandidat = resp.candidates?.[0];
+      if (
+        kandidat?.finishReason === "SAFETY" ||
+        kandidat?.finishReason === "PROHIBITED_CONTENT" ||
+        kandidat?.finishReason === "BLOCKLIST"
+      ) {
+        return selesai({ ok: false, kode: "diblokir" });
+      }
+      if (kandidat?.finishReason === "MAX_TOKENS") {
+        return selesai({ ok: false, kode: "terpotong" });
+      }
+      const teks = resp.text?.trim();
+      if (!teks) {
+        return selesai({ ok: false, kode: "kosong" });
+      }
+      return selesai({ ok: true, teks });
+    } catch (err: unknown) {
+      const pesan = err instanceof Error ? err.message : String(err);
+      const nama = err instanceof Error ? err.name : "";
+
+      if (nama === "TimeoutError" || pesan.includes("deadline") || pesan.includes("timeout")) {
+        return selesai({ ok: false, kode: "batas_waktu" });
+      }
+      if (pesan.includes("429") || pesan.includes("RESOURCE_EXHAUSTED") || pesan.includes("quota")) {
+        return selesai({ ok: false, kode: "kuota", status: 429 });
+      }
+      if (
+        pesan.includes("401") ||
+        pesan.includes("403") ||
+        pesan.includes("PERMISSION_DENIED") ||
+        pesan.includes("UNAUTHENTICATED")
+      ) {
+        return selesai({ ok: false, kode: "kunci", status: 403 });
+      }
+      if (
+        pesan.includes("404") ||
+        pesan.includes("NOT_FOUND") ||
+        pesan.includes("400") ||
+        pesan.includes("INVALID_ARGUMENT")
+      ) {
+        return selesai({ ok: false, kode: "permintaan", status: 400 });
+      }
+      if (
+        pesan.includes("500") ||
+        pesan.includes("503") ||
+        pesan.includes("INTERNAL") ||
+        pesan.includes("UNAVAILABLE")
+      ) {
+        return selesai({ ok: false, kode: "server", status: 500 });
+      }
+      if (pesan.includes("SAFETY") || pesan.includes("blocked")) {
+        return selesai({ ok: false, kode: "diblokir" });
+      }
+      return selesai({ ok: false, kode: "jaringan" });
+    }
+  }
+
+  // Jalur HTTP REST biasa (Google AI Studio atau mock test/E2E)
+  const ambil = opsi.pengambil ?? fetch;
+  const sinyal = AbortSignal.timeout(batas);
+  const alamat = `${k.alamat}/v1beta/models/${encodeURIComponent(k.model)}:generateContent`;
+  const badan = JSON.stringify(susunBadanGemini(k, p));
 
   for (let percobaan = 0; percobaan < 2; percobaan++) {
     let status = 0;

@@ -46,6 +46,19 @@ describe("bacaKonfigurasiGemini", () => {
       assert.equal(bacaKonfigurasiGemini({ GEMINI_API_KEY: "k", GEMINI_BASE_URL: asing })?.alamat, ALAMAT_BAWAAN, asing);
     }
   });
+
+  it("vertex ai: membaca project dan location dari lingkungan", () => {
+    const k = bacaKonfigurasiGemini({ GOOGLE_CLOUD_PROJECT: "suara-515516", GOOGLE_CLOUD_LOCATION: "global" });
+    assert.deepEqual(k, {
+      kunci: "vertex-ai",
+      model: "gemini-3.8-flash",
+      alamat: ALAMAT_BAWAAN,
+      berpikir: null,
+      mode: "vertex",
+      project: "suara-515516",
+      location: "global",
+    });
+  });
 });
 
 describe("susunBadanGemini (A-06)", () => {
@@ -171,7 +184,17 @@ describe("panggilGemini: hasil dan galat (A-09)", () => {
       pengambil: (_u, init) => {
         n++;
         return new Promise<Response>((_res, tolak) => {
-          init?.signal?.addEventListener("abort", () => tolak(new DOMException("habis", "TimeoutError")));
+          const timer = setTimeout(() => {
+            tolak(new DOMException("habis", "TimeoutError"));
+          }, 50);
+          init?.signal?.addEventListener(
+            "abort",
+            () => {
+              clearTimeout(timer);
+              tolak(new DOMException("habis", "TimeoutError"));
+            },
+            { once: true },
+          );
         });
       },
     });
