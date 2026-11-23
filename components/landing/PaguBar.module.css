@@ -119,8 +119,42 @@
   white-space: nowrap;
 }
 
+/* Sisa nol: pada layar sempit tingginya nol dan labelnya menimpa tepi bawah batang. Labelnya disembunyikan secara
+   visual tetapi tetap terbaca pembaca layar; pada layar lebar ia tampil di bawah batang seperti biasa. */
+.sisa[data-kosong] .labelSisa {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* Nama dan keterangan satu baris dengan elipsis (prop potongNama). */
+.potongNama .nama {
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.potongNama .namaTeks {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.potongNama .meta {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Di ponsel batang vertikal setinggi 35 rem akan mendorong isi halaman jauh ke bawah; di simulasi ada banyak yang harus
+   terlihat di bawahnya (Peta Pagu), jadi lebih pendek. */
+.potongNama .batang {
+  height: 24rem;
+}
+
 /* ---- Layar lebar: horizontal ---- */
-@media (min-width: 45rem) {
+@media (min-width: 45rem), print {
   .pita {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: 1.75rem auto;
@@ -155,6 +189,10 @@
     height: 8.75rem;
   }
 
+  .potongNama .batang {
+    height: 8.75rem;
+  }
+
   .blok,
   .sisa {
     height: auto;
@@ -182,6 +220,14 @@
 
   .sisa {
     overflow: visible;
+  }
+
+  .sisa[data-kosong] .labelSisa {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
   }
 
   .sisa .isi {
@@ -220,7 +266,7 @@
   text-overflow: ellipsis;
 }
 
-@media (min-width: 45rem) {
+@media (min-width: 45rem), print {
   .ringkas .batang {
     height: 4.5rem;
   }
@@ -237,5 +283,54 @@
 
   .ringkas .nama svg {
     margin-top: 0;
+  }
+}
+
+/* ---- Blok yang berbeda dari batang pasangannya (halaman keputusan) ----------------------------------
+   Bentuknya, bukan hanya warna: bingkai putus-putus di dalam blok dan tanda ≠ di samping nama. */
+.blok[data-beda] {
+  outline: 3px dashed currentColor;
+  outline-offset: -7px;
+}
+
+.tandaBeda {
+  flex: none;
+  font-family: var(--f-isi);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ---- Cetak: batang tetap terbaca hitam-putih ---------------------------------------------------------
+   Warna latar sering tidak ikut tercetak, jadi blok diberi bingkai hitam dan sisa diarsir. Yang berbeda tetap
+   putus-putus. */
+@media print {
+  .batang {
+    border-color: #000;
+    background: #fff;
+  }
+
+  .blok {
+    background: #fff;
+    color: #000;
+    border: 2px solid #000;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .blok[data-beda] {
+    border-style: dashed;
+    outline: 0;
+  }
+
+  .sisa {
+    background: repeating-linear-gradient(135deg, #000 0 1px, transparent 1px 8px);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .tanda,
+  .labelSisa {
+    color: #000;
   }
 }

@@ -9,6 +9,5 @@ export const PANJANG_MAKS = 128;
 /** Aturan yang ditampilkan, urutannya sama dengan pemeriksaan di server. */
 export const ATURAN_SANDI: readonly string[] = [
   `Minimal ${PANJANG_MIN} karakter, maksimal ${PANJANG_MAKS}.`,
-  "Tidak boleh memuat nama pengguna.",
   "Bukan kata sandi yang terlalu umum, misalnya 12345678 atau password.",
 ];

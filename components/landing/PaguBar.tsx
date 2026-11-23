@@ -13,6 +13,30 @@ interface Props {
    * sama dengan di halaman utama.
    */
   ringkas?: boolean;
+  /**
+   * Nama aksesibel daftarnya. Bawaan "Pembagian pagu Rp ...". Halaman yang menampilkan dua batang sekaligus
+   * (simulasi) memberi nama berbeda supaya pembaca layar tidak mendengar dua daftar bernama sama.
+   */
+  label?: string;
+  /**
+   * Skala hanya memuat angka bulat (kelipatan Rp 5 juta) selain ujungnya. Untuk pagu yang bebas digeser (simulasi),
+   * pembagian sama rata menghasilkan label seperti "Rp 168,3 juta" yang terpotong di tepi. Bawaan false: beranda
+   * dan halaman admin tidak berubah.
+   */
+  skalaBulat?: boolean;
+  /**
+   * Nama dan keterangan tiap blok satu baris dengan elipsis, bukan patah di tengah huruf bila bloknya sempit.
+   * Untuk pagu yang bebas digeser (simulasi), yang sering menghasilkan blok sangat sempit. Bawaan false.
+   */
+  potongNama?: boolean;
+  /**
+   * Id blok yang BERBEDA dari batang pasangannya (halaman keputusan: dua batang, satu rekomendasi dan satu keputusan).
+   * Ditandai bentuk, bukan hanya warna: bingkai putus-putus dan tanda ≠ (juga terbaca pembaca layar dan tetap
+   * terlihat saat dicetak hitam-putih).
+   */
+  tandaBeda?: ReadonlySet<string>;
+  /** Kata untuk pembaca layar di depan nama blok; bawaan "Terpilih". Batang keputusan memakai "Disetujui". */
+  kataStatus?: string;
 }
 
 /**
@@ -20,14 +44,27 @@ interface Props {
  * persis sebanding dengan biayanya; ukurannya datang dari hitungTataPagu.
  * Blok dan ruang sisa memakai data-flip supaya bisa dianimasikan saat mode berganti.
  */
-export function PaguBar({ pagu, mode, ringkas = false }: Props) {
+export function PaguBar({
+  pagu,
+  mode,
+  ringkas = false,
+  label,
+  skalaBulat = false,
+  potongNama = false,
+  tandaBeda,
+  kataStatus = "Terpilih",
+}: Props) {
   const { tata, terpilih } = mode;
   const barisBlok = new Map(tata.blok.map((b) => [b.id, b]));
 
   return (
-    <div className={ringkas ? `${styles.pita} ${styles.ringkas}` : styles.pita}>
+    <div
+      className={[styles.pita, ringkas ? styles.ringkas : "", potongNama ? styles.potongNama : ""].filter(Boolean).join(" ")}
+    >
       <div className={styles.skala} aria-hidden="true">
-        {titikSkala(pagu).map((t) => (
+        {titikSkala(pagu)
+          .filter((t) => !skalaBulat || t.posisi === 0 || t.posisi === 100 || t.rupiah % 5_000_000 === 0)
+          .map((t) => (
           <span
             key={t.posisi}
             className={styles.tanda}
@@ -38,11 +75,12 @@ export function PaguBar({ pagu, mode, ringkas = false }: Props) {
         ))}
       </div>
 
-      <ul className={styles.batang} role="list" aria-label={`Pembagian pagu ${rupiah(pagu)}`}>
+      <ul className={styles.batang} role="list" aria-label={label ?? `Pembagian pagu ${rupiah(pagu)}`}>
         {terpilih.map((item) => (
           <li
             key={item.id}
             data-flip={item.id}
+            data-beda={tandaBeda?.has(item.id) ? "true" : undefined}
             className={styles.blok}
             style={
               { "--ukuran": `${barisBlok.get(item.id)?.lebar ?? 0}%` } as React.CSSProperties
@@ -51,8 +89,15 @@ export function PaguBar({ pagu, mode, ringkas = false }: Props) {
             <div data-flip-isi className={styles.isi}>
               <span className={styles.nama}>
                 <IkonStatus status="terpilih" />
-                <span className="sr-only">Terpilih: </span>
+                <span className="sr-only">
+                  {tandaBeda?.has(item.id) ? `${kataStatus}, berbeda dari batang pasangannya: ` : `${kataStatus}: `}
+                </span>
                 <span className={styles.namaTeks}>{item.nama}</span>
+                {tandaBeda?.has(item.id) && (
+                  <span className={styles.tandaBeda} aria-hidden="true">
+                    ≠
+                  </span>
+                )}
               </span>
               {ringkas ? (
                 <span className="sr-only">
@@ -68,6 +113,7 @@ export function PaguBar({ pagu, mode, ringkas = false }: Props) {
         ))}
         <li
           data-flip="sisa"
+          data-kosong={tata.sisa.lebar < 0.5 ? "true" : undefined}
           className={styles.sisa}
           style={{ "--ukuran": `${tata.sisa.lebar}%` } as React.CSSProperties}
         >

@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
+    // Folder keluaran server dev tambahan untuk uji E2E (NEXT_DIST_DIR), lihat e2e/playwright.config.ts.
+    ".next-*/**",
     "out/**",
     "build/**",
     "next-env.d.ts",

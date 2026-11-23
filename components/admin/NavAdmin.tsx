@@ -8,6 +8,7 @@ const BAGIAN = [
   { href: "/admin", teks: "Ringkasan", tepat: true },
   { href: "/admin/usulan", teks: "Usulan", tepat: false },
   { href: "/admin/anggaran", teks: "Anggaran", tepat: false },
+  { href: "/admin/keputusan", teks: "Keputusan", tepat: false },
   { href: "/admin/akun", teks: "Akun", tepat: false },
   { href: "/admin/moderasi", teks: "Moderasi", tepat: false },
 ] as const;

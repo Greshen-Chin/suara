@@ -16,6 +16,9 @@ import "server-only";
 import { BATAS_WAKTU_MS, logDariDb, wajib, type BarisLog } from "./data";
 import type { Database, Json } from "./database.types";
 import type { JenisLog } from "./jenis-log";
+import { uraiHitungan, type Hasil, type HitunganResmi } from "./keputusan";
+import { keputusanDariDb, periodeDariDb } from "./keputusan-data";
+import type { Periode } from "./keputusan-tipe";
 import type { Pengguna } from "./auth";
 import type { DasarHitung } from "./pratinjau";
 import { supabaseServer as db } from "./supabase-server";
@@ -402,4 +405,93 @@ export async function bacaLogKeputusan(
       .abortSignal(sinyal()),
   );
   return baris.map(logDariDb);
+}
+
+// ---------------------------------------------------------------------------
+// Keputusan musyawarah (/admin/keputusan)
+// ---------------------------------------------------------------------------
+
+/** Usulan yang sudah diputuskan dan menunggu ditandai selesai (disetujui atau diajukan ke dana lain). */
+export interface PekerjaanBerjalan {
+  proposalId: string;
+  tahun: number;
+  /** null bila usulannya disembunyikan. */
+  judul: string | null;
+  hasil: Hasil;
+  biaya: number;
+  rw: number | null;
+  sumberDana: string | null;
+  statusSekarang: string;
+}
+
+export interface KeadaanKeputusan {
+  /** Periode yang sedang berjalan (tempat keputusan berikutnya ditetapkan). null bila tidak ada. */
+  berjalan: { tahun: number; versi: number } | null;
+  /** Hitungan resmi saat ini, dari fungsi SQL yang sama dengan yang dipakai penetapan. */
+  hitungan: HitunganResmi;
+  wilayah: { rw: number; nama: string; penduduk: number; anggaranLalu: number }[];
+  /** Penetapan terakhir (periode diputuskan dengan tahun terbesar) beserta apakah sudah ada usulannya yang selesai. */
+  terakhir: { periode: Periode; adaSelesai: boolean } | null;
+  pekerjaan: PekerjaanBerjalan[];
+}
+
+export async function bacaKeadaanKeputusan(pengguna: Pengguna): Promise<KeadaanKeputusan> {
+  pastikanAdmin(pengguna);
+  const [berjalan, hitungan, wilayah, diputuskan, pekerjaan] = await Promise.all([
+    db.from("periode").select("tahun, versi").eq("status", "berjalan").abortSignal(sinyal()).maybeSingle(),
+    db.rpc("sidik_hitungan").abortSignal(sinyal()),
+    db.from("wilayah").select("rw, nama, penduduk, anggaran_lalu").order("rw", { ascending: true }).abortSignal(sinyal()),
+    db.from("v_periode").select("*").eq("status", "diputuskan").order("tahun", { ascending: false }).limit(1).abortSignal(sinyal()),
+    db
+      .from("v_keputusan")
+      .select("*")
+      .in("status_sekarang", ["approved", "referred"])
+      .order("tahun", { ascending: false })
+      .order("peringkat", { ascending: true })
+      .limit(200)
+      .abortSignal(sinyal()),
+  ]);
+
+  const baris = periksa(diputuskan)[0];
+  let terakhir: KeadaanKeputusan["terakhir"] = null;
+  if (baris) {
+    const periode = periodeDariDb(baris);
+    const selesai = await db
+      .from("v_keputusan")
+      .select("*", { count: "exact", head: true })
+      .eq("tahun", periode.tahun)
+      .eq("status_sekarang", "done")
+      .abortSignal(sinyal());
+    if (selesai.error) throw new Error(`Database: ${selesai.error.message}`);
+    terakhir = { periode, adaSelesai: (selesai.count ?? 0) > 0 };
+  }
+
+  const b = periksaBoleh(berjalan);
+  return {
+    berjalan: b ? { tahun: b.tahun, versi: b.versi } : null,
+    hitungan: uraiHitungan(periksa(hitungan)),
+    wilayah: periksa(wilayah).map((r) => ({ rw: r.rw, nama: r.nama, penduduk: r.penduduk, anggaranLalu: r.anggaran_lalu })),
+    terakhir,
+    pekerjaan: periksa(pekerjaan).map((r: Baca<"v_keputusan">) => {
+      const k = keputusanDariDb(r);
+      return {
+        proposalId: k.proposalId,
+        tahun: wajib(r.tahun, "tahun"),
+        judul: k.judul,
+        hasil: k.hasil,
+        biaya: k.biaya,
+        rw: k.rw,
+        sumberDana: k.sumberDana,
+        statusSekarang: k.statusSekarang,
+      };
+    }),
+  };
+}
+
+/** Tahun periode yang sedang berjalan dan jumlah usulan yang menunggu keputusan, untuk ringkasan admin. */
+export async function bacaTahunBerjalan(pengguna: Pengguna): Promise<number | null> {
+  pastikanAdmin(pengguna);
+  const jawaban = await db.from("periode").select("tahun, versi").eq("status", "berjalan").abortSignal(sinyal()).maybeSingle();
+  const r = periksaBoleh(jawaban);
+  return r ? r.tahun : null;
 }

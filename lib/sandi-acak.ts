@@ -34,8 +34,10 @@ export function buatSandiAcak(namaPengguna = "", acak: Acak = randomInt): string
     const bahan = sandi.replaceAll("-", "");
     const adaAngka = [...bahan].some((c) => ANGKA_SANDI.includes(c));
     const adaHuruf = [...bahan].some((c) => HURUF_SANDI.includes(c));
-    // periksaKataSandiBaru menganggap nama kosong "terkandung" di setiap kata sandi, jadi hanya dipanggil bila ada nama.
-    const lolos = namaPengguna === "" || periksaKataSandiBaru(sandi, namaPengguna) === null;
+    // Sandi acak tetap dihindarkan memuat nama pengguna (kebiasaan baik, bukan lagi aturan sandi buatan sendiri).
+    const lolos =
+      (namaPengguna === "" || !sandi.toLowerCase().includes(namaPengguna.toLowerCase())) &&
+      periksaKataSandiBaru(sandi, namaPengguna) === null;
     if (adaAngka && adaHuruf && lolos) return sandi;
   }
   // Sampai di sini hanya bila `acak` rusak: 100 undian beruntun gagal tidak terjadi pada randomInt.

@@ -21,6 +21,7 @@ import {
 } from "./data";
 import type { Database } from "./database.types";
 import fallbackJson from "./fallback-forum.json";
+import { bacaAlasanTersimpan, type AlasanSaran } from "./saran-urgensi";
 import { statusUsulan, type StatusUsulan } from "./seleksi";
 import { supabaseServer } from "./supabase-server";
 import { TAG } from "./tag-cache";
@@ -36,7 +37,7 @@ const BATAS_BARIS = 500;
 const KOLOM_FORUM =
   "id, title, nama_singkat, category, estimated_budget, status, source, rw, created_at, pengusul_nama_depan, pengusul_rw, vote_count, jumlah_komentar, penduduk, suara_per_1000" as const;
 const KOLOM_USULAN =
-  "id, title, nama_singkat, category, estimated_budget, status, source, rw, created_at, pengusul_nama_depan, pengusul_rw, vote_count, jumlah_komentar, penduduk, suara_per_1000, description, urgency_score, urgency_reason, disembunyikan_pada, alasan_disembunyikan" as const;
+  "id, title, nama_singkat, category, estimated_budget, status, source, rw, created_at, pengusul_nama_depan, pengusul_rw, vote_count, jumlah_komentar, penduduk, suara_per_1000, description, urgency_score, urgency_reason, disembunyikan_pada, alasan_disembunyikan, saran_nilai, saran_keyakinan, saran_alasan, saran_model" as const;
 const KOLOM_KOMENTAR =
   "id, proposal_id, isi, created_at, disembunyikan_pada, alasan_disembunyikan, dari_admin, penulis_nama_depan, penulis_rw" as const;
 const BATAS_WAKTU_DUKUNGAN_MS = 3000;
@@ -103,6 +104,16 @@ export interface DetailUsulan {
   jumlah_komentar: number;
   penduduk: number | null;
   suara_per_1000: number | null;
+  /** Saran AI yang DIBUKA admin saat memasukkan usulan ke hitungan (bukan saran terakhir). Kosong bila tidak dibuka. */
+  saran?: SaranPublik | null;
+}
+
+/** Saran AI untuk halaman publik: nilai, alasan, dan kutipan. Tanpa id akun dan tanpa sidik. */
+export interface SaranPublik {
+  nilai: number;
+  keyakinan: string;
+  model: string;
+  alasan: AlasanSaran[];
 }
 
 export interface KomentarForum {
@@ -186,7 +197,14 @@ function detailDariDb(r: Baca<"v_usulan">): DetailUsulan {
     jumlah_komentar: wajib(r.jumlah_komentar, "jumlah_komentar"),
     penduduk: r.penduduk,
     suara_per_1000: r.suara_per_1000,
+    saran: saranDariDb(r),
   };
+}
+
+function saranDariDb(r: Baca<"v_usulan">): SaranPublik | null {
+  const alasan = bacaAlasanTersimpan(r.saran_alasan);
+  if (r.saran_nilai === null || r.saran_model === null || r.saran_keyakinan === null || !alasan) return null;
+  return { nilai: r.saran_nilai, keyakinan: r.saran_keyakinan, model: r.saran_model, alasan };
 }
 
 function komentarDariDb(r: Baca<"v_komentar">): KomentarForum {

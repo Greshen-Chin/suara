@@ -1,0 +1,408 @@
+/* Lembar kerja keputusan (admin): satu baris register per usulan, empat pilihan hasil sebagai kelompok tombol
+   (radio asli), ringkasan yang menempel di dasar layar, lalu bagian tinjau dan tetapkan. Datar: garis, bukan kartu. */
+
+.lembar {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.alat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+
+.pulih {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--biru-stempel);
+  border-radius: var(--radius);
+  background: var(--papan);
+}
+
+.pulih p {
+  max-width: 62ch;
+}
+
+.daftar {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--tinta);
+}
+
+.baris {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.125rem 0;
+  border-bottom: 1px solid var(--garis-halus);
+  min-width: 0;
+  scroll-margin-block: 1rem 7rem;
+}
+
+/* Baris yang isiannya belum sah: latar galat dan bingkai penuh, bukan garis tebal di satu sisi. */
+.barisGalat {
+  padding-inline: 0.75rem;
+  background: var(--galat-latar);
+  border: 2px solid var(--galat-tepi);
+  border-radius: var(--radius);
+}
+
+.judulBaris {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+/* Judul baris: huruf isi tebal (h3 Barlow pada ukuran isi terlihat kerdil). */
+.judulBaris h3 {
+  font-family: var(--f-isi);
+  font-size: var(--t-md);
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+}
+
+.metaIsi {
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+/* ---- Pilihan hasil: radio asli, tampil sebagai kelompok tombol ---------------------------------------- */
+
+.pilihan {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.pilihan legend {
+  padding: 0;
+  margin-bottom: 0.25rem;
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+.tombolHasil {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.tombolHasil label {
+  position: relative;
+  display: block;
+}
+
+.tombolHasil input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.tombolHasil span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  height: 100%;
+  padding: 0.25rem 0.5rem;
+  border: 2px solid var(--tinta);
+  border-radius: var(--radius);
+  background: var(--papan);
+  color: var(--tinta);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.tombolHasil input:checked + span {
+  background: var(--tinta);
+  color: var(--papan);
+}
+
+.tombolHasil input:hover + span {
+  border-color: var(--biru-stempel);
+}
+
+.tombolHasil input:focus-visible + span {
+  outline: 3px solid var(--biru-stempel);
+  outline-offset: 3px;
+}
+
+@media (min-width: 48rem) {
+  .tombolHasil {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ---- Alasan dan sumber dana: muncul tepat saat dibutuhkan --------------------------------------------- */
+
+.rinci {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 46rem;
+}
+
+.tulisSendiri {
+  justify-self: start;
+  min-height: 2.75rem;
+  padding: 0 0.25rem;
+  border: 0;
+  background: none;
+  color: var(--biru-stempel);
+  font: inherit;
+  font-size: var(--t-sm);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.otomatis {
+  max-width: 62ch;
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+}
+
+.wajib {
+  max-width: 62ch;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--biru-stempel);
+  border-radius: var(--radius);
+  background: var(--papan);
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+/* ---- Ringkasan yang selalu terlihat (menempel di dasar layar) ----------------------------------------- */
+
+.ringkasan {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: grid;
+  gap: 0.25rem;
+  margin-inline: calc(-1 * var(--gutter));
+  padding: 0.625rem var(--gutter);
+  background: var(--papan);
+  border-top: 3px solid var(--tinta);
+}
+
+.ringkasanBaris {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.125rem 0.75rem;
+  font-size: var(--t-sm);
+  font-weight: 600;
+}
+
+.ringkasanBaris strong {
+  font-family: var(--f-judul);
+  font-size: var(--t-lg);
+  line-height: 1.2;
+}
+
+.ringkasanLebih {
+  border-top-color: var(--galat-tepi);
+  background: var(--galat-latar);
+  color: var(--galat-teks);
+}
+
+.pemisah {
+  color: var(--abu-semen);
+  font-weight: 400;
+}
+
+/* ---- Tinjau dan tetapkan ------------------------------------------------------------------------------- */
+
+.tinjau {
+  display: grid;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.tinjau > h2,
+.sesudah > h2,
+.pekerjaan > h2 {
+  padding-top: 1rem;
+  border-top: 3px solid var(--tinta);
+  font-size: var(--t-xl);
+}
+
+.hitungHasil {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-weight: 600;
+}
+
+.formRapat {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 44rem;
+}
+
+.tanggal {
+  width: 100%;
+  max-width: 16rem;
+}
+
+.centang {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  font-weight: 600;
+}
+
+.centang input {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: 0.125rem;
+  accent-color: var(--tinta);
+}
+
+.penahan {
+  max-width: 62ch;
+  padding: 0.625rem 0.875rem;
+  border: 2px solid var(--galat-tepi);
+  border-radius: var(--radius);
+  background: var(--galat-latar);
+  color: var(--galat-teks);
+  font-weight: 600;
+}
+
+/* ---- Sesudah penetapan dan pekerjaan berjalan ---------------------------------------------------------- */
+
+.sesudah,
+.pekerjaan {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.daftarKerja {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--tinta);
+}
+
+.itemKerja {
+  display: grid;
+  gap: 0.5rem 1rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--garis-halus);
+}
+
+.itemKerjaIsi {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.itemKerjaIsi strong {
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 40rem) {
+  .itemKerja {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+}
+
+.kosong {
+  max-width: 62ch;
+}
+
+/* Tabel akibat untuk RW (tiga kolom, muat di 360 px): kata di sel, bukan hanya panah atau warna. */
+.akibat {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-sm);
+}
+
+.akibat caption {
+  padding-bottom: 0.5rem;
+  text-align: left;
+  font-weight: 700;
+}
+
+.akibat thead th {
+  padding: 0.5rem 0.5rem 0.5rem 0;
+  border-block: 2px solid var(--tinta);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  text-align: left;
+}
+
+.akibat td {
+  padding: 0.75rem 0.5rem 0.75rem 0;
+  border-bottom: 1px solid var(--garis-halus);
+}
+
+.angka {
+  text-align: right !important;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sel judul baris di tabel akibat: bergaya seperti sel biasa (th Admin.module.css bergaris tebal untuk kepala kolom). */
+.akibat tbody th {
+  padding: 0.75rem 0.5rem 0.75rem 0;
+  border-block: 0;
+  border-bottom: 1px solid var(--garis-halus);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  vertical-align: top;
+}
+
+/* Ponsel: ringkasan dua baris saja, tanpa titik pemisah, supaya tidak menutup terlalu banyak layar. */
+@media (max-width: 39.99rem) {
+  .ringkasan {
+    padding-block: 0.375rem;
+  }
+
+  .ringkasanBaris {
+    gap: 0 0.625rem;
+    font-size: var(--t-xs);
+  }
+
+  .ringkasanBaris strong {
+    font-size: var(--t-md);
+  }
+
+  .pemisah {
+    display: none;
+  }
+}

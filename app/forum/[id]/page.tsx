@@ -7,8 +7,10 @@ import { CatatanCadangan } from "@/components/forum/CatatanCadangan";
 import { DaftarKomentar } from "@/components/forum/DaftarKomentar";
 import { DialogSembunyikan } from "@/components/forum/DialogSembunyikan";
 import { FormKomentar } from "@/components/forum/FormKomentar";
+import { KeputusanUsulan } from "@/components/forum/KeputusanUsulan";
 import { PosisiAnggaran } from "@/components/forum/PosisiAnggaran";
 import { RiwayatUsulan } from "@/components/forum/RiwayatUsulan";
+import { SaranAiPublik } from "@/components/forum/SaranAiPublik";
 import { TombolDukung } from "@/components/forum/TombolDukung";
 import { StatusSiklus } from "@/components/ui/StatusSiklus";
 import styles from "@/components/forum/Detail.module.css";
@@ -16,6 +18,7 @@ import { tentukanKeadaanDukungan } from "@/lib/aturan-dukungan";
 import { ambilPenggunaUntukBaca } from "@/lib/auth";
 import { dukunganSaya, muatUsulan } from "@/lib/forum-data";
 import { rupiah } from "@/lib/format";
+import { muatKeputusanUsulan } from "@/lib/keputusan-data";
 import { RUTE } from "@/lib/tautan";
 import { LABEL_KATEGORI, adalahKategori, adalahUuid } from "@/lib/usulan-skema";
 import { tanggalPanjang, waktuRelatif } from "@/lib/waktu";
@@ -69,10 +72,11 @@ async function IsiUsulan({ params, searchParams }: Props) {
   const { id } = await params;
   if (!adalahUuid(id)) notFound();
 
-  const [data, pengguna, query] = await Promise.all([
+  const [data, pengguna, query, putusan] = await Promise.all([
     muatUsulan(id),
     ambilPenggunaUntukBaca(),
     searchParams,
+    muatKeputusanUsulan(id),
   ]);
 
   const { usulan } = data;
@@ -166,6 +170,13 @@ async function IsiUsulan({ params, searchParams }: Props) {
                   </p>
                 </div>
               )}
+
+              {/* Usulan yang masih dibahas belum ikut hitungan anggaran. Simulasi menghitungnya hanya di peramban. */}
+              {usulan.status === "forum" && (
+                <Link href={`${RUTE.simulasi}?tambah=${id}.5`} className={styles.tautanSimulasi}>
+                  Lihat kalau usulan ini dihitung
+                </Link>
+              )}
             </>
           )}
 
@@ -202,6 +213,8 @@ async function IsiUsulan({ params, searchParams }: Props) {
             </section>
           )}
 
+          {!tersembunyi && putusan.keputusan && <KeputusanUsulan keputusan={putusan.keputusan} />}
+
           {!tersembunyi && (
             <section className={styles.bagian} aria-labelledby="judul-urgensi">
               <h2 id="judul-urgensi">Urgensi</h2>
@@ -209,6 +222,7 @@ async function IsiUsulan({ params, searchParams }: Props) {
                 <div className={styles.urgensi}>
                   <p className={styles.nilaiUrgensi}>Nilai {usulan.urgency_score} dari 10</p>
                   {usulan.urgency_reason && <p>{usulan.urgency_reason}</p>}
+                  {usulan.saran && <SaranAiPublik urgensi={usulan.urgency_score} saran={usulan.saran} />}
                 </div>
               ) : (
                 <p className={styles.catatanUrgensi}>

@@ -1,0 +1,62 @@
+/* Saran AI di halaman usulan: garis halus, teks biasa, tanpa kartu. Perluasan blok "Urgensi". */
+
+.saran {
+  display: grid;
+  gap: 0.25rem;
+  max-width: 65ch;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--garis-halus);
+}
+
+.kalimat {
+  margin: 0;
+}
+
+.saran summary {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  cursor: pointer;
+  color: var(--biru-stempel);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.saran summary:focus-visible {
+  outline: 3px solid var(--biru-stempel);
+  outline-offset: 3px;
+}
+
+.alasan {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0.25rem 0 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.alasan li {
+  display: grid;
+  gap: 0.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--garis-halus);
+}
+
+.alasan p,
+.alasan blockquote {
+  margin: 0;
+}
+
+.alasan blockquote {
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+  overflow-wrap: anywhere;
+}
+
+.catatan {
+  margin: 0;
+  color: var(--abu-semen);
+  font-size: var(--t-sm);
+}

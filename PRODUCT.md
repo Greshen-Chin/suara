@@ -23,11 +23,11 @@ Produk ini berhasil kalau warga RW kecil bisa melihat dengan angka kenapa usulan
 
 - Suara terbanyak tidak otomatis menang. Skor menggabungkan dukungan per 1.000 penduduk RW, urgensi (1 sampai 10, dengan alasan tertulis), dan pemerataan anggaran per kapita periode lalu. Bobotnya ditetapkan musyawarah dan setiap perubahannya tercatat.
 - "Garis Pagu" memperlihatkan, untuk pagu yang sama, apa yang terbiayai jika memakai suara terbanyak dan jika memakai rekomendasi SUARA.
-- AI hanya memberi bahan musyawarah (mengenali usulan mirip, menilai urgensi beserta alasannya). AI tidak pernah memutuskan.
+- AI hanya memberi bahan musyawarah (mengenali usulan mirip, menyarankan nilai urgensi beserta alasan yang mengutip usulan). AI tidak pernah memutuskan.
 
 ## Operating Context
 
-- Siklus usulan: `forum` (baru diajukan, dibahas) → `voting` (masuk perhitungan anggaran) → `approved` / `rejected` / `done`.
+- Siklus usulan: `forum` (baru diajukan, dibahas) → `voting` (masuk perhitungan anggaran) → `approved` / `referred` (diajukan ke dana lain) / `rejected`, lalu `done` untuk yang disetujui atau diajukan ke dana lain. Usulan yang "dibawa ke periode berikutnya" tetap `voting`.
 - Data demo: 3 RW (RW 01 berpenduduk 3.000 dengan anggaran lalu Rp 250 jt, RW 03 berpenduduk 2.000 dengan Rp 60 jt, RW 07 berpenduduk 400 dengan Rp 0), 7 usulan berstatus voting, 162 dukungan, pagu Rp 300 jt.
 - Akun warga dibuat admin, bukan pendaftaran mandiri. Tujuannya mencegah satu orang membuat banyak akun untuk menambah dukungan.
 
@@ -47,13 +47,32 @@ Produk ini berhasil kalau warga RW kecil bisa melihat dengan angka kenapa usulan
   - akun warga dibuat admin dari antarmuka (tertaut ke warga yang belum punya akun, kata sandi acak tampil sekali, wajib diganti saat masuk pertama); akun admin hanya lewat skrip terminal;
   - perubahan akun masuk jejak admin yang tertutup, bukan jejak publik, karena menyangkut data pribadi.
 - **Keputusan terbuka:** aturan dukungan bersifat sementara. Pemilik produk ingin menimbang ulang jatah dukungan terbatas (misalnya 3 per warga per periode).
+- Keputusan yang sudah diambil untuk simulasi (2026-11-22):
+  - semua orang boleh memakainya tanpa masuk; tidak menyimpan apa pun ke database dan tidak mengubah rekomendasi resmi;
+  - dihitung di peramban dengan mesin yang sama dengan halaman utama (`pilihOptimal`), dan keadaannya (pagu, bobot, usulan
+    forum andaian) tinggal di alamat supaya bisa dibagikan;
+  - bobot di simulasi selalu berjumlah 100 (menggeser satu membagi ulang dua lainnya), sengaja berbeda dari halaman admin;
+  - **Peta Pagu** menunjukkan, untuk semua usulan sekaligus, pada rentang pagu mana tiap usulan terbiayai;
+  - **uji ketahanan** menghitung hasil untuk semua 231 kombinasi bobot kelipatan 5 dan menyebut berapa yang menghasilkan pilihan
+    sama, untuk menjawab "bobotnya dipilih-pilih?". Ini bukan bukti bahwa keputusannya benar.
 - **Sudah ada:**
   - forum (daftar, detail, ajukan usulan, komentar, moderasi), termasuk deteksi usulan mirip dengan embedding (`multilingual-e5-small`, 384 dimensi) dan cadangan `pg_trgm`. Lihat `docs/forum.md`;
-  - halaman admin desa: ringkasan, usulan, anggaran (pagu dan bobot dengan pratinjau dampak), akun, dan moderasi, plus ganti kata sandi di `/akun` untuk semua peran. Lihat `docs/admin.md`.
+  - halaman admin desa: ringkasan, usulan, anggaran (pagu dan bobot dengan pratinjau dampak), akun, dan moderasi, plus ganti kata sandi di `/akun` untuk semua peran. Lihat `docs/admin.md`;
+  - halaman Keputusan (`/keputusan`, `/keputusan/[tahun]`, `/admin/keputusan`): admin mencatat hasil musyawarah utuh untuk semua usulan
+    dalam hitungan (disetujui, diajukan ke dana lain, dibawa ke periode berikutnya, ditolak) dengan alasan yang wajib bila berbeda dari
+    rekomendasi; warga membacanya berdampingan dengan rekomendasi (dua Garis Pagu), bisa mencetak lembar A4 untuk papan
+    pengumuman, dan mengunduh CSV. Ini **ringkasan keputusan musyawarah, bukan pengesahan anggaran**. Penetapan terakhir bisa
+    dibatalkan 24 jam. Lihat `docs/keputusan.md`;
+  - halaman Simulasi (`/simulasi`): pagu dan bobot yang bisa digeser, Peta Pagu, uji ketahanan bobot, tabel per RW, dan usulan forum
+    andaian, tanpa menyimpan. Lihat `docs/simulasi.md`;
+  - **saran urgensi dari AI (Gemini)**, opsional dan hanya aktif bila `GEMINI_API_KEY` terpasang: admin memilih nilainya sendiri lebih
+    dulu, baru boleh meminta saran; setiap alasan AI mengutip kalimat usulan (diperiksa server); nilai AI tidak pernah mengisi
+    pilihan; bila admin membukanya sebelum memutuskan, halaman usulan dan jejak menyebut keduanya ("Urgensi 8 dari 10, ditetapkan admin.
+    Saran AI sebelumnya: 7."). Tanpa kunci tidak ada jejak AI di antarmuka. Lihat `docs/saran-urgensi.md`.
 - **Belum ada:**
-  - Simulasi dan Keputusan (masih halaman stub); pratinjau dampak di admin dibuat supaya komponennya bisa dipakai ulang oleh Simulasi;
+  - koreksi keputusan setelah 24 jam, tanda tangan digital, unggah berkas, rencana kerja rinci, dan notifikasi (di luar cakupan fitur Keputusan);
   - pengisian `location` pada usulan (deteksi mirip memakai RW);
-  - penilaian urgensi oleh AI (admin mengisi urgensi dengan rubrik empat tingkat; tempat untuk saran AI sudah disiapkan di formulir tetapi tidak tampil sampai fiturnya ada);
+  - kalibrasi saran urgensi AI dengan Gemini sungguhan (fiturnya sudah ada, tetapi mutunya belum diukur; lihat `docs/saran-urgensi.md`);
   - pengaturan data wilayah (penduduk, anggaran periode lalu) dari antarmuka;
   - pengujian dengan pembaca layar dan perangkat sentuh nyata.
 

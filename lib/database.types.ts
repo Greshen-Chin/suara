@@ -268,6 +268,10 @@ export type Database = {
           urgency_score: number | null;
           disembunyikan_pada: string | null;
           alasan_disembunyikan: string | null;
+          selesai_pada: string | null;
+          catatan_selesai: string | null;
+          biaya_realisasi: number | null;
+          saran_dibuka_id: string | null;
         };
         ComputedFields: never;
         Insert: {
@@ -291,6 +295,10 @@ export type Database = {
           urgency_score?: number | null;
           disembunyikan_pada?: string | null;
           alasan_disembunyikan?: string | null;
+          selesai_pada?: string | null;
+          catatan_selesai?: string | null;
+          biaya_realisasi?: number | null;
+          saran_dibuka_id?: string | null;
         };
         Update: {
           category?: string;
@@ -313,6 +321,10 @@ export type Database = {
           urgency_score?: number | null;
           disembunyikan_pada?: string | null;
           alasan_disembunyikan?: string | null;
+          selesai_pada?: string | null;
+          catatan_selesai?: string | null;
+          biaya_realisasi?: number | null;
+          saran_dibuka_id?: string | null;
         };
         Relationships: [
           {
@@ -335,6 +347,207 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "v_wilayah";
             referencedColumns: ["rw"];
+          },
+        ];
+      };
+      saran_urgensi: {
+        Row: {
+          id: string;
+          proposal_id: string;
+          nilai: number;
+          keyakinan: string;
+          alasan: Json;
+          pertanyaan: Json;
+          model: string;
+          versi_prompt: string;
+          sidik_isi: string;
+          dibuat_oleh: string | null;
+          created_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          id?: string;
+          proposal_id: string;
+          nilai: number;
+          keyakinan: string;
+          alasan: Json;
+          pertanyaan?: Json;
+          model: string;
+          versi_prompt: string;
+          sidik_isi: string;
+          dibuat_oleh?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          proposal_id?: string;
+          nilai?: number;
+          keyakinan?: string;
+          alasan?: Json;
+          pertanyaan?: Json;
+          model?: string;
+          versi_prompt?: string;
+          sidik_isi?: string;
+          dibuat_oleh?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      panggilan_ai: {
+        Row: {
+          id: string;
+          akun_id: string | null;
+          proposal_id: string | null;
+          created_at: string;
+          hasil: string;
+          kode: string | null;
+          dihitung: boolean;
+          model: string | null;
+          durasi_ms: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          id?: string;
+          akun_id?: string | null;
+          proposal_id?: string | null;
+          created_at?: string;
+          hasil?: string;
+          kode?: string | null;
+          dihitung?: boolean;
+          model?: string | null;
+          durasi_ms?: number | null;
+        };
+        Update: {
+          id?: string;
+          akun_id?: string | null;
+          proposal_id?: string | null;
+          created_at?: string;
+          hasil?: string;
+          kode?: string | null;
+          dihitung?: boolean;
+          model?: string | null;
+          durasi_ms?: number | null;
+        };
+        Relationships: [];
+      };
+      periode: {
+        Row: {
+          tahun: number;
+          status: string;
+          versi: number;
+          dibuka_pada: string;
+          diputuskan_pada: string | null;
+          tanggal_musyawarah: string | null;
+          catatan: string | null;
+          pagu: number | null;
+          bobot: Json | null;
+          ada_rekomendasi: boolean;
+          wilayah_sebelum: Json | null;
+          diputuskan_oleh: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          tahun: number;
+          status: string;
+          versi?: number;
+          dibuka_pada?: string;
+          diputuskan_pada?: string | null;
+          tanggal_musyawarah?: string | null;
+          catatan?: string | null;
+          pagu?: number | null;
+          bobot?: Json | null;
+          ada_rekomendasi?: boolean;
+          wilayah_sebelum?: Json | null;
+          diputuskan_oleh?: string | null;
+        };
+        Update: {
+          tahun?: number;
+          status?: string;
+          versi?: number;
+          dibuka_pada?: string;
+          diputuskan_pada?: string | null;
+          tanggal_musyawarah?: string | null;
+          catatan?: string | null;
+          pagu?: number | null;
+          bobot?: Json | null;
+          ada_rekomendasi?: boolean;
+          wilayah_sebelum?: Json | null;
+          diputuskan_oleh?: string | null;
+        };
+        Relationships: [];
+      };
+      keputusan: {
+        Row: {
+          id: number;
+          tahun: number;
+          proposal_id: string;
+          hasil: string;
+          alasan: string | null;
+          sumber_dana: string | null;
+          peringkat: number | null;
+          jumlah_usulan: number | null;
+          skor: number | null;
+          status_rekomendasi: string | null;
+          biaya: number;
+          dukungan: number;
+          urgensi: number | null;
+          rw: number | null;
+          judul: string;
+          nama_singkat: string | null;
+          beda_dari_rekomendasi: boolean;
+          dibatalkan_pada: string | null;
+          created_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          id?: number;
+          tahun: number;
+          proposal_id: string;
+          hasil: string;
+          alasan?: string | null;
+          sumber_dana?: string | null;
+          peringkat?: number | null;
+          jumlah_usulan?: number | null;
+          skor?: number | null;
+          status_rekomendasi?: string | null;
+          biaya: number;
+          dukungan?: number;
+          urgensi?: number | null;
+          rw?: number | null;
+          judul: string;
+          nama_singkat?: string | null;
+          beda_dari_rekomendasi?: boolean;
+          dibatalkan_pada?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: number;
+          tahun?: number;
+          proposal_id?: string;
+          hasil?: string;
+          alasan?: string | null;
+          sumber_dana?: string | null;
+          peringkat?: number | null;
+          jumlah_usulan?: number | null;
+          skor?: number | null;
+          status_rekomendasi?: string | null;
+          biaya?: number;
+          dukungan?: number;
+          urgensi?: number | null;
+          rw?: number | null;
+          judul?: string;
+          nama_singkat?: string | null;
+          beda_dari_rekomendasi?: boolean;
+          dibatalkan_pada?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "keputusan_proposal_id_fkey";
+            columns: ["proposal_id"];
+            isOneToOne: false;
+            referencedRelation: "proposals";
+            referencedColumns: ["id"];
           },
         ];
       };
@@ -505,6 +718,10 @@ export type Database = {
           urgency_reason: string | null;
           urgency_score: number | null;
           vote_count: number | null;
+          saran_nilai: number | null;
+          saran_keyakinan: string | null;
+          saran_alasan: Json | null;
+          saran_model: string | null;
         };
         ComputedFields: never;
         Relationships: [];
@@ -599,6 +816,56 @@ export type Database = {
         ComputedFields: never;
         Relationships: [];
       };
+      v_periode: {
+        Row: {
+          tahun: number | null;
+          status: string | null;
+          versi: number | null;
+          dibuka_pada: string | null;
+          diputuskan_pada: string | null;
+          tanggal_musyawarah: string | null;
+          catatan: string | null;
+          pagu: number | null;
+          bobot: Json | null;
+          ada_rekomendasi: boolean | null;
+          wilayah_sebelum: Json | null;
+          diputuskan_oleh: string | null;
+          jumlah_disetujui: number | null;
+          jumlah_dana_lain: number | null;
+          jumlah_dilanjutkan: number | null;
+          jumlah_ditolak: number | null;
+          jumlah_beda: number | null;
+          terpakai: number | null;
+        };
+        ComputedFields: never;
+        Relationships: [];
+      };
+      v_keputusan: {
+        Row: {
+          tahun: number | null;
+          proposal_id: string | null;
+          hasil: string | null;
+          alasan: string | null;
+          sumber_dana: string | null;
+          peringkat: number | null;
+          jumlah_usulan: number | null;
+          skor: number | null;
+          status_rekomendasi: string | null;
+          biaya: number | null;
+          dukungan: number | null;
+          urgensi: number | null;
+          rw: number | null;
+          judul: string | null;
+          nama_singkat: string | null;
+          beda_dari_rekomendasi: boolean | null;
+          status_sekarang: string | null;
+          selesai_pada: string | null;
+          catatan_selesai: string | null;
+          biaya_realisasi: number | null;
+        };
+        ComputedFields: never;
+        Relationships: [];
+      };
       v_wilayah: {
         Row: {
           anggaran_lalu: number | null;
@@ -676,8 +943,37 @@ export type Database = {
           p_proposal: string;
           p_status_dibaca: string;
           p_urgensi: number | null;
+          p_saran?: string | null;
         };
         Returns: Json;
+      };
+      ambil_jatah_saran: {
+        Args: { p_akun: string; p_proposal: string; p_model: string; p_versi: string; p_batas_jam?: number; p_batas_hari?: number };
+        Returns: Json;
+      };
+      simpan_saran: {
+        Args: {
+          p_akun: string;
+          p_panggilan: string;
+          p_proposal: string;
+          p_sidik: string;
+          p_nilai: number;
+          p_keyakinan: string;
+          p_alasan: Json;
+          p_pertanyaan: Json;
+          p_model: string;
+          p_versi: string;
+          p_durasi_ms: number;
+        };
+        Returns: Json;
+      };
+      catat_gagal_saran: {
+        Args: { p_akun: string; p_panggilan: string; p_kode: string; p_hitung?: boolean; p_durasi_ms?: number | null };
+        Returns: Json;
+      };
+      sidik_isi_usulan: {
+        Args: { p_judul: string; p_deskripsi: string; p_kategori: string };
+        Returns: string;
       };
       ubah_pagu: {
         Args: { p_akun: string; p_alasan: string; p_pagu: number; p_versi_dibaca: number };
@@ -716,6 +1012,36 @@ export type Database = {
       };
       ganti_sandi_sendiri: {
         Args: { p_akun: string; p_hash: string };
+        Returns: Json;
+      };
+      tetapkan_keputusan: {
+        Args: {
+          p_akun: string;
+          p_tahun: number;
+          p_versi_dibaca: number;
+          p_sidik: string;
+          p_tanggal: string;
+          p_catatan: string;
+          p_butir: Json;
+        };
+        Returns: Json;
+      };
+      batalkan_penetapan: {
+        Args: { p_akun: string; p_tahun: number; p_alasan: string };
+        Returns: Json;
+      };
+      tandai_selesai: {
+        Args: {
+          p_akun: string;
+          p_proposal: string;
+          p_status_dibaca: string;
+          p_catatan: string;
+          p_biaya_realisasi?: number | null;
+        };
+        Returns: Json;
+      };
+      sidik_hitungan: {
+        Args: Record<PropertyKey, never>;
         Returns: Json;
       };
       tambah_komentar: {

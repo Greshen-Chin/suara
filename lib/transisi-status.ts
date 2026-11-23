@@ -2,8 +2,8 @@
 // pindahkan_status (supabase/migrations/0005_admin.sql); ini hanya untuk menentukan tombol apa
 // yang ditampilkan dan menolak lebih awal.
 //
-// Yang SENGAJA tidak ada: voting -> approved/rejected dan approved -> done. Itu penetapan hasil
-// musyawarah, bagian fitur Keputusan (/keputusan), karena butuh konsep periode anggaran.
+// Yang SENGAJA tidak ada: voting -> approved/referred/rejected dan approved/referred -> done. Itu penetapan
+// hasil musyawarah dan penandaan selesai, di halaman Keputusan (/admin/keputusan), karena butuh periode anggaran.
 
 export type StatusTujuan = "voting" | "forum" | "rejected";
 
@@ -40,8 +40,10 @@ export function keteranganTanpaAksi(status: string, tersembunyi: boolean): strin
     case "rejected":
       return "Usulan ini sudah tidak dilanjutkan. Alasannya tercatat di riwayat usulan.";
     case "approved":
+    case "referred":
+      return "Usulan ini sudah diputuskan musyawarah. Menandainya selesai dikerjakan dilakukan di halaman Keputusan.";
     case "done":
-      return "Usulan ini sudah diputuskan. Perubahan setelah musyawarah dilakukan di halaman Keputusan, yang belum tersedia.";
+      return "Usulan ini sudah diputuskan musyawarah dan sudah selesai dikerjakan.";
     default:
       return "Tidak ada perpindahan status yang tersedia untuk usulan ini.";
   }

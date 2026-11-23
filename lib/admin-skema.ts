@@ -93,6 +93,13 @@ export const LABEL_BOBOT: Record<KolomBobot, string> = {
   pemerataan: "Pemerataan",
 };
 
+/** Penjelasan tiap bobot dalam bahasa warga, bukan istilah anggaran. Dipakai halaman admin dan simulasi. */
+export const PENJELASAN_BOBOT: Record<KolomBobot, string> = {
+  popularitas: "Dukungan per 1.000 penduduk RW. RW kecil tidak kalah hanya karena penduduknya sedikit.",
+  urgensi: "Seberapa mendesak, dinilai admin dengan alasan tertulis.",
+  pemerataan: "RW yang periode lalu mendapat sedikit anggaran didahulukan.",
+};
+
 /** Satu kolom bobot: bilangan bulat 0 sampai 100. */
 function bacaBobot(teks: string): number | null {
   const t = teks.trim();

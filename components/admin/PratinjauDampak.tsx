@@ -2,10 +2,8 @@
 
 import { useEffect, useId, useState } from "react";
 import { hitungPratinjauAdmin, type MasukanPratinjau } from "@/app/admin/pratinjau";
-import { PaguBar } from "@/components/landing/PaguBar";
-import { StatusLabel } from "@/components/ui/StatusLabel";
-import { rupiah } from "@/lib/format";
-import { namaDenganRw, TEKS_STATUS, type BarisBanding, type HasilPratinjau } from "@/lib/pratinjau";
+import { PerbandinganPagu } from "@/components/anggaran/PerbandinganPagu";
+import type { HasilPratinjau } from "@/lib/pratinjau";
 import styles from "./Pratinjau.module.css";
 
 const TUNDA_MS = 300;
@@ -67,29 +65,12 @@ function usePratinjau(masukan: MasukanPratinjau | null): Keadaan {
   return kunci === null ? { jenis: "diam" } : keadaan;
 }
 
-function Perubahan({ b }: { b: BarisBanding }) {
-  const sebelum = b.sebelum ? <StatusLabel status={b.sebelum.status} teks={TEKS_STATUS[b.sebelum.status]} /> : <span className={styles.tanpaStatus}>Belum dihitung</span>;
-  const sesudah = b.sesudah ? <StatusLabel status={b.sesudah.status} teks={TEKS_STATUS[b.sesudah.status]} /> : <span className={styles.tanpaStatus}>Tidak lagi dihitung</span>;
-  return (
-    <li className={styles.perubahan}>
-      <span className={styles.nama}>{namaDenganRw(b)}</span>
-      <span className={styles.status}>
-        {sebelum}
-        <span aria-hidden="true" className={styles.panah}>
-          →
-        </span>
-        <span className="sr-only">menjadi</span>
-        {sesudah}
-      </span>
-    </li>
-  );
-}
-
 /**
  * Pratinjau dampak: akibat sebuah keputusan pada Garis Pagu SEBELUM keputusan itu berlaku. Dua batang
  * ("Sekarang" dan "Sesudah disimpan") memakai komponen batang yang sama dengan halaman utama, diikuti
- * usulan yang berubah status. Tidak terikat ke halaman admin: dirancang agar bisa dipakai ulang oleh
- * halaman simulasi (warga bermain dengan pagu dan bobot tanpa menyimpan).
+ * usulan yang berubah status. Komponen INI terikat ke halaman admin (memanggil Server Action admin dan
+ * labelnya khusus keputusan yang akan disimpan). Yang bisa dipakai ulang adalah tampilan perbandingannya,
+ * PerbandinganPagu (components/anggaran), yang juga dipakai halaman /simulasi.
  *
  * `masukan` null = isiannya belum valid; yang tampil hanya `petunjukDiam`.
  */
@@ -124,50 +105,7 @@ export function PratinjauDampak({ masukan, petunjukDiam }: { masukan: MasukanPra
         </p>
       )}
 
-      {hasil && <Isi hasil={hasil} lama={menghitung} />}
+      {hasil && <PerbandinganPagu hasil={hasil} labelSebelum="Sekarang" labelSesudah="Sesudah disimpan" lama={menghitung} />}
     </section>
-  );
-}
-
-function Isi({ hasil, lama }: { hasil: HasilPratinjau; lama: boolean }) {
-  const { banding } = hasil;
-  return (
-    <div className={lama ? `${styles.isi} ${styles.lama}` : styles.isi}>
-      <div className={styles.batang}>
-        <figure className={styles.gambar}>
-          <figcaption>
-            Sekarang <span className={styles.paguKet}>(pagu {rupiah(hasil.paguSekarang)})</span>
-          </figcaption>
-          <PaguBar ringkas pagu={hasil.paguSekarang} mode={hasil.sekarang} />
-        </figure>
-        <figure className={styles.gambar}>
-          <figcaption>
-            Sesudah disimpan <span className={styles.paguKet}>(pagu {rupiah(hasil.paguSesudah)})</span>
-          </figcaption>
-          <PaguBar ringkas pagu={hasil.paguSesudah} mode={hasil.sesudah} />
-        </figure>
-      </div>
-
-      {(banding.masuk || banding.keluar || banding.berubah.length > 0) && (
-        <ul className={styles.daftar} aria-label="Usulan yang berubah status">
-          {banding.masuk && <Perubahan b={banding.masuk} />}
-          {banding.keluar && <Perubahan b={banding.keluar} />}
-          {banding.berubah.map((b) => (
-            <Perubahan key={b.id} b={b} />
-          ))}
-        </ul>
-      )}
-
-      {banding.tetap.length > 0 && (
-        <details className={styles.tetap}>
-          <summary>{banding.tetap.length} usulan tidak berubah</summary>
-          <ul className={styles.daftar}>
-            {banding.tetap.map((b) => (
-              <Perubahan key={b.id} b={b} />
-            ))}
-          </ul>
-        </details>
-      )}
-    </div>
   );
 }

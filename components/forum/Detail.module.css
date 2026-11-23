@@ -163,6 +163,18 @@
   text-underline-offset: 0.2em;
 }
 
+/* Tautan tenang ke simulasi: tautan berdiri sendiri, jadi tingginya minimal 44 px, dan digarisbawahi (WCAG 1.4.1). */
+.tautanSimulasi {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-size: var(--t-sm);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
 /* ---- Usulan tersembunyi ---- */
 
 .disembunyikan {
@@ -408,4 +420,32 @@
   height: 1rem;
   border-radius: var(--radius);
   background: var(--garis-halus);
+}
+
+/* ---- Keputusan musyawarah: blok tenang, hanya garis di kiri ---- */
+
+.keputusan {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 65ch;
+  padding-left: 1rem;
+  border-left: 3px solid var(--tinta);
+}
+
+.keputusan a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.keputusanHasil {
+  font-weight: 700;
+}
+
+.keputusanSelesai {
+  color: var(--abu-semen);
 }

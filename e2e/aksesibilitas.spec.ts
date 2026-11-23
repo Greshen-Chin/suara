@@ -4,10 +4,11 @@
 // axe tidak menggantikan uji manual dengan pembaca layar; lihat catatan di docs/forum.md.
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Browser, type Page } from "@playwright/test";
-import { konteksSebagai, pantauKonsol, resetDatabase } from "./bantu.ts";
+import { konteksSebagai, pantauKonsol, resetDanSegarkan } from "./bantu.ts";
 
 test.describe.configure({ mode: "serial" });
-test.beforeAll(resetDatabase);
+// Segarkan juga cache publik: tanpa itu daftar forum masih memuat id dari database sebelum reset, dan halaman detailnya "tidak ditemukan".
+test.beforeAll(async ({ browser }) => resetDanSegarkan(browser));
 
 const LEBAR = [360, 1440] as const;
 const TAG = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];

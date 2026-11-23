@@ -127,6 +127,12 @@ adalah **pratinjau dampak**: dua Garis Pagu kecil, "Sekarang" dan "Sesudah disim
 berlaku. Satu-satunya permukaan gelap di aplikasi adalah **pita mode admin** di puncak halaman, supaya
 admin tidak pernah ragu sedang berada di mana.
 
+Simulasi (`/simulasi`) memakai bahasa yang sama untuk mencoba tanpa menyimpan, dan pembedanya adalah **Peta Pagu**: satu
+baris per usulan, sumbu mendatar adalah pagu, ruas hijau sawah (warna yang sudah berarti "terbiayai") menandai rentang pagu
+tempat usulan itu terbiayai, dan garis tinta tebal adalah pagu yang sedang digeser. Dibaca seperti jadwal keberangkatan di
+terminal: kapan usulan ini "berangkat". Bagian lainnya sengaja tenang (kendali di papan berbingkai 3 px, hasil di bawah garis
+6 px) supaya perhatian ke peta.
+
 **Key Characteristics:**
 - Datar: kedalaman dari garis (3 px tinta, 2 px, 1 px halus), bukan bayangan.
 - Daftar berupa baris bergaris, bukan kartu. Tidak ada kartu di dalam kartu.
@@ -209,6 +215,11 @@ tinta 2 px di atas daftar.
 - **Tinjau usulan (admin):** isi, dukungan, dan usulan serupa di kolom utama, kotak "Keputusan" di samping
   (`<aside>`); formulir "Masukkan ke hitungan anggaran" di bawahnya selebar halaman karena memuat rubrik
   dan pratinjau; komentar dan riwayat **di bawah formulir**, supaya keputusan tidak terdorong ke dasar halaman.
+- **Simulasi:** satu halaman, urutan DOM sama dengan urutan di ponsel (kendali pagu, hasil, Peta Pagu, bobot dan uji ketahanan,
+  tabel per RW, tambah usulan, bagikan). Di ≥ 62rem kendali menempel di kolom kiri selebar 19rem (`position: sticky`) dan
+  hasil serta peta di kanan; bobot dan uji ketahanan memakai pola dua kolom yang sama. Di ponsel satu bilah ringkasan
+  ("Rp 300 juta · 4 terbiayai · sisa Rp 15 juta") menempel di dasar layar sebagai elemen terakhir `.tata` (flex, bukan grid:
+  `sticky` pada item grid hanya bergerak di sel gridnya), tidak menutupi footer, dan berupa tautan ke pengatur pagu.
 - **Kerangka pemuatan** meniru tinggi isi sebenarnya agar tidak ada lompatan (CLS 0 pada
   Lighthouse). Kerangka detail setinggi layar supaya footer tidak sempat terlihat lalu terdorong.
 
@@ -252,7 +263,8 @@ ditutup, data cadangan) diganti kalimat penjelasan.
 - **Seleksi** (`StatusLabel`): Terpilih = hijau penuh; Ditunda = kuning penuh; Tidak terpilih =
   putus-putus abu. Teks bisa diganti (mis. "Terbiayai") tanpa mengubah ikon dan warna.
 - **Siklus** (`StatusSiklus`): Sedang dibahas (tinta), Masuk hitungan anggaran (biru),
-  Disetujui (hijau), Ditolak dan Selesai (abu). Berbingkai, latar putih.
+  Disetujui (hijau), Diajukan ke dana lain (biru, ikon panah keluar), Ditolak dan Selesai (abu). Berbingkai, latar putih.
+  Teks bisa diganti (mis. "Dibawa ke periode berikutnya" memakai ikon dan warna Masuk hitungan anggaran).
 
 ### Baris posisi anggaran
 Satu baris antara dua garis halus: "Peringkat 2 dari 7 rekomendasi" (tebal) + cap seleksi +
@@ -276,18 +288,19 @@ Komentar admin berlabel "Admin desa" (cap biru dengan ikon perisai). Komentar at
 disembunyikan diganti kotak berbingkai putus-putus berisi tanggal dan alasan.
 
 ### Dialog alasan
-`<dialog>` asli, `showModal()`. Garis 3 px tinta, latar papan, lebar maksimum 32rem. Alasan wajib dengan
-penghitung karakter; tombol "Batal" dan tombol aksi. Satu komponen bersama (`components/ui/DialogAlasan`)
-dipakai untuk menyembunyikan (forum), menampilkan kembali, tidak melanjutkan, mengembalikan ke pembahasan,
-menonaktifkan akun, dan mengatur ulang kata sandi; tiap pemakai hanya mengisi judul, penjelasan, dan teks
-tombol. Isinya dipasang ulang dengan `key` setiap dibuka, jadi isian dan galat lama tidak terbawa. Saat
+`<dialog>` asli, `showModal()`. Garis 3 px tinta, latar papan, lebar maksimum 32rem; tombol "Batal" dan
+tombol aksi. Satu komponen bersama (`components/ui/DialogAlasan`); tiap pemakai hanya mengisi judul,
+penjelasan, dan teks tombol. Aksi yang tercatat di jejak publik (menyembunyikan, menampilkan kembali, tidak
+melanjutkan, mengembalikan ke pembahasan) wajib beralasan, dengan penghitung karakter dan fokus awal di kolom
+alasan. Aksi akun (atur ulang kata sandi, nonaktifkan, aktifkan) adalah konfirmasi **tanpa** kolom alasan
+(`perluAlasan={false}`), dan fokus awalnya di "Batal" supaya Enter tidak langsung menjalankan aksi berisiko. Isinya dipasang ulang dengan `key` setiap dibuka, jadi isian dan galat lama tidak terbawa. Saat
 berhasil, dialog bisa menampilkan layar hasil sendiri (`tampilanBerhasil`) dan tetap bernama aksesibel
 (judulnya ber-id yang diteruskan ke layar hasil). Esc menutup dan fokus kembali ke pemicu.
 
 ### Pita mode admin dan navigasi bagian
-Pita gelap (latar tinta, teks putih, tinggi ±33 px) di atas header, hanya untuk admin: cap perisai biru
-yang sama dengan label "Admin desa" di forum, dibalik (putih berbingkai biru) supaya terbaca, lalu nama
-pengguna. Di bawahnya navigasi bagian (Ringkasan, Usulan, Anggaran, Akun, Moderasi) berlatar kapur dengan
+Pita gelap (latar tinta, teks putih, tinggi ±33 px) tepat **di bawah header**, hanya untuk admin: cap perisai
+biru yang sama dengan label "Admin desa" di forum, dibalik (putih berbingkai biru) supaya terbaca, lalu "masuk
+sebagai [nama]. Perubahan di sini berdampak ke halaman publik." Di bawahnya navigasi bagian (Ringkasan, Usulan, Anggaran, Akun, Moderasi) berlatar kapur dengan
 garis 1 px; tautan aktif bergaris bawah 3 px dengan `aria-current="page"`, bukan hanya warna. Pita dan
 navigasi dibaca dari sesi di dalam `Suspense` dengan kerangka setinggi aslinya, jadi tidak ada lompatan.
 
@@ -304,14 +317,72 @@ tabular) lalu nama tingkat dan keterangan kecil abu. Tingkat yang sesuai dengan 
 **ditebalkan dan rentangnya digarisbawahi 3 px**, bukan hanya diwarnai. Kelompok radio diberi `key` supaya
 pilihan tidak kembali ke nilai awal saat React mereset formulir. Tidak ada nilai bawaan.
 
+### Catatan pinggir (saran urgensi AI)
+Elemen khas fitur saran AI, hanya ada bila kunci Gemini terpasang. Kolom sempit **bergaris tepi penuh 2 px** (tinta di atas
+kapur) dengan pita label tinta "Saran AI · [nama model]" di atasnya, menempel di sebelah kelompok pilihan urgensi (di
+bawahnya pada ponsel; dua kolom mulai 64rem, `Admin.module.css` `.urgensiDanSaran`). Isinya: nilai saran (Barlow, besar, tabular)
+dengan nama tingkat rubrik, kalimat selisih yang netral (tanpa warna galat untuk perbedaan pendapat), alasan masing-masing dengan
+kutipan dari usulan dan tombol "Sorot di usulan" yang menyorot kutipan itu di isi usulan dengan **marka kuning + garis tinta**
+(`<mark>`, bisa difokus dengan keyboard; kuning marka dengan teks tinta, bukan putih), "Belum jelas" berisi pertanyaan untuk admin,
+dan penutup "Keyakinan sedang. Ini bahan, bukan keputusan." Teks yang dikirim ke AI dilipat di bawahnya, bagian yang disamarkan
+ditandai garis bawah putus-putus dan kurung siku. Tanpa gerak sama sekali; hasil diumumkan lewat wilayah `status` yang sopan.
+Di halaman usulan publik, saran yang dibuka tampil sebagai satu kalimat di blok Urgensi dengan `<details>` berisi alasannya.
+
 ### Pratinjau dampak
-Blok berbingkai 3 px berjudul "Pratinjau dampak": dua `PaguBar` varian `ringkas` ("Sekarang",
+Bagian dengan garis atas 2 px tinta (bukan kotak) berjudul "Pratinjau dampak": dua `PaguBar` varian `ringkas` ("Sekarang",
 "Sesudah disimpan") dengan nama di tiap blok (elipsis bila terlalu sempit) dan biaya hanya untuk pembaca
 layar, satu kalimat ringkasan, kalimat khusus perpindahan status, lalu daftar usulan yang berubah dengan
 `StatusLabel` sebelum dan sesudah. Yang tidak berubah dilipat. Dihitung ulang dengan jeda 300 ms; hasilnya
 diumumkan lewat live region `role="status"` yang dibatasi frekuensinya, jadi pembaca layar tidak dibanjiri
 saat admin mengetik. Bila gagal atau lambat: "Pratinjau belum bisa dihitung. Anda tetap bisa menyimpan."
-Komponennya (`PratinjauDampak`) tidak tahu soal admin, supaya halaman Simulasi bisa memakainya.
+Logikanya (`lib/pratinjau.ts`) murni dan bisa dipakai halaman mana pun. Tampilannya (dua batang ringkas, kalimat, daftar yang
+berubah, dan yang tidak berubah dilipat) ada di `components/anggaran/PerbandinganPagu`, dengan label lewat props
+(`labelSebelum`, `labelSesudah`, `batang`, `penanda`, ...). `PratinjauDampak` sendiri tetap terikat ke Server Action admin;
+`PerbandinganPagu` dipakai juga oleh halaman simulasi ("Rekomendasi resmi" dan "Simulasi Anda").
+
+### Peta Pagu
+Elemen khas Simulasi. Satu baris per usulan, diurutkan dari yang paling cepat terbiayai: nama (Barlow 1.25rem) dan "RW 07 · Rp
+40 juta" di kiri, jalur di tengah, penanda status berteks (ikon + teks) dan satu kalimat di kanan ("Gapura muat pada Rp 465–500
+juta, lalu lagi dari Rp 685 juta."). Jalur memakai garis kisi tiap seperempat sumbu (1 px garis halus) dan garis dasar; ruas
+berwarna hijau sawah polos tanpa sudut membulat; ruas yang tersentuh garis pagu Anda **berbingkai tinta 3 px** ("menyala",
+bentuk dan bukan hanya warna). **Pagu Anda** adalah garis tinta 3 px dengan bendera tinta di atas peta; **pagu resmi** garis
+putus-putus 2 px, dan bendera berbingkai di bawah peta hanya tampil bila nilainya berbeda dari pagu Anda. Tepi bendera yang sejajar dengan garis
+bergeser dari kiri ke kanan mengikuti nilainya (`translate: calc(var(--anda) * -1%)`), jadi bendera tidak pernah keluar dari
+peta dan selalu tersambung ke garis. Di peta selebar ≥ 54rem (container query, bukan lebar layar) baris menjadi tiga kolom dan
+garis pagu tersambung dari baris ke baris; lebih sempit, label naik ke atas jalurnya dan kalimat di bawahnya. Rentang rupiah
+di kalimat tidak boleh patah di tanda pisah (`white-space: nowrap`). Peta adalah gambar pendukung: jalurnya `aria-hidden`,
+ada tabel setara di "Lihat sebagai tabel", dan penjelasan "Kenapa ruasnya bisa terputus?". Ringkasan `<details>` memakai chevron
+yang digambar sendiri (border 2.25 px) yang berputar saat dibuka.
+
+### Kendali pagu dan geseran
+Papan berbingkai 3 px (latar papan): label, **angka pagu besar** (Barlow, `--t-hero`, "Rp" dan satuan setengah ukuran), geseran
+asli `<input type="range">`, ujung rentang, kolom ketik dengan tombol "Pakai", dan tombol "Kembali ke pagu resmi" (diganti "Sama
+dengan pagu resmi." bila sama). Geseran digambar sendiri: jalur tinta 6 px (bagian yang sudah dilewati tinta, sisanya abu semen,
+keduanya melewati kontras 3:1), pegangan berbingkai 3 px dengan garis pegangan di tengah, tinggi kolom 2.75rem. Angka yang
+berubah terus **bukan `<output>`**: elemen itu berperan "status" dan akan mengumumkan tiap langkah; angkanya `aria-hidden` dan
+geseran sendiri mengumumkan nilainya (`aria-valuetext`). Bobot memakai tiga geseran yang sama (nilai Barlow di kanan label) dan
+empat pilihan cepat bergaris 3 px; yang aktif berisi tinta, berikon centang, dan `aria-pressed`.
+
+### Penanda "andaian"
+Usulan forum yang hanya diandaikan warga ditandai cap kecil berbingkai **putus-putus** 2 px abu semen (radius 0.25rem, sama dengan
+cap lain) di batang, peta, daftar perubahan, dan daftar tambahan, mengikuti aturan "bentuk, bukan hanya warna" seperti status
+Tidak terpilih. Di batang besar nama blok memakai akhiran "(andaian)".
+
+### Uji ketahanan
+Di samping geseran bobot: kalimat utama (Public Sans 1.25rem), ajakan "Coba pagu Rp …" di antara dua garis 2 px tinta, lalu
+baris per usulan (nama, batang proporsi berbingkai 2 px berisi hijau sawah, "228 dari 231"). Sementara hitungan baru berjalan,
+isinya diredam (opasitas 0.55) dan `aria-busy`. Kalimat "Dengan bobot Anda, pada pagu ini" menyebut apa yang berubah karena
+bobot.
+
+### Tabel per RW
+`<table>` asli dengan `<caption>`, dua golongan kolom ("Rekomendasi resmi" dan "Simulasi Anda"), angka rata kanan, simulasi
+**tebal** dengan selisih di bawahnya ("naik Rp 220 juta"). Di bawah 64rem sel menjadi dua kolom resmi | simulasi dengan label
+di atas nilainya (peran ARIA eksplisit; `caption` dibuat `display: block`).
+
+### Ringkasan menempel (ponsel)
+Satu baris Barlow 1.25rem dengan garis tinta 3 px di atasnya, latar kapur, di dasar layar hanya di bawah 62rem. Berupa tautan "Ke pengatur pagu"
+dengan chevron; teks yang terlihat `aria-hidden` tetapi tercakup dalam nama tautan (WCAG 2.5.3). `scroll-padding-bottom: 5rem`
+pada `html` menjaga elemen yang menerima fokus tidak tertutup (WCAG 2.4.11).
 
 ### Penunjuk jumlah bobot
 Tiga kolom bilangan bulat dan satu penunjuk yang selalu terlihat, di antara dua garis 2 px tinta. Maknanya
@@ -335,6 +406,34 @@ Penunjuk tiga langkah (Isi usulan, Periksa serupa, Tinjau dan kirim) dengan `ari
 Satu blok berbingkai 3 px per langkah; judul langkah menerima fokus saat langkah berganti. Alur
 membuat akun di admin memakai pola yang sama, dengan empat langkah (Pilih warga, Nama pengguna,
 Kata sandi awal, Hasil).
+
+### Dua garis, satu keputusan (halaman keputusan)
+Dua Garis Pagu ringkas bertumpuk dengan skala yang sama: "Rekomendasi SUARA" di atas, "Keputusan musyawarah" di bawah.
+Usulan yang sama ada di kedua batang; yang **berbeda** ditandai bentuk, bukan hanya warna: bingkai putus-putus 3 px di
+dalam blok dan tanda ≠ di samping nama (prop `tandaBeda` pada `PaguBar`), dengan legenda satu baris di bawahnya.
+Periode tanpa rekomendasi hanya punya batang keputusan.
+
+### Cap keputusan
+Cap stempel biru (`--biru-stempel`) berbingkai 3 px, miring -2,5°, Barlow Condensed 700, berisi "DIPUTUSKAN · 20 November 2026".
+Satu per halaman dan isinya teks asli. Di ponsel tanggalnya turun ke baris sendiri tanpa titik pemisah. Di cetakan menjadi hitam.
+
+### Di mana musyawarah berbeda
+Bagian yang paling menonjol di halaman keputusan: bingkai tinta 3 px di atas permukaan putih, judul Barlow 2,5 rem, dan alasan
+tertulis dalam huruf isi 1,25 rem (62ch). Satu butir per usulan: judul, rekomendasi ≠ keputusan (cap), alasan. Tanpa perbedaan:
+satu kalimat besar, "Musyawarah mengikuti seluruh rekomendasi."
+
+### Lembar kerja keputusan (admin)
+Satu baris register per usulan (garis halus, bukan kartu): judul tebal, RW, biaya, peringkat, skor, cap seleksi, lalu empat
+pilihan hasil sebagai kelompok tombol (radio asli, 2 × 2 di ponsel dan 1 × 4 di layar lebar, tinggi 44 px; yang terpilih
+berlatar tinta). Tidak ada pilihan bawaan. Kolom sumber dana dan alasan muncul tepat saat dibutuhkan, dengan kalimat mengapa
+wajib. Baris yang isiannya belum sah berbingkai dan berlatar galat. **Ringkasan menempel di dasar layar** (garis tinta 3 px,
+latar putih; latar galat bila melebihi pagu): "Terpakai Rp 285 juta dari Rp 300 juta · sisa · belum diisi · berbeda".
+
+### Gaya cetak
+`@media print` (globals.css, Keputusan.module.css, PaguBar.module.css): tanpa header, footer, dan tombol (`.tanpa-cetak`),
+latar putih, tinta hitam, `@page` A4 margin 14 mm. Batang: blok bergaris hitam 2 px (putus-putus bila berbeda), sisa diarsir.
+Tata letak lebar PaguBar berlaku juga saat dicetak (`@media (min-width: 45rem), print`). Baris tabel tidak terpotong.
+Satu-satunya tempat warna hitam murni (`#000`) dipakai: kertas tidak punya warna tambahan.
 
 ### Navigation
 Header putih dengan garis tinta 3 px di bawahnya. Merek SUARA (Barlow 2rem, jarak huruf .06em).
@@ -366,6 +465,11 @@ tidak melihatnya.
   fokus tidak hilang.
 - **Don't** menambah warna atau huruf baru tanpa mencatat alasannya di sini.
 - **Don't** menampilkan penanda "AI", "segera hadir", atau tempat kosong untuk fitur yang belum berjalan
-  (mis. saran urgensi AI di formulir admin): klaim di antarmuka harus sudah ada fiturnya.
+  (mis. saran urgensi AI tanpa `GEMINI_API_KEY`): klaim di antarmuka harus sudah ada fiturnya.
+- **Don't** memberi saran AI ikon kilau, gradasi, warna ungu, atau animasi mengetik; ia catatan rekan, bukan kotak ajaib.
 - **Don't** menaruh kata sandi (atau apa pun yang rahasia) di URL, penyimpanan peramban, atau cache.
 - **Don't** memakai garis tebal di satu sisi sebagai penanda galat atau peringatan; pakai bingkai penuh.
+- **Don't** memakai `<output>` untuk angka yang berubah terus (geseran): berperan "status", jadi diumumkan tiap langkah.
+- **Don't** membungkus isi halaman yang harus terbaca tanpa JavaScript dalam `<Suspense>` bila datanya tidak ikut App Shell:
+  isinya dialirkan sesudah shell dan tersembunyi sampai skrip menampilkannya.
+- **Don't** memakai `position: sticky` pada item grid untuk bilah yang harus ikut tergulir: pakai induk flex.

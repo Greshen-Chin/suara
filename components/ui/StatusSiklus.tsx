@@ -1,13 +1,5 @@
+import { TEKS_SIKLUS } from "@/lib/teks-siklus";
 import styles from "./StatusSiklus.module.css";
-
-/** Siklus usulan: forum -> voting -> approved / rejected / done. */
-export const TEKS_SIKLUS: Record<string, string> = {
-  forum: "Sedang dibahas",
-  voting: "Masuk hitungan anggaran",
-  approved: "Disetujui",
-  rejected: "Ditolak",
-  done: "Selesai",
-};
 
 const GAMBAR: Record<string, React.ReactNode> = {
   // gelembung percakapan
@@ -28,6 +20,8 @@ const GAMBAR: Record<string, React.ReactNode> = {
       <path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4" />
     </>
   ),
+  // panah keluar dari kotak: diajukan ke sumber dana lain
+  referred: <path d="M9 2.5h4.5V7M13.5 2.5L7.5 8.5M11 10.5v3H2.5V5h3" />,
   // centang di atas garis dasar
   done: <path d="M3 7.5l3.2 3.2L13 4M3 13.5h10" />,
 };
@@ -37,7 +31,7 @@ const GAMBAR: Record<string, React.ReactNode> = {
  * (mis. "Tidak dilanjutkan" untuk usulan forum yang ditolak sebelum dinilai) tanpa mengubah ikon dan warna.
  */
 export function StatusSiklus({ status, teks: teksGanti }: { status: string; teks?: string }) {
-  const teks = teksGanti ?? TEKS_SIKLUS[status] ?? status;
+  const teks = teksGanti ?? TEKS_SIKLUS[status] ?? "Status tidak dikenal";
   return (
     <span className={`${styles.label} ${styles[status] ?? ""}`}>
       <svg

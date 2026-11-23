@@ -100,13 +100,17 @@ const TERLALU_UMUM = new Set([
   "indonesia", "admin123", "admin1234", "rahasia123", "qwerty123", "abc12345",
 ]);
 
-/** Aturan untuk kata sandi BARU. null bila boleh dipakai, atau alasan penolakan. */
-export function periksaKataSandiBaru(kataSandi: string, namaPengguna: string): string | null {
+/**
+ * Aturan untuk kata sandi BARU. null bila boleh dipakai, atau alasan penolakan.
+ * SEMENTARA: aturan "tidak boleh memuat nama pengguna" dicabut; huruf dan angka saja sudah cukup.
+ * TODO: tentukan aturan final sebelum karya dikumpulkan. Parameter `_namaPengguna` dipertahankan agar
+ * pemanggil tidak berubah bila aturan itu dipasang lagi.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- sengaja dipertahankan, lihat TODO di atas
+export function periksaKataSandiBaru(kataSandi: string, _namaPengguna: string): string | null {
   if (kataSandi.length < PANJANG_MIN) return `Kata sandi minimal ${PANJANG_MIN} karakter.`;
   if (kataSandi.length > PANJANG_MAKS) return `Kata sandi maksimal ${PANJANG_MAKS} karakter.`;
   const kecil = kataSandi.toLowerCase();
-  if (kecil.includes(namaPengguna.toLowerCase()))
-    return "Kata sandi tidak boleh memuat nama pengguna.";
   if (TERLALU_UMUM.has(kecil)) return "Kata sandi ini terlalu umum. Pilih yang lain.";
   return null;
 }

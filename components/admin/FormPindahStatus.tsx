@@ -1,14 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState, type ReactNode } from "react";
+import { useActionState, useState } from "react";
 import { pindahkanStatus } from "@/app/admin/aksi";
 import { BATAS_ADMIN, periksaNamaSingkat, periksaUrgensi } from "@/lib/admin-skema";
+import { PESAN_SARAN_BASI, type SaranUi } from "@/lib/saran-urgensi-tipe";
 import { STATUS_AKSI_AWAL } from "@/lib/admin-status";
 import { RUBRIK_URGENSI, label, rubrikUntuk } from "@/lib/urgensi";
 import { BATAS } from "@/lib/usulan-skema";
 import { KolomAlasan, RingkasGalat, type GalatBertaut } from "./Isian";
 import { PratinjauDampak } from "./PratinjauDampak";
+import { SaranUrgensi } from "./SaranUrgensi";
 import styles from "./Admin.module.css";
 
 interface Props {
@@ -18,20 +20,27 @@ interface Props {
   /** Nama singkat yang sudah ada pada usulan; admin bisa mengubahnya. */
   namaSingkatAwal: string;
   /**
-   * Tempat saran urgensi dari AI, nanti. Saat ini TIDAK dirender sama sekali (tanpa label, tanpa
-   * "segera hadir"): fiturnya belum berjalan, dan klaim di antarmuka hanya boleh ada bila fiturnya
-   * benar-benar ada. Diletakkan sebagai baris pertama di dalam kelompok urgensi, jadi saran bisa
-   * ditambahkan tanpa mengubah tata letak. Admin tetap yang memutuskan: saran hanya bahan.
+   * Saran urgensi dari AI. Bila false (kunci Gemini tidak terpasang) TIDAK ada satu pun jejaknya di formulir:
+   * tanpa label, tanpa tombol, tanpa "segera hadir". Isi usulan di bawah dipakai untuk membuat teks yang dikirim.
    */
-  saranUrgensi?: ReactNode;
+  saranAktif?: boolean;
+  judul?: string;
+  deskripsi?: string;
+  kategori?: string;
 }
 
 /** "Masukkan ke hitungan anggaran": urgensi 1-10 dengan alasan tertulis, nama singkat, dan pratinjau dampak. */
-export function FormPindahStatus({ id, statusDibaca, namaSingkatAwal, saranUrgensi }: Props) {
+export function FormPindahStatus({ id, statusDibaca, namaSingkatAwal, saranAktif = false, judul = "", deskripsi = "", kategori = "" }: Props) {
   const [status, aksi, menunggu] = useActionState(pindahkanStatus, STATUS_AKSI_AWAL);
   const [urgensi, setUrgensi] = useState("");
   const [alasan, setAlasan] = useState("");
   const [singkat, setSingkat] = useState(namaSingkatAwal);
+  // Saran dan keterangan drafnya hidup DI LUAR <fieldset key={nomor}>, jadi tidak hilang saat kelompok urgensi
+  // dipasang ulang setelah galat dari server.
+  const [saranDibuka, setSaranDibuka] = useState<SaranUi | null>(null);
+  const [drafDariAi, setDrafDariAi] = useState(false);
+  const saranBasi = status.hasil === "galat" && status.pesan === PESAN_SARAN_BASI;
+  const saran = saranBasi ? null : saranDibuka;
 
   const nilaiUrgensi = periksaUrgensi(urgensi);
   const singkatValid = periksaNamaSingkat(singkat).ok;
@@ -47,10 +56,11 @@ export function FormPindahStatus({ id, statusDibaca, namaSingkatAwal, saranUrgen
   ];
 
   return (
-    <form action={aksi} className={styles.form} noValidate>
+    <form action={aksi} className={saranAktif ? `${styles.form} ${styles.formLebar}` : styles.form} noValidate>
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="ke" value="voting" />
       <input type="hidden" name="statusDibaca" value={statusDibaca} />
+      {saran && <input type="hidden" name="saranId" value={saran.id} />}
 
       {status.hasil === "galat" && (
         <RingkasGalat pesan={status.pesan} galat={galat}>
@@ -70,9 +80,9 @@ export function FormPindahStatus({ id, statusDibaca, namaSingkatAwal, saranUrgen
 
       {/* key: lihat catatan yang sama di AlurBuatAkun. Setelah galat dari server, tombol radio dipasang ulang
           supaya pilihan urgensi yang terlihat tetap sama dengan yang tersimpan di state (dan dikirim). */}
+      <div className={saranAktif ? styles.urgensiDanSaran : undefined}>
       <fieldset key={status.nomor} className={styles.urgensi}>
         <legend>Urgensi, 1 sampai 10</legend>
-        {saranUrgensi}
         <p className={styles.petunjuk} id="urgensi-bantu">
           Pilih tingkat yang paling cocok, lalu angkanya. Gunakan rubrik yang sama untuk semua usulan.
         </p>
@@ -104,12 +114,29 @@ export function FormPindahStatus({ id, statusDibaca, namaSingkatAwal, saranUrgen
         </ul>
         {galatUrgensi && <p className={styles.galatKolom}>{galatUrgensi}</p>}
       </fieldset>
+      {saranAktif && (
+        <SaranUrgensi
+          idUsulan={id}
+          judul={judul}
+          deskripsi={deskripsi}
+          kategori={kategori}
+          pilihan={nilaiUrgensi.ok ? nilaiUrgensi.nilai : null}
+          alasanTerisi={alasan.trim() !== ""}
+          saran={saran}
+          onSaran={setSaranDibuka}
+          onSalinDraf={(teks) => {
+            setAlasan(teks);
+            setDrafDariAi(true);
+          }}
+        />
+      )}
+      </div>
 
       <KolomAlasan
         id="alasan-urgensi"
         nama="alasanUrgensi"
         label="Alasan urgensi"
-        bantu={`Tulis ${BATAS_ADMIN.alasanUrgensi.min} sampai ${BATAS_ADMIN.alasanUrgensi.maks} karakter: kenapa nilainya segitu. Alasan ini tampil di halaman usulan dan di jejak keputusan, dan bisa dibaca semua warga.`}
+        bantu={`Tulis ${BATAS_ADMIN.alasanUrgensi.min} sampai ${BATAS_ADMIN.alasanUrgensi.maks} karakter: kenapa nilainya segitu. Alasan ini tampil di halaman usulan dan di jejak keputusan, dan bisa dibaca semua warga.${drafDariAi ? " Draf dari AI. Sesuaikan dengan penilaian Anda." : ""}`}
         nilai={alasan}
         onUbah={setAlasan}
         maks={BATAS_ADMIN.alasanUrgensi.maks}

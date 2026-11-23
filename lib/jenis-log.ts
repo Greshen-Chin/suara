@@ -4,6 +4,7 @@
 /**
  * 'moderation': admin menyembunyikan atau menampilkan kembali usulan atau komentar.
  * 'budget_change': pagu diubah (migrasi 0005).
+ * 'decision': hasil musyawarah desa, penetapan dan pembatalannya (migrasi 0006).
  */
 export const JENIS_LOG = [
   "weight_change",
@@ -12,6 +13,7 @@ export const JENIS_LOG = [
   "note",
   "moderation",
   "budget_change",
+  "decision",
 ] as const;
 export type JenisLog = (typeof JENIS_LOG)[number];
 
@@ -22,4 +24,5 @@ export const LABEL_JENIS_LOG: Record<JenisLog, string> = {
   note: "Catatan",
   moderation: "Moderasi",
   budget_change: "Pagu diubah",
+  decision: "Keputusan musyawarah",
 };

@@ -120,6 +120,42 @@ export function greedyPilih(
   });
 }
 
+/** Satu usulan pada urutan pencarian kombinasi: bit ke-i sebuah kombinasi menunjuk usulan ke-i. */
+export interface UsulanBernilai {
+  usulan: Usulan;
+  /** Skor gabungan 0-10, dibulatkan 4 desimal. */
+  skor: number;
+  biaya: number;
+  /** Skor x 10.000, bilangan bulat, supaya perbandingan seri tepat. */
+  nilai: number;
+}
+
+/**
+ * Urutan usulan yang dipakai pilihOptimal untuk menomori kombinasi (skor, lalu suara terbanyak,
+ * lalu urutan masuk), lengkap dengan biaya dan nilai bulatnya. Dipakai bersama oleh peta pagu dan uji
+ * ketahanan (lib/peta-pagu.ts, lib/ketahanan.ts) supaya aturan serinya tidak bisa menyimpang dari
+ * pilihOptimal: kombinasi yang ditemui lebih dulu menurut urutan ini menang.
+ * Melempar RangeError bila lebih dari BATAS_USULAN_OPTIMAL.
+ */
+export function urutanOptimal(
+  usulan: readonly Usulan[],
+  wilayah: readonly Wilayah[],
+  bobot: Bobot,
+): UsulanBernilai[] {
+  const urut = nilaiGabungan(usulan, wilayah, bobot).sort(urutkan);
+  if (urut.length > BATAS_USULAN_OPTIMAL) {
+    throw new RangeError(
+      `Terlalu banyak usulan (${urut.length}); batas pencarian kombinasi ${BATAS_USULAN_OPTIMAL}.`,
+    );
+  }
+  return urut.map((b) => ({
+    usulan: b.usulan,
+    skor: b.skor,
+    biaya: b.usulan.estimatedBudget,
+    nilai: Math.round(b.skor * PRESISI),
+  }));
+}
+
 /**
  * Cari kombinasi usulan dengan jumlah skor tertinggi yang muat dalam pagu.
  * Semua kombinasi dicoba. Skor sama: pilih total biaya yang lebih kecil.
@@ -130,17 +166,11 @@ export function pilihOptimal(
   pagu: number,
   bobot: Bobot,
 ): HasilPilih[] {
-  const urut = nilaiGabungan(usulan, wilayah, bobot).sort(urutkan);
+  const urut = urutanOptimal(usulan, wilayah, bobot);
   const n = urut.length;
-  if (n > BATAS_USULAN_OPTIMAL) {
-    throw new RangeError(
-      `Terlalu banyak usulan (${n}); batas pencarian kombinasi ${BATAS_USULAN_OPTIMAL}.`,
-    );
-  }
 
-  // Skor dihitung dalam bilangan bulat (skor x 10.000) supaya perbandingan seri tepat.
-  const biaya = urut.map((b) => b.usulan.estimatedBudget);
-  const nilai = urut.map((b) => Math.round(b.skor * PRESISI));
+  const biaya = urut.map((b) => b.biaya);
+  const nilai = urut.map((b) => b.nilai);
 
   let terbaikMask = 0;
   let terbaikNilai = -1;

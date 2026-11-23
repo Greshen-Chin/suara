@@ -13,6 +13,8 @@ import {
   type BarisRekomendasi,
   type BarisWilayah,
 } from "./data";
+import { getPeriodeTerakhir } from "./keputusan-data";
+import type { Periode } from "./keputusan-tipe";
 import { susunModePagu, type ModePagu } from "./pagu-model";
 import { TAG } from "./tag-cache";
 import type { Bobot } from "./seleksi";
@@ -28,6 +30,8 @@ export interface DataBeranda {
   usulan: BarisRekomendasi[];
   bobot: Bobot;
   log: BarisLog[];
+  /** Periode terakhir yang sudah diputuskan; dipakai saat tidak ada usulan dalam hitungan. null bila belum ada atau tidak terbaca. */
+  periodeTerakhir: Periode | null;
   /** true bila salah satu data diambil dari cadangan karena database tidak terjangkau. */
   dataContoh: boolean;
 }
@@ -37,17 +41,19 @@ export async function muatBeranda(): Promise<DataBeranda> {
   cacheLife({ stale: 30, revalidate: 60, expire: 3600 });
   // Dukungan pada usulan voting mengubah angka di sini. Server Action forum dan admin memanggil
   // updateTag(TAG.beranda), jadi angkanya langsung ikut berubah, tidak menunggu 60 detik.
-  cacheTag(TAG.beranda, TAG.pengaturan);
+  // keputusan: penetapan mengosongkan sebagian hitungan dan mengubah anggaran periode lalu tiap RW.
+  cacheTag(TAG.beranda, TAG.pengaturan, TAG.keputusan);
 
   // Pagu dari database (diubah admin); PAGU_DEFAULT hanya bila database tidak terjangkau.
   const paguBaca = await getPagu();
   const pagu = paguBaca.data;
-  const [suara, rekomendasi, wilayah, bobot, log] = await Promise.all([
+  const [suara, rekomendasi, wilayah, bobot, log, periodeTerakhir] = await Promise.all([
     getGreedy(pagu, "suara"),
     getRekomendasi(pagu),
     getWilayah(),
     getBobotResmi(),
     getLogTerbaru(JUMLAH_JEJAK),
+    getPeriodeTerakhir(),
   ]);
 
   return {
@@ -63,6 +69,7 @@ export async function muatBeranda(): Promise<DataBeranda> {
     usulan: rekomendasi.data,
     bobot: bobot.data,
     log: log.data,
+    periodeTerakhir,
     dataContoh: [paguBaca, suara, rekomendasi, wilayah, bobot, log].some(
       (h) => h.source === "fallback",
     ),
