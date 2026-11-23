@@ -1,5 +1,5 @@
 import type { BarisRekomendasi, BarisWilayah } from "@/lib/data";
-import { desimal, ribuan, rupiah } from "@/lib/format";
+import { desimal, persen, ribuan, rupiah } from "@/lib/format";
 import styles from "./WilayahKontras.module.css";
 
 interface Props {
@@ -13,6 +13,10 @@ const perKapita = (w: BarisWilayah) => w.anggaran_lalu / w.penduduk;
 /**
  * Dua RW berdampingan: yang paling besar penduduknya dan yang paling sedikit
  * menerima anggaran per penduduk. Semua angka datang dari database.
+ *
+ * "Anggaran periode lalu" hanya menyangkut satu periode: nilai 0 berarti tidak menerima di periode lalu, bukan
+ * "belum pernah" (setelah sebuah penetapan, RW yang kali ini tidak kebagian bisa saja menerima di periode sebelumnya).
+ * Tanpa usulan dalam hitungan tidak ada suara untuk dibandingkan: tampil hanya penduduk dan anggaran periode lalu.
  */
 export function WilayahKontras({ wilayah, usulan }: Props) {
   if (wilayah.length < 2) return null;
@@ -23,11 +27,12 @@ export function WilayahKontras({ wilayah, usulan }: Props) {
     .reduce((a, b) => (perKapita(b) < perKapita(a) ? b : a));
   const pasangan = [besar, tertinggal];
 
+  const adaSuara = usulan.length > 0 && pasangan.some((w) => w.jumlah_suara > 0);
   const maksPenduduk = Math.max(...pasangan.map((w) => w.penduduk));
   const maksSuara = Math.max(...pasangan.map((w) => w.jumlah_suara));
 
   const lebihBersuara =
-    suaraPer1000(tertinggal) > suaraPer1000(besar)
+    adaSuara && suaraPer1000(tertinggal) > suaraPer1000(besar)
       ? ` Per 1.000 penduduk, justru ${tertinggal.nama} yang lebih banyak bersuara.`
       : "";
 
@@ -41,10 +46,17 @@ export function WilayahKontras({ wilayah, usulan }: Props) {
           <h2 id="judul-wilayah">
             {besar.nama} dan {tertinggal.nama}, di desa yang sama
           </h2>
-          <p>
-            {besar.nama} mengumpulkan {besar.jumlah_suara} suara,{" "}
-            {tertinggal.nama} {tertinggal.jumlah_suara}.{lebihBersuara}
-          </p>
+          {adaSuara ? (
+            <p>
+              {besar.nama} mengumpulkan {besar.jumlah_suara} suara,{" "}
+              {tertinggal.nama} {tertinggal.jumlah_suara}.{lebihBersuara}
+            </p>
+          ) : (
+            <p>
+              Belum ada usulan dalam hitungan anggaran, jadi belum ada suara untuk dibandingkan. Yang tampil di sini
+              penduduk dan anggaran periode lalu.
+            </p>
+          )}
         </div>
 
         <div className={styles.pasangan}>
@@ -64,40 +76,44 @@ export function WilayahKontras({ wilayah, usulan }: Props) {
                   <dd>
                     {ribuan(w.penduduk)} orang
                     <span className={styles.batang} aria-hidden="true">
-                      <span style={{ width: `${(w.penduduk / maksPenduduk) * 100}%` }} />
+                      <span style={{ width: `${persen(w.penduduk, maksPenduduk)}%` }} />
                     </span>
                   </dd>
                 </div>
-                <div>
-                  <dt>Suara</dt>
-                  <dd>
-                    {w.jumlah_suara} suara, {desimal(suaraPer1000(w))} per 1.000
-                    penduduk
-                    <span className={styles.batang} aria-hidden="true">
-                      <span style={{ width: `${(w.jumlah_suara / maksSuara) * 100}%` }} />
-                    </span>
-                  </dd>
-                </div>
+                {adaSuara && (
+                  <div>
+                    <dt>Suara</dt>
+                    <dd>
+                      {w.jumlah_suara} suara, {desimal(suaraPer1000(w))} per 1.000
+                      penduduk
+                      <span className={styles.batang} aria-hidden="true">
+                        <span style={{ width: `${persen(w.jumlah_suara, maksSuara)}%` }} />
+                      </span>
+                    </dd>
+                  </div>
+                )}
                 <div>
                   <dt>Anggaran periode lalu</dt>
                   <dd>
                     {w.anggaran_lalu === 0
-                      ? "Belum pernah menerima anggaran"
+                      ? "Tidak menerima anggaran"
                       : `Menerima ${rupiah(w.anggaran_lalu)}`}
                   </dd>
                 </div>
-                <div>
-                  <dt>Mengusulkan</dt>
-                  <dd>
-                    <ul className={styles.usulan}>
-                      {usulan
-                        .filter((u) => u.rw === w.rw)
-                        .map((u) => (
-                          <li key={u.id}>{u.title}</li>
-                        ))}
-                    </ul>
-                  </dd>
-                </div>
+                {adaSuara && (
+                  <div>
+                    <dt>Mengusulkan</dt>
+                    <dd>
+                      <ul className={styles.usulan}>
+                        {usulan
+                          .filter((u) => u.rw === w.rw)
+                          .map((u) => (
+                            <li key={u.id}>{u.title}</li>
+                          ))}
+                      </ul>
+                    </dd>
+                  </div>
+                )}
               </dl>
             </article>
           ))}

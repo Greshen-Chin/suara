@@ -16,6 +16,7 @@
 // Titik tambahan khusus uji:
 //   POST /__uji/mundur   memundurkan waktu komentar dan usulan 25 jam (menguji batas laju)
 //   POST /__uji/reset    memuat ulang seluruh skema dan seed dari awal
+//   POST /__uji/mundur-periode  memundurkan waktu penetapan keputusan 25 jam (menguji batas 24 jam pembatalan)
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import type { PGlite } from "@electric-sql/pglite";
 import { hashKataSandi } from "../lib/kata-sandi.ts";
@@ -26,7 +27,7 @@ const PORT = Number(process.env.PORT_SUPABASE_PALSU ?? 54321);
 const IDENT = /^[a-z_][a-z0-9_]*$/;
 
 async function siapkan(): Promise<PGlite> {
-  const db = await buatDatabase();
+  const db = await buatDatabase({ tanggalSebagaiTeks: true });
   await muat(db, ...SEBELUM_FORUM, "m0004");
   // Akun demo seperti hasil `npm run akun:buat`: `warga` belum tertaut ke data warga,
   // lalu seed_forum.sql menautkannya ke warga RW 07 nomor 70.
@@ -38,6 +39,8 @@ async function siapkan(): Promise<PGlite> {
   await muat(db, "seedForum");
   // Migrasi admin dijalankan terakhir, seperti urutan yang diberikan ke pemilik proyek.
   await muat(db, "m0005");
+  await muat(db, "m0006");
+  await muat(db, "seedKeputusan");
 
   // Isi embedding seperti `npm run embedding:isi`, supaya jalur "AI" ikut teruji. Bila model
   // tidak bisa dimuat (mis. tanpa internet), dilewati: aplikasi lalu memakai cadangan kata.
@@ -166,6 +169,10 @@ async function tangani(req: IncomingMessage, res: ServerResponse) {
       update proposals set created_at = created_at - interval '25 hours'
        where source = 'forum' and created_at > now() - interval '24 hours';
     `);
+    return kirim(res, 200, "{}");
+  }
+  if (url.pathname === "/__uji/mundur-periode" && req.method === "POST") {
+    await db.exec("update periode set diputuskan_pada = diputuskan_pada - interval '25 hours' where ada_rekomendasi and status = 'diputuskan'");
     return kirim(res, 200, "{}");
   }
   if (url.pathname === "/__uji/reset" && req.method === "POST") {

@@ -29,6 +29,14 @@ interface Props {
    * Untuk pagu yang bebas digeser (simulasi), yang sering menghasilkan blok sangat sempit. Bawaan false.
    */
   potongNama?: boolean;
+  /**
+   * Id blok yang BERBEDA dari batang pasangannya (halaman keputusan: dua batang, satu rekomendasi dan satu keputusan).
+   * Ditandai bentuk, bukan hanya warna: bingkai putus-putus dan tanda ≠ (juga terbaca pembaca layar dan tetap
+   * terlihat saat dicetak hitam-putih).
+   */
+  tandaBeda?: ReadonlySet<string>;
+  /** Kata untuk pembaca layar di depan nama blok; bawaan "Terpilih". Batang keputusan memakai "Disetujui". */
+  kataStatus?: string;
 }
 
 /**
@@ -36,7 +44,16 @@ interface Props {
  * persis sebanding dengan biayanya; ukurannya datang dari hitungTataPagu.
  * Blok dan ruang sisa memakai data-flip supaya bisa dianimasikan saat mode berganti.
  */
-export function PaguBar({ pagu, mode, ringkas = false, label, skalaBulat = false, potongNama = false }: Props) {
+export function PaguBar({
+  pagu,
+  mode,
+  ringkas = false,
+  label,
+  skalaBulat = false,
+  potongNama = false,
+  tandaBeda,
+  kataStatus = "Terpilih",
+}: Props) {
   const { tata, terpilih } = mode;
   const barisBlok = new Map(tata.blok.map((b) => [b.id, b]));
 
@@ -63,6 +80,7 @@ export function PaguBar({ pagu, mode, ringkas = false, label, skalaBulat = false
           <li
             key={item.id}
             data-flip={item.id}
+            data-beda={tandaBeda?.has(item.id) ? "true" : undefined}
             className={styles.blok}
             style={
               { "--ukuran": `${barisBlok.get(item.id)?.lebar ?? 0}%` } as React.CSSProperties
@@ -71,8 +89,15 @@ export function PaguBar({ pagu, mode, ringkas = false, label, skalaBulat = false
             <div data-flip-isi className={styles.isi}>
               <span className={styles.nama}>
                 <IkonStatus status="terpilih" />
-                <span className="sr-only">Terpilih: </span>
+                <span className="sr-only">
+                  {tandaBeda?.has(item.id) ? `${kataStatus}, berbeda dari batang pasangannya: ` : `${kataStatus}: `}
+                </span>
                 <span className={styles.namaTeks}>{item.nama}</span>
+                {tandaBeda?.has(item.id) && (
+                  <span className={styles.tandaBeda} aria-hidden="true">
+                    ≠
+                  </span>
+                )}
               </span>
               {ringkas ? (
                 <span className="sr-only">

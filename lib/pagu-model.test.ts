@@ -63,7 +63,7 @@ describe("susunModePagu: suara terbanyak", () => {
   it("kalimat ringkasan menyebut RW 07 tidak kebagian", () => {
     assert.equal(
       suara.ringkasan,
-      "2 proyek, semuanya di RW 01. RW 07 belum pernah menerima anggaran dan kali ini tetap tidak kebagian.",
+      "2 proyek, semuanya di RW 01. RW 07 tidak menerima anggaran periode lalu dan kali ini tetap tidak kebagian.",
     );
   });
 
@@ -81,10 +81,10 @@ describe("susunModePagu: suara terbanyak", () => {
 });
 
 describe("susunModePagu: rekomendasi SUARA", () => {
-  it("kalimat ringkasan menyebut 4 proyek untuk 2 RW tertinggal", () => {
+  it("kalimat ringkasan menyebut 4 proyek untuk 2 RW yang periode lalu di bawah rata-rata", () => {
     assert.equal(
       rekom.ringkasan,
-      "4 proyek yang mendesak untuk 2 RW yang selama ini tertinggal, dari pagu yang sama.",
+      "4 proyek yang mendesak untuk 2 RW yang periode lalu di bawah rata-rata anggaran per penduduk, dari pagu yang sama.",
     );
   });
 
@@ -113,5 +113,30 @@ describe("susunModePagu: rekomendasi SUARA", () => {
       "Gapura:tidak-terpilih",
       "Talud:ditunda",
     ]);
+  });
+});
+
+describe("susunModePagu: tanpa usulan dalam hitungan (K-10)", () => {
+  it("tidak melempar dan tidak menghasilkan angka tak hingga atau NaN", () => {
+    for (const kunci of ["suara", "rekomendasi"] as const) {
+      const mode = susunModePagu(kunci, [], wilayah, PAGU);
+      assert.deepEqual([mode.terpilih.length, mode.tidakTerbiayai.length, mode.ditunda.length], [0, 0, 0]);
+      assert.equal(mode.tata.blok.length, 0);
+      assert.equal(mode.tata.sisa.rupiah, PAGU);
+      assert.equal(mode.tata.sisa.lebar, 100);
+      assert.doesNotMatch(mode.ringkasan, /NaN|undefined|Infinity/);
+    }
+  });
+});
+
+describe("kalimat tentang RW tanpa anggaran: hanya periode lalu", () => {
+  it("tidak pernah berkata 'belum pernah' (bisa saja RW itu menerima di periode sebelumnya)", () => {
+    assert.doesNotMatch(suara.ringkasan, /belum pernah/i);
+    assert.doesNotMatch(rekom.ringkasan, /belum pernah|selama ini/i);
+  });
+  it("RW yang menerima 0 dan tidak terpilih disebut, dengan kata 'periode lalu'", () => {
+    const sesudahPenetapan = wilayah.map((w) => (w.rw === 1 ? { ...w, anggaran_lalu: 0 } : w));
+    const mode = susunModePagu("suara", baris(greedyPilih(usulan, wilayahTs, PAGU, "suara", bobot)), sesudahPenetapan, PAGU);
+    assert.match(mode.ringkasan, /tidak menerima anggaran periode lalu/);
   });
 });

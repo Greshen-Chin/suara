@@ -7,6 +7,7 @@ import { CatatanCadangan } from "@/components/forum/CatatanCadangan";
 import { DaftarKomentar } from "@/components/forum/DaftarKomentar";
 import { DialogSembunyikan } from "@/components/forum/DialogSembunyikan";
 import { FormKomentar } from "@/components/forum/FormKomentar";
+import { KeputusanUsulan } from "@/components/forum/KeputusanUsulan";
 import { PosisiAnggaran } from "@/components/forum/PosisiAnggaran";
 import { RiwayatUsulan } from "@/components/forum/RiwayatUsulan";
 import { TombolDukung } from "@/components/forum/TombolDukung";
@@ -16,6 +17,7 @@ import { tentukanKeadaanDukungan } from "@/lib/aturan-dukungan";
 import { ambilPenggunaUntukBaca } from "@/lib/auth";
 import { dukunganSaya, muatUsulan } from "@/lib/forum-data";
 import { rupiah } from "@/lib/format";
+import { muatKeputusanUsulan } from "@/lib/keputusan-data";
 import { RUTE } from "@/lib/tautan";
 import { LABEL_KATEGORI, adalahKategori, adalahUuid } from "@/lib/usulan-skema";
 import { tanggalPanjang, waktuRelatif } from "@/lib/waktu";
@@ -69,10 +71,11 @@ async function IsiUsulan({ params, searchParams }: Props) {
   const { id } = await params;
   if (!adalahUuid(id)) notFound();
 
-  const [data, pengguna, query] = await Promise.all([
+  const [data, pengguna, query, putusan] = await Promise.all([
     muatUsulan(id),
     ambilPenggunaUntukBaca(),
     searchParams,
+    muatKeputusanUsulan(id),
   ]);
 
   const { usulan } = data;
@@ -208,6 +211,8 @@ async function IsiUsulan({ params, searchParams }: Props) {
               <p className={styles.deskripsi}>{usulan.description}</p>
             </section>
           )}
+
+          {!tersembunyi && putusan.keputusan && <KeputusanUsulan keputusan={putusan.keputusan} />}
 
           {!tersembunyi && (
             <section className={styles.bagian} aria-labelledby="judul-urgensi">

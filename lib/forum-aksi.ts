@@ -6,7 +6,7 @@ import { lamaTunggu } from "./waktu";
 
 /**
  * Kode galat yang dikenal aplikasi. Berasal dari fungsi SQL (supabase/migrations/0004_forum.sql
- * untuk forum, 0005_admin.sql untuk admin). Kalimat untuk kode admin ada di lib/admin-aksi.ts;
+ * untuk forum, 0005_admin.sql untuk admin, 0006_keputusan.sql untuk keputusan musyawarah). Kalimat untuk kode admin ada di lib/admin-aksi.ts;
  * mesinnya (penguraian hasil, batas waktu, pencatatan galat) satu, di file ini.
  */
 export type KodeGalat =
@@ -32,7 +32,17 @@ export type KodeGalat =
   | "diri_sendiri"
   | "admin_terakhir"
   | "nama_dipakai"
-  | "warga_sudah_punya_akun";
+  | "warga_sudah_punya_akun"
+  // Khusus keputusan musyawarah (0006):
+  | "sudah_ditetapkan"
+  | "hitungan_berubah"
+  | "melebihi_pagu"
+  | "tidak_ada_usulan"
+  | "tahun_berikut_ada"
+  | "tidak_bisa_dibatalkan"
+  | "bukan_terakhir"
+  | "lewat_batas"
+  | "sudah_dikerjakan";
 
 export interface Galat {
   ok: false;
@@ -138,6 +148,15 @@ const KODE_DIKENAL = new Set<string>([
   "admin_terakhir",
   "nama_dipakai",
   "warga_sudah_punya_akun",
+  "sudah_ditetapkan",
+  "hitungan_berubah",
+  "melebihi_pagu",
+  "tidak_ada_usulan",
+  "tahun_berikut_ada",
+  "tidak_bisa_dibatalkan",
+  "bukan_terakhir",
+  "lewat_batas",
+  "sudah_dikerjakan",
 ]);
 
 /** Mengurai jsonb dari fungsi SQL: {"ok": true, ...} atau {"ok": false, "kode": "..."}. */
@@ -172,7 +191,10 @@ type NamaFungsi =
   | "buat_akun_warga"
   | "atur_ulang_sandi"
   | "atur_aktif"
-  | "ganti_sandi_sendiri";
+  | "ganti_sandi_sendiri"
+  | "tetapkan_keputusan"
+  | "batalkan_penetapan"
+  | "tandai_selesai";
 
 /**
  * Memanggil fungsi SQL penulis. `panggil` membuat permintaannya (dengan tipe argumen lengkap

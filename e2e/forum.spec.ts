@@ -27,8 +27,8 @@ test("pengunjung membaca semuanya tanpa masuk", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Forum warga", level: 1 })).toBeVisible();
 
   // Forum memuat usulan forum DAN voting dalam satu daftar (bukan kosong).
-  await expect(page.getByRole("heading", { level: 2 })).toHaveCount(13);
-  await expect(page.getByText("Menampilkan 13 dari 13 usulan")).toBeVisible();
+  await expect(page.getByRole("heading", { level: 2 })).toHaveCount(17);
+  await expect(page.getByText("Menampilkan 17 dari 17 usulan")).toBeVisible();
   // Pengunjung diarahkan masuk, bukan dihadapkan tombol yang tidak bisa dipakai.
   await expect(page.getByRole("link", { name: /Masuk untuk mendukung/ })).toHaveCount(13);
   await expect(page.getByRole("button", { name: /^Dukung/ })).toHaveCount(0);
@@ -91,7 +91,7 @@ test("filter dan urutan tersimpan di URL; hasil kosong punya tombol hapus filter
   await page.goto("/forum?rw=3&kategori=sosial");
   await expect(page.getByRole("heading", { name: "Tidak ada usulan yang cocok" })).toBeVisible();
   await page.getByRole("link", { name: "Hapus filter" }).last().click();
-  await expect(page.getByRole("heading", { level: 2 })).toHaveCount(13);
+  await expect(page.getByRole("heading", { level: 2 })).toHaveCount(17);
   expect(konsol()).toEqual([]);
 });
 
@@ -191,7 +191,7 @@ test("warga: periksa usulan serupa lalu gabung dukungan (usulan baru dibatalkan)
   await page.goto("/forum/usul");
   await expect(page.getByLabel("Judul usulan")).toHaveValue("");
   await page.goto("/forum");
-  await expect(page.getByRole("heading", { level: 2 })).toHaveCount(13);
+  await expect(page.getByRole("heading", { level: 2 })).toHaveCount(17);
 
   // Kembalikan dukungan.
   await page.getByRole("link", { name: LAMPU_GANG }).first().click();
@@ -265,7 +265,7 @@ test("warga: validasi, draf, sesi habis, kirim usulan, dan batas laju", async ({
 
   // Tampil di daftar tanpa menunggu cache kedaluwarsa.
   await page.goto("/forum");
-  await expect(page.getByText("Menampilkan 14 dari 14 usulan")).toBeVisible();
+  await expect(page.getByText("Menampilkan 18 dari 18 usulan")).toBeVisible();
 
   // Komentar: muncul tanpa memuat ulang halaman; yang kedua terlalu cepat ditolak dengan waktu tunggu.
   await page.goto(alamatBaru);
@@ -394,8 +394,8 @@ test("admin menyembunyikan usulan: hilang dari daftar, jejak publik tetap ada", 
   const alamat = new URL(page.url()).pathname;
 
   await page.goto("/forum");
-  // 13 usulan seed + 4 yang dibuat tes sebelumnya = 17; satu disembunyikan -> 16.
-  await expect(page.getByText("Menampilkan 16 dari 16 usulan")).toBeVisible();
+  // 17 usulan seed (13 + 4 periode lampau) + 4 yang dibuat tes sebelumnya = 21; satu disembunyikan -> 20.
+  await expect(page.getByText("Menampilkan 20 dari 20 usulan")).toBeVisible();
   await expect(page.getByRole("link", { name: "Lampu taman lapangan RW 01 sering mati" })).toHaveCount(0);
 
   const tamu = await browser.newContext();

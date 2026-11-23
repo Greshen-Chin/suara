@@ -42,13 +42,14 @@ function rakit(pasangan: [string, string | null][]): string {
 // Usulan
 // ---------------------------------------------------------------------------
 
-export const STATUS_USULAN_ADMIN = ["semua", "menunggu", "voting", "tidak-dilanjutkan", "disembunyikan"] as const;
+export const STATUS_USULAN_ADMIN = ["semua", "menunggu", "voting", "diputuskan", "tidak-dilanjutkan", "disembunyikan"] as const;
 export type StatusUsulanAdmin = (typeof STATUS_USULAN_ADMIN)[number];
 
 export const LABEL_STATUS_USULAN_ADMIN: Record<StatusUsulanAdmin, string> = {
   semua: "Semua",
   menunggu: "Menunggu ditinjau",
   voting: "Masuk hitungan anggaran",
+  diputuskan: "Sudah diputuskan",
   "tidak-dilanjutkan": "Tidak dilanjutkan",
   disembunyikan: "Disembunyikan",
 };
@@ -120,9 +121,16 @@ export interface BisaDisaringUsulan {
   created_at: string;
   vote_count: number;
   disembunyikan_pada: string | null;
+  /** Usulan yang ditolak tanpa pernah dinilai urgensinya adalah "tidak dilanjutkan"; yang bernilai ditolak musyawarah. */
+  urgency_score?: number | null;
 }
 
-export function cocokStatusUsulan(u: Pick<BisaDisaringUsulan, "status" | "disembunyikan_pada">, status: StatusUsulanAdmin): boolean {
+const DIPUTUSKAN_MUSYAWARAH = new Set(["approved", "referred", "done"]);
+
+export function cocokStatusUsulan(
+  u: Pick<BisaDisaringUsulan, "status" | "disembunyikan_pada" | "urgency_score">,
+  status: StatusUsulanAdmin,
+): boolean {
   const tersembunyi = u.disembunyikan_pada !== null;
   switch (status) {
     case "semua":
@@ -133,8 +141,10 @@ export function cocokStatusUsulan(u: Pick<BisaDisaringUsulan, "status" | "disemb
       return !tersembunyi && u.status === "forum";
     case "voting":
       return !tersembunyi && u.status === "voting";
+    case "diputuskan":
+      return !tersembunyi && (DIPUTUSKAN_MUSYAWARAH.has(u.status) || (u.status === "rejected" && (u.urgency_score ?? null) !== null));
     case "tidak-dilanjutkan":
-      return !tersembunyi && u.status === "rejected";
+      return !tersembunyi && u.status === "rejected" && (u.urgency_score ?? null) === null;
   }
 }
 

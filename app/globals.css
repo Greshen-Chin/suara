@@ -235,3 +235,36 @@ a {
     scroll-behavior: auto !important;
   }
 }
+
+/* -----------------------------------------------------------------------------
+   Cetak. Halaman keputusan dicetak menjadi lembar A4 untuk papan pengumuman balai desa: tanpa navigasi dan
+   tombol, latar putih, tinta hitam. Kelas .tanpa-cetak untuk apa pun yang tidak ikut tercetak.
+   ----------------------------------------------------------------------------- */
+@page {
+  size: A4;
+  margin: 14mm;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  body {
+    font-size: 11pt;
+    line-height: 1.45;
+  }
+
+  body > header,
+  body > footer,
+  .lompat,
+  .tanpa-cetak {
+    display: none !important;
+  }
+
+  a {
+    color: #000;
+  }
+}

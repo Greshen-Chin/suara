@@ -94,7 +94,7 @@ export interface BisaDisaring {
   suara_per_1000: number | null;
 }
 
-const DIPUTUSKAN = new Set(["approved", "rejected", "done"]);
+const DIPUTUSKAN = new Set(["approved", "rejected", "referred", "done"]);
 
 export function cocokStatus(status: string, filter: StatusFilter): boolean {
   if (filter === "semua") return true;

@@ -19,7 +19,7 @@ Di kebanyakan desa, usulan dengan suara terbanyak otomatis menang. Akibatnya RW 
 | **Forum warga.** Usulan, dukungan, komentar, deteksi usulan mirip (AI), dan moderasi. | Selesai, lihat [Forum warga](#forum-warga) dan [docs/forum.md](docs/forum.md) |
 | **Admin desa.** Meninjau usulan, mengatur pagu dan bobot dengan pratinjau dampak, mengelola akun warga, dan memoderasi. | Selesai, lihat [Admin desa](#admin-desa) dan [docs/admin.md](docs/admin.md). Perlu migrasi 0005 |
 | **Simulasi anggaran.** Warga mengubah pagu dan bobot dan langsung melihat usulan mana yang terbiayai, dengan Peta Pagu, uji ketahanan bobot, tabel per RW, dan usulan forum andaian. Tidak menyimpan apa pun. | Selesai, lihat [Simulasi anggaran](#simulasi-anggaran) dan [docs/simulasi.md](docs/simulasi.md). Tanpa SQL baru |
-| **Halaman Keputusan** (penetapan hasil musyawarah). | Direncanakan (halaman sementara) |
+| **Keputusan musyawarah.** Admin mencatat hasil rapat untuk semua usulan dalam hitungan; warga membacanya berdampingan dengan rekomendasi (dua Garis Pagu), dengan alasan di tiap perbedaan, lembar cetak A4, dan unduhan CSV. | Selesai, lihat [Keputusan musyawarah](#keputusan-musyawarah) dan [docs/keputusan.md](docs/keputusan.md). Perlu migrasi 0006 dan `seed_keputusan.sql` |
 
 ---
 
@@ -96,7 +96,7 @@ berhenti di forum, pagu tertanam di kode, dan bobot hanya bisa diubah lewat SQL.
   memeriksa sendiri bahwa pemanggilnya admin aktif. Dua admin yang menyimpan bersamaan ditangani dengan versi
   (yang kedua ditolak dengan nilai terbaru, bukan menimpa), dan hitungan anggaran dijaga di 16 usulan.
 - **Yang sengaja tidak ada.** Membuat akun admin dari antarmuka (hanya `npm run akun:buat`), menonaktifkan
-  akun sendiri, dan menetapkan hasil musyawarah (itu fitur Keputusan).
+  akun sendiri. Hasil musyawarah ditetapkan di bagian **Keputusan** (lihat [Keputusan musyawarah](#keputusan-musyawarah)), bukan di halaman Usulan.
 - **Cache.** Setiap perubahan memperbarui halaman utama dan forum seketika (`updateTag`). Halaman admin
   sendiri tidak pernah memakai data cadangan.
 
@@ -111,6 +111,33 @@ Alasan, rubrik urgensi, diagram status, jejak publik vs jejak tertutup, dan kete
 3. Di **Anggaran**, ubah pagu atau bobot dan perhatikan usulan yang bergeser status.
 4. Di **Akun**, buat akun untuk warga yang belum punya akun, catat kata sandi yang tampil (hanya sekali), lalu
    masuk sebagai akun itu di jendela lain: ia diminta mengganti kata sandinya.
+
+## Keputusan musyawarah
+
+SUARA merekomendasikan, musyawarah memutuskan, dan setiap perbedaan punya alasan yang bisa dibaca. Ini **ringkasan keputusan
+musyawarah, bukan pengesahan anggaran**.
+
+- **Admin** (`/admin/keputusan`) mencatat satu hasil untuk **setiap** usulan dalam hitungan, dalam satu penetapan utuh:
+  Disetujui, Diajukan ke dana lain (dengan sumber dana), Dibawa ke periode berikutnya, atau Ditolak. Alasan wajib bila
+  berbeda dari rekomendasi. Total yang disetujui tidak boleh melebihi pagu (ditolak juga oleh database). Pilihan disimpan
+  di perangkat selama rapat (draf), dan penetapan membawa versi periode serta *sidik* hitungan supaya penetapan bersamaan
+  atau hitungan yang berubah ditolak dengan penjelasan.
+- **Warga** (`/keputusan`, `/keputusan/[tahun]`) membaca dua Garis Pagu bertumpuk (rekomendasi dan keputusan, skala sama;
+  yang berbeda berbingkai putus-putus dan bertanda ≠), bagian "Di mana musyawarah berbeda", semua keputusan, anggaran tiap
+  RW, dan jejak lengkap. **Cetak ringkasan** menghasilkan lembar A4 untuk papan pengumuman; **Unduh data (CSV)** untuk Excel.
+- **Periode berikutnya** mewarisi akibatnya: `wilayah.anggaran_lalu` tiap RW diganti dengan jumlah yang disetujui, jadi RW yang
+  baru menerima anggaran tidak lagi didahulukan komponen pemerataan. Penetapan terakhir bisa **dibatalkan dalam 24 jam**.
+- **Yang sengaja tidak ada:** koreksi setelah 24 jam, tanda tangan digital, unggah berkas, dan perubahan aturan dukungan.
+
+**Cara mencoba** (setelah migrasi 0006 dan `seed_keputusan.sql`):
+
+1. Buka `/keputusan` tanpa masuk: Tahun Anggaran 2026 sudah diputuskan (data purwarupa), 2027 belum.
+2. Masuk sebagai `admin` / `admin123`, buka **Admin → Keputusan**, tekan **Isi sisanya sesuai rekomendasi**, ubah satu usulan
+   (alasannya wajib), isi tanggal dan catatan, centang konfirmasi, lalu **Tetapkan keputusan**.
+3. Buka `/keputusan/2027`. Halaman utama, forum, dan detail usulan ikut berubah seketika.
+4. **Batalkan dalam 24 jam** supaya juri melihat Garis Pagu penuh di halaman utama.
+
+Rancangan lengkap (siklus status, potret, sidik, pembatalan, jejak, keterbatasan): **[docs/keputusan.md](docs/keputusan.md)**.
 
 ## Simulasi anggaran
 
@@ -187,6 +214,12 @@ Jalankan file berikut **berurutan** di **SQL Editor** Supabase. Untuk setiap fil
 
 9. [supabase/migrations/0005_admin.sql](supabase/migrations/0005_admin.sql): halaman admin. Pagu pindah ke tabel `pengaturan_anggaran` (Rp 300 juta, jadi **angka halaman utama tidak berubah**), kolom `versi` untuk admin bersamaan, jenis log pagu, tabel `jejak_admin` (tertutup), fungsi atomik admin, dan view admin. Seluruh file berjalan dalam satu transaksi. Harus sesudah langkah 7, boleh sebelum atau sesudah langkah 8, dan **harus dijalankan sebelum atau bersamaan dengan memasang kode baru**: kode baru membaca kolom `akun.harus_ganti_sandi` saat login, jadi tanpa 0005 login gagal. Bila berhenti dengan pesan "lebih dari satu akun", satu warga punya dua akun; kueri pencarinya ada di kepala file.
 
+10. [supabase/migrations/0006_keputusan.sql](supabase/migrations/0006_keputusan.sql): keputusan musyawarah. Status `referred`, jenis log `decision`, tabel `periode` (membuat **Tahun Anggaran 2027** sebagai periode berjalan) dan `keputusan`, fungsi atomik `tetapkan_keputusan`, `batalkan_penetapan`, `tandai_selesai`, `sidik_hitungan`, dan view `v_periode` dan `v_keputusan`. **Tidak mengubah data hitungan**: usulan, dukungan, bobot, pagu, dan `anggaran_lalu` tetap, jadi angka halaman utama tidak berubah. Satu transaksi. Harus sesudah langkah 9.
+11. [supabase/seed_keputusan.sql](supabase/seed_keputusan.sql): **periode lampau Tahun Anggaran 2026** (data purwarupa, diputuskan sebelum SUARA dipakai): empat usulan berstatus `done` atau `rejected` dan jumlahnya cocok dengan `anggaran_lalu` (RW 01 Rp 250 juta, RW 03 Rp 60 juta, RW 07 Rp 0). Tidak ada usulan `voting` dan tidak ada dukungan baru. Aman dijalankan ulang.
+12. **Isi embedding lagi** (`npm run embedding:isi`, lalu tempel SQL yang tercetak): usulan 2026 belum punya embedding.
+
+**Sebelum push atau deploy**, jalankan langkah 10 dan 11 **lebih dulu**, cek angkanya (di bawah), baru deploy; bila Cloud Build terhubung ke GitHub, push ke `main` bisa berarti deploy. Kode baru membaca `periode` (halaman utama, `/api/health`): tanpa 0006, `/api/health` menjawab `"db":"error"` dan `/keputusan` menampilkan data contoh. Cadangkan lebih dulu (Supabase → Database → Backups), atau catat bahwa data demo bisa dibuat ulang dari seed.
+
 Tanpa langkah 5 dan 7, forum tetap tampil dari data cadangan dengan penanda yang jelas, dan semua aksi tulis dimatikan. Kode terbaru **tidak boleh dipasang tanpa langkah 9**: login membaca kolom yang baru ada di 0005 dan akan gagal.
 
 Untuk memeriksa hasilnya, jalankan di SQL Editor:
@@ -197,6 +230,7 @@ union all select 'usulan', count(*) from proposals
 union all select 'dukungan', count(*) from votes;
 -- Setelah langkah 1-5: wilayah 3, usulan 7, dukungan 162
 -- Setelah langkah 7:   wilayah 3, usulan 13, dukungan 221 (162 + 59 pada usulan forum)
+-- Setelah langkah 11:  wilayah 3, usulan 17 (+4 usulan periode 2026), dukungan 221 (tidak ada dukungan baru)
 ```
 
 Cek hasil setelah **langkah 5** (sebelum seed forum). Angka halaman utama harus tidak berubah:
@@ -233,6 +267,21 @@ select count(*) from jejak_admin;                                   -- 0 (belum 
 ```
 
 Setelah itu buka `/admin` sebagai `admin`: angka di halaman utama harus tetap sama dengan sebelumnya.
+
+Cek hasil setelah **langkah 10 dan 11** (angka halaman utama **tidak boleh berubah**):
+
+```sql
+select tahun, status from periode order by tahun;                     -- 2026 diputuskan, 2027 berjalan
+select count(*) from rekomendasi_resmi(300000000) where selected;     -- 4
+select count(*) from votes
+ where proposal_id in (select id from proposals where status = 'voting'); -- 162
+select rw, anggaran_lalu from wilayah order by rw;                    -- 250000000, 60000000, 0
+select count(*) from proposals;                                       -- 17 (13 + 4 usulan periode 2026)
+```
+
+**Hati-hati saat demo:** menetapkan keputusan mengosongkan sebagian hitungan halaman utama. Itu memang tujuannya, tetapi
+**batalkan dalam 24 jam** setelah latihan. Setelah 24 jam, pemulihan data demo hanya lewat SQL:
+[supabase/demo_pulihkan_periode.sql](supabase/demo_pulihkan_periode.sql) (baca peringatannya di kepala berkas).
 
 Cara lain: buka `http://localhost:3000/api/health`. Kalau database siap, isinya `{"db":"ok", ...}`.
 
@@ -293,19 +342,20 @@ Kedua akun ini **hanya untuk database demo**. Kata sandinya sengaja sederhana, j
 ## Pengujian
 
 ```bash
-npm test             # 510 tes: unit (lib/) dan SQL di PGlite (supabase/tests/)
+npm test             # 678 tes: unit (lib/) dan SQL di PGlite (supabase/tests/)
 npm run lint
 npx tsc --noEmit
 npm run build
-npm run e2e          # 109 tes Playwright + axe di build produksi, melawan server tiruan (lihat docs/forum.md, docs/admin.md, dan docs/simulasi.md)
+npm run e2e          # 127 tes Playwright + axe di build produksi, melawan server tiruan (lihat docs/forum.md, docs/admin.md, dan docs/simulasi.md)
 ```
 
 `npm run e2e` perlu browser Playwright (`npx playwright install chromium`) dan model embedding terunduh (atau `E2E_TANPA_EMBEDDING=1`). Skrip lain: `npm run kemiripan:kalibrasi` (mengukur deteksi usulan mirip), `npm run fallback:buat` (membuat ulang data cadangan forum dari seed), `npm run embedding:isi`.
 
 Sudah diperiksa secara manual:
-- **SQL:** migrasi 0001 sampai 0005 dan kedua seed dijalankan di PGlite (Postgres di dalam Node, dengan pgvector, pg_trgm, dan PostGIS): dukung/batal atomik, penolakan admin dan akun tanpa `warga_id`, batas laju, moderasi, hak `execute`, dan `rekomendasi_resmi(300000000)` identik dengan sebelum migrasi forum **dan** sebelum migrasi admin. Tes admin (90 tes) juga memeriksa penolakan non-admin di setiap fungsi, bentrok versi, batas 16 usulan, jejak tertutup, dan bahwa pratinjau sama dengan `rekomendasi_resmi` setelah perubahan disimpan.
+- **SQL:** migrasi 0001 sampai 0006 dan ketiga seed dijalankan di PGlite (Postgres di dalam Node, dengan pgvector, pg_trgm, dan PostGIS): dukung/batal atomik, penolakan admin dan akun tanpa `warga_id`, batas laju, moderasi, hak `execute`, dan `rekomendasi_resmi(300000000)` identik dengan sebelum migrasi forum **dan** sebelum migrasi admin. Tes admin (90 tes) juga memeriksa penolakan non-admin di setiap fungsi, bentrok versi, batas 16 usulan, jejak tertutup, dan bahwa pratinjau sama dengan `rekomendasi_resmi` setelah perubahan disimpan.
 - **Aksesibilitas:** axe-core (WCAG 2.2 AA) tanpa pelanggaran di 360 px dan 1440 px, juga untuk semua halaman `/admin/*` dan `/akun` termasuk dialog, galat, pratinjau, dan tiap langkah membuat akun, dan untuk `/simulasi` di semua keadaannya. Ditambah reflow 320 px, keyboard, target sentuh 44 px, spasi teks WCAG 1.4.12, dan (simulasi) satu pengumuman per jeda. Belum diuji dengan pembaca layar sungguhan.
 - **Kinerja:** Lighthouse mobile (build produksi lokal, 23 November 2026): halaman utama 97/100/100, `/forum` 97–98/100/100, `/simulasi` 96–97/100/100 (performa/aksesibilitas/best practices), CLS 0 di ketiganya. Simulasi dengan 16 usulan dan CPU diperlambat 4×: tugas utas utama terpanjang 54–72 ms saat menggeser pagu dan bobot (batas 100 ms); lihat [docs/simulasi.md](docs/simulasi.md#kinerja).
+- **Keputusan:** 81 tes SQL (`supabase/tests/keputusan.test.ts`: tiap aturan, kesetaraan status rekomendasi SQL dan TypeScript, pembatalan, skrip pemulihan demo) dan 15 tes E2E (alur penuh, draf, sesi habis, bentrok, 24 jam, nol usulan, PDF A4, CSV, axe, keyboard, reflow, target 44 px). Catatan: `simulasi-kinerja.spec.ts` mengukur tugas utas utama dan, pada mesin yang sedang lebih lambat (23 November 2026: 97–146 ms; kode sebelum fitur ini 132–138 ms), melewati batas 100 ms; angka 54–72 ms di atas diukur saat mesin lebih cepat. Lighthouse belum diukur ulang untuk halaman keputusan.
 - **Login:** diuji ujung ke ujung dengan Playwright: masuk, keluar, token palsu, dan `alg=none`.
 
 ---
@@ -315,22 +365,24 @@ Sudah diperiksa secara manual:
 ```
 app/                 rute (halaman utama, masuk, akun, forum, admin, simulasi, keputusan, api/health)
   forum/             daftar, [id] (detail), usul (formulir), aksi.ts (Server Actions)
-  admin/             ringkasan, usulan, anggaran, akun, moderasi; aksi.ts (Server Actions) dan pratinjau.ts
+  admin/             ringkasan, usulan, anggaran, keputusan, akun, moderasi; aksi.ts (Server Actions) dan pratinjau.ts
+  keputusan/         daftar periode dan jejak, [tahun] (dua garis, cetak) dan [tahun]/csv (unduhan baca saja)
   simulasi/          halaman simulasi (satu komponen klien dengan status di alamat)
 components/
-  landing/           bagian halaman utama (GarisPagu, WilayahKontras, CaraKerja, JejakKeputusan)
+  landing/           bagian halaman utama (GarisPagu, TanpaUsulan, WilayahKontras, CaraKerja, JejakKeputusan)
+  keputusan/         halaman publik keputusan: dua garis, cap, tabel, beda dari rekomendasi, jejak lengkap, cetak
   forum/             daftar, tombol dukung, filter, komentar, dialog moderasi, formulir usulan
-  admin/             pita mode, navigasi, tabel register, formulir pagu/bobot/status, pratinjau dampak, alur buat akun
+  admin/             pita mode, navigasi, tabel register, formulir pagu/bobot/status, pratinjau dampak, alur buat akun, lembar kerja keputusan
   anggaran/          PerbandinganPagu: dua Garis Pagu yang dibandingkan, dipakai pratinjau dampak dan simulasi
   simulasi/          kendali pagu dan bobot, hasil, Peta Pagu, uji ketahanan, tabel per RW, usulan andaian, bagikan
   akun/              formulir ganti kata sandi
   shell/             header (dengan penanda halaman aktif dan sesi) dan footer
   ui/                komponen kecil yang dipakai ulang (StatusLabel, StatusSiklus, DialogAlasan, HalamanStub)
-lib/                 logika murni dan akses data (seleksi, pagu, format, data, auth, sesi, forum-*, admin-*, pratinjau, simulasi*, peta-pagu, ketahanan, bobot-simulasi, kemiripan, embedding)
+lib/                 logika murni dan akses data (seleksi, pagu, format, data, auth, sesi, forum-*, admin-*, keputusan*, pratinjau, simulasi*, peta-pagu, ketahanan, bobot-simulasi, kemiripan, embedding)
 scripts/             skrip baris perintah (buat-akun, isi-embedding, kalibrasi-kemiripan, buat-fallback)
 supabase/            migrasi dan seed SQL; tests/ berisi tes SQL (PGlite)
 e2e/                 tes Playwright dan server tiruan Supabase untuk pengujian
-docs/                forum.md, admin.md, simulasi.md; prompts/ berisi brief fitur
+docs/                forum.md, admin.md, simulasi.md, keputusan.md; prompts/ berisi brief fitur
 DESIGN.md            sistem visual (token, komponen, aturan)
 PRODUCT.md           pengguna, tujuan, prinsip, dan keputusan produk
 ```
@@ -341,4 +393,3 @@ PRODUCT.md           pengguna, tujuan, prinsip, dan keputusan produk
 
 - **Aturan dukungan.** Untuk sementara, satu dukungan per usulan per warga, dan warga boleh mendukung banyak usulan. Alternatifnya jatah terbatas, misalnya 3 dukungan per warga per periode. Ini perlu diputuskan sebelum karya dikumpulkan. Aturannya hanya ada di dua tempat, jadi mudah diganti: lihat [docs/forum.md](docs/forum.md#aturan-dukungan-sementara).
 - **Penilaian urgensi oleh AI.** Halaman utama menyebut peran AI, tetapi fiturnya belum dibangun. Urgensi kini diisi admin di halaman tinjau usulan, dengan rubrik empat tingkat; tempat untuk saran AI sudah disiapkan di formulirnya, tetapi tidak tampil sampai fiturnya ada.
-- **Penetapan hasil musyawarah.** `voting → approved/rejected` dan `approved → done` sengaja belum ada di halaman admin; itu bagian fitur Keputusan.

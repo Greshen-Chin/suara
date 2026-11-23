@@ -153,7 +153,7 @@
 }
 
 /* ---- Layar lebar: horizontal ---- */
-@media (min-width: 45rem) {
+@media (min-width: 45rem), print {
   .pita {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: 1.75rem auto;
@@ -265,7 +265,7 @@
   text-overflow: ellipsis;
 }
 
-@media (min-width: 45rem) {
+@media (min-width: 45rem), print {
   .ringkas .batang {
     height: 4.5rem;
   }
@@ -282,5 +282,54 @@
 
   .ringkas .nama svg {
     margin-top: 0;
+  }
+}
+
+/* ---- Blok yang berbeda dari batang pasangannya (halaman keputusan) ----------------------------------
+   Bentuknya, bukan hanya warna: bingkai putus-putus di dalam blok dan tanda ≠ di samping nama. */
+.blok[data-beda] {
+  outline: 3px dashed currentColor;
+  outline-offset: -7px;
+}
+
+.tandaBeda {
+  flex: none;
+  font-family: var(--f-isi);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ---- Cetak: batang tetap terbaca hitam-putih ---------------------------------------------------------
+   Warna latar sering tidak ikut tercetak, jadi blok diberi bingkai hitam dan sisa diarsir. Yang berbeda tetap
+   putus-putus. */
+@media print {
+  .batang {
+    border-color: #000;
+    background: #fff;
+  }
+
+  .blok {
+    background: #fff;
+    color: #000;
+    border: 2px solid #000;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .blok[data-beda] {
+    border-style: dashed;
+    outline: 0;
+  }
+
+  .sisa {
+    background: repeating-linear-gradient(135deg, #000 0 1px, transparent 1px 8px);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .tanda,
+  .labelSisa {
+    color: #000;
   }
 }

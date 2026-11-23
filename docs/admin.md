@@ -42,8 +42,9 @@ diam-diam); yang belum masuk dialihkan `proxy.ts` ke `/masuk?lanjut=...`.
   setidaknya satu admin yang bisa masuk. Pemeriksaan "admin terakhir" di `atur_aktif` melindungi dari dua
   admin yang saling menonaktifkan bersamaan (kunci advisory membuat keduanya berurutan).
 - **Mengatur ulang kata sandinya sendiri.** Gunakan `/akun`, yang meminta kata sandi lama.
-- **Menetapkan hasil musyawarah** (`voting → approved/rejected`, `approved → done`). Itu bagian fitur
-  Keputusan (`/keputusan`), yang butuh konsep periode anggaran.
+- **Menetapkan hasil musyawarah** (`voting → approved/referred/rejected`, `approved/referred → done`) dari halaman
+  Usulan. Itu dikerjakan di bagian **Keputusan** (`/admin/keputusan`), yang punya konsep periode anggaran; lihat
+  [keputusan.md](keputusan.md).
 - **Mengubah aturan dukungan.** Aturannya masih sementara; lihat [forum.md](forum.md#aturan-dukungan-sementara).
 
 ## Siklus status
@@ -54,9 +55,11 @@ stateDiagram-v2
     forum --> voting: admin: masukkan ke hitungan anggaran<br/>(urgensi 1-10 + alasan, maks. 16 usulan)
     forum --> rejected: admin: tidak dilanjutkan (alasan)
     voting --> forum: admin: kembalikan ke pembahasan (alasan)
-    voting --> approved: Keputusan (belum dibangun)
-    voting --> rejected: Keputusan (belum dibangun)
-    approved --> done: Keputusan (belum dibangun)
+    voting --> approved: Keputusan (/admin/keputusan)
+    voting --> referred: Keputusan (/admin/keputusan)
+    voting --> rejected: Keputusan (/admin/keputusan)
+    approved --> done: Keputusan: tandai selesai
+    referred --> done: Keputusan: tandai selesai
     forum --> tersembunyi: moderasi
     voting --> tersembunyi: moderasi
     tersembunyi --> forum: tampilkan kembali (alasan)
@@ -316,8 +319,9 @@ Hal-hal yang brief tidak menentukan, dan pilihan yang diambil:
 
 ## Pekerjaan berikutnya
 
-1. **Fitur Keputusan** (`/keputusan`): penetapan hasil musyawarah (`voting → approved/rejected`, `approved → done`)
-   dengan konsep periode anggaran. Ini juga alasan transisi itu tidak ada di sini.
+1. ~~**Fitur Keputusan**~~ selesai: penetapan hasil musyawarah ada di bagian Keputusan (`/admin/keputusan`), bukan di
+   halaman Usulan; lihat [keputusan.md](keputusan.md). Navigasi admin kini berisi enam bagian (Ringkasan, Usulan, Anggaran,
+   Keputusan, Akun, Moderasi), dan filter Usulan punya "Sudah diputuskan".
 2. **Saran urgensi oleh AI**, hanya sebagai bahan: slot di formulir sudah disiapkan (tanpa label sampai fiturnya ada).
 3. **Data wilayah**: penduduk dan anggaran periode lalu belum bisa diubah dari antarmuka.
 4. **Jatah dukungan**: putuskan aturannya (lihat [forum.md](forum.md#aturan-dukungan-sementara)).

@@ -2,6 +2,7 @@ import { CaraKerja } from "@/components/landing/CaraKerja";
 import { GarisPagu } from "@/components/landing/GarisPagu";
 import { Hero } from "@/components/landing/Hero";
 import { JejakKeputusan } from "@/components/landing/JejakKeputusan";
+import { TanpaUsulan } from "@/components/landing/TanpaUsulan";
 import { WilayahKontras } from "@/components/landing/WilayahKontras";
 import { muatBeranda } from "@/lib/beranda";
 
@@ -12,11 +13,15 @@ export default async function Beranda() {
   return (
     <main id="isi" tabIndex={-1}>
       <Hero dataContoh={data.dataContoh}>
-        <GarisPagu
-          pagu={data.pagu}
-          modeSuara={data.modeSuara}
-          modeRekomendasi={data.modeRekomendasi}
-        />
+        {data.usulan.length === 0 ? (
+          <TanpaUsulan pagu={data.pagu} periodeTerakhir={data.periodeTerakhir} />
+        ) : (
+          <GarisPagu
+            pagu={data.pagu}
+            modeSuara={data.modeSuara}
+            modeRekomendasi={data.modeRekomendasi}
+          />
+        )}
       </Hero>
       <WilayahKontras wilayah={data.wilayah} usulan={data.usulan} />
       <CaraKerja bobot={data.bobot} />

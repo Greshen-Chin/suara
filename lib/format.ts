@@ -45,3 +45,9 @@ export function ribuan(n: number): string {
 export function desimal(n: number): string {
   return angka.format(n);
 }
+
+/** Persen `nilai` terhadap `maks` untuk lebar batang. 0 bila `maks` nol atau tidak sah (tanpa NaN% atau Infinity%), dibatasi 0 sampai 100. */
+export function persen(nilai: number, maks: number): number {
+  if (!(maks > 0) || !Number.isFinite(nilai)) return 0;
+  return Math.min(100, Math.max(0, (nilai / maks) * 100));
+}

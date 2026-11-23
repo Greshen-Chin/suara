@@ -68,8 +68,8 @@ test("daftar usulan: filter di URL, pencarian, dan keadaan kosong", async ({ bro
 
   await page.goto("/admin/usulan");
   await expect(page.getByRole("table")).toBeVisible();
-  // 13 usulan (6 forum dan 7 voting), yang menunggu ditinjau paling atas.
-  await expect(page.getByText("Menampilkan 13 dari 13 usulan")).toBeVisible();
+  // 17 usulan (6 forum, 7 voting, 4 periode lampau yang sudah diputuskan), yang menunggu ditinjau paling atas.
+  await expect(page.getByText("Menampilkan 17 dari 17 usulan")).toBeVisible();
 
   await page.getByLabel("Status", { exact: true }).selectOption("voting");
   await page.getByRole("button", { name: "Terapkan" }).click();
@@ -81,7 +81,7 @@ test("daftar usulan: filter di URL, pencarian, dan keadaan kosong", async ({ bro
   await page.goto("/admin/usulan?q=tidak-ada-yang-cocok");
   await expect(page.getByRole("heading", { name: "Tidak ada usulan yang cocok" })).toBeVisible();
   await page.getByRole("link", { name: "Hapus filter" }).last().click();
-  await expect(page.getByText("Menampilkan 13 dari 13 usulan")).toBeVisible();
+  await expect(page.getByText("Menampilkan 17 dari 17 usulan")).toBeVisible();
 
   expect(konsol()).toEqual([]);
   await konteks.close();

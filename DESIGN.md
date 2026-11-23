@@ -263,7 +263,8 @@ ditutup, data cadangan) diganti kalimat penjelasan.
 - **Seleksi** (`StatusLabel`): Terpilih = hijau penuh; Ditunda = kuning penuh; Tidak terpilih =
   putus-putus abu. Teks bisa diganti (mis. "Terbiayai") tanpa mengubah ikon dan warna.
 - **Siklus** (`StatusSiklus`): Sedang dibahas (tinta), Masuk hitungan anggaran (biru),
-  Disetujui (hijau), Ditolak dan Selesai (abu). Berbingkai, latar putih.
+  Disetujui (hijau), Diajukan ke dana lain (biru, ikon panah keluar), Ditolak dan Selesai (abu). Berbingkai, latar putih.
+  Teks bisa diganti (mis. "Dibawa ke periode berikutnya" memakai ikon dan warna Masuk hitungan anggaran).
 
 ### Baris posisi anggaran
 Satu baris antara dua garis halus: "Peringkat 2 dari 7 rekomendasi" (tebal) + cap seleksi +
@@ -394,6 +395,34 @@ Penunjuk tiga langkah (Isi usulan, Periksa serupa, Tinjau dan kirim) dengan `ari
 Satu blok berbingkai 3 px per langkah; judul langkah menerima fokus saat langkah berganti. Alur
 membuat akun di admin memakai pola yang sama, dengan empat langkah (Pilih warga, Nama pengguna,
 Kata sandi awal, Hasil).
+
+### Dua garis, satu keputusan (halaman keputusan)
+Dua Garis Pagu ringkas bertumpuk dengan skala yang sama: "Rekomendasi SUARA" di atas, "Keputusan musyawarah" di bawah.
+Usulan yang sama ada di kedua batang; yang **berbeda** ditandai bentuk, bukan hanya warna: bingkai putus-putus 3 px di
+dalam blok dan tanda ≠ di samping nama (prop `tandaBeda` pada `PaguBar`), dengan legenda satu baris di bawahnya.
+Periode tanpa rekomendasi hanya punya batang keputusan.
+
+### Cap keputusan
+Cap stempel biru (`--biru-stempel`) berbingkai 3 px, miring -2,5°, Barlow Condensed 700, berisi "DIPUTUSKAN · 20 November 2026".
+Satu per halaman dan isinya teks asli. Di ponsel tanggalnya turun ke baris sendiri tanpa titik pemisah. Di cetakan menjadi hitam.
+
+### Di mana musyawarah berbeda
+Bagian yang paling menonjol di halaman keputusan: bingkai tinta 3 px di atas permukaan putih, judul Barlow 2,5 rem, dan alasan
+tertulis dalam huruf isi 1,25 rem (62ch). Satu butir per usulan: judul, rekomendasi ≠ keputusan (cap), alasan. Tanpa perbedaan:
+satu kalimat besar, "Musyawarah mengikuti seluruh rekomendasi."
+
+### Lembar kerja keputusan (admin)
+Satu baris register per usulan (garis halus, bukan kartu): judul tebal, RW, biaya, peringkat, skor, cap seleksi, lalu empat
+pilihan hasil sebagai kelompok tombol (radio asli, 2 × 2 di ponsel dan 1 × 4 di layar lebar, tinggi 44 px; yang terpilih
+berlatar tinta). Tidak ada pilihan bawaan. Kolom sumber dana dan alasan muncul tepat saat dibutuhkan, dengan kalimat mengapa
+wajib. Baris yang isiannya belum sah berbingkai dan berlatar galat. **Ringkasan menempel di dasar layar** (garis tinta 3 px,
+latar putih; latar galat bila melebihi pagu): "Terpakai Rp 285 juta dari Rp 300 juta · sisa · belum diisi · berbeda".
+
+### Gaya cetak
+`@media print` (globals.css, Keputusan.module.css, PaguBar.module.css): tanpa header, footer, dan tombol (`.tanpa-cetak`),
+latar putih, tinta hitam, `@page` A4 margin 14 mm. Batang: blok bergaris hitam 2 px (putus-putus bila berbeda), sisa diarsir.
+Tata letak lebar PaguBar berlaku juga saat dicetak (`@media (min-width: 45rem), print`). Baris tabel tidak terpotong.
+Satu-satunya tempat warna hitam murni (`#000`) dipakai: kertas tidak punya warna tambahan.
 
 ### Navigation
 Header putih dengan garis tinta 3 px di bawahnya. Merek SUARA (Barlow 2rem, jarak huruf .06em).

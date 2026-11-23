@@ -63,9 +63,11 @@ stateDiagram-v2
     forum --> voting: admin memasukkan ke hitungan anggaran (urgensi + alasan)
     forum --> rejected: admin tidak melanjutkan (alasan)
     voting --> forum: admin mengembalikan ke pembahasan (alasan)
-    voting --> approved: musyawarah menyetujui (fitur Keputusan, belum ada)
-    voting --> rejected: musyawarah menolak (fitur Keputusan, belum ada)
-    approved --> done: selesai dikerjakan (fitur Keputusan, belum ada)
+    voting --> approved: musyawarah menyetujui (fitur Keputusan)
+    voting --> referred: musyawarah mengajukan ke dana lain (fitur Keputusan)
+    voting --> rejected: musyawarah menolak (fitur Keputusan)
+    approved --> done: selesai dikerjakan (fitur Keputusan)
+    referred --> done: selesai dikerjakan (fitur Keputusan)
     forum --> tersembunyi: admin menyembunyikan (alasan wajib)
     voting --> tersembunyi: admin menyembunyikan (alasan wajib)
     tersembunyi --> forum: admin menampilkan kembali (alasan)
@@ -81,11 +83,14 @@ Tiga perpindahan pertama dan menampilkan kembali dikerjakan di [halaman admin](a
   dilonggarkan di migrasi 0005); `voting`, `approved`, dan `done` wajib 1 sampai 10.
 - **`forum` dan `voting`** tampil bersama di daftar, dengan filter status. Yang berstatus `voting`
   menampilkan posisinya pada rekomendasi, dari perhitungan yang sama dengan Garis Pagu.
-- **`approved`, `rejected`, `done`** tetap bisa dibuka, tetapi dukungannya ditutup. Komentar tetap
-  boleh.
+- **`approved`, `referred`, `rejected`, `done`** tetap bisa dibuka, tetapi dukungannya ditutup. Komentar tetap
+  boleh. Usulan yang sudah diputuskan menampilkan blok "Keputusan musyawarah" (hasil, alasan, tautan ke halaman tahunnya,
+  dan catatan penyelesaian bila `done`); filter "Sudah diputuskan" memuat keempatnya. `referred` ("Diajukan ke dana lain")
+  tertutup dari dukungan oleh pemeriksaan status yang sama; aturan dukungan tidak diubah.
 - **Perpindahan `forum` ke `voting`** (dan penilaian urgensi) dikerjakan admin di
   `/admin/usulan/[id]`, dengan pratinjau dampak; lihat [admin.md](admin.md). Perpindahan ke
-  `approved`, `rejected` (hasil musyawarah), dan `done` masih menunggu fitur Keputusan.
+  `approved`, `referred`, `rejected` (hasil musyawarah), dan `done` dikerjakan di `/admin/keputusan`; lihat
+  [keputusan.md](keputusan.md).
 
 ### Moderasi
 
@@ -358,8 +363,7 @@ dengan PostgREST asli, dan database Supabase milik pemilik (tidak boleh disentuh
    sebagai bahan musyawarah. Kolom `urgency_score` dan `urgency_reason` sudah siap, formulir
    admin sudah punya tempatnya (belum tampil), dan batasan
    `proposals_urgensi_wajib_setelah_forum` memastikan nilainya terisi.
-2. Fitur Keputusan: penetapan hasil musyawarah (`voting` ke `approved`/`rejected`, `approved`
-   ke `done`).
+2. ~~Fitur Keputusan~~ selesai: lihat [keputusan.md](keputusan.md).
 3. Putuskan aturan dukungan (jatah terbatas atau tidak).
 4. Kalibrasi ulang kemiripan dengan usulan nyata; pertimbangkan model yang lebih besar atau
    gabungan makna + kata bila perlu.

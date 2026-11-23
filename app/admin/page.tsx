@@ -7,7 +7,8 @@ import { KhususAdmin } from "@/components/admin/KhususAdmin";
 import { RiwayatKeputusan } from "@/components/admin/RiwayatKeputusan";
 import styles from "@/components/admin/Admin.module.css";
 import { periksaAkses } from "@/lib/admin-akses";
-import { bacaDasarHitung, bacaLogKeputusan, bacaSemuaAkun, bacaSemuaKomentar, bacaSemuaUsulan } from "@/lib/admin-data";
+import { bacaDasarHitung, bacaLogKeputusan, bacaSemuaAkun, bacaSemuaKomentar, bacaSemuaUsulan, bacaTahunBerjalan } from "@/lib/admin-data";
+import { namaPeriode } from "@/lib/keputusan-kalimat";
 import { susunRingkasan, teksMenunggu } from "@/lib/admin-ringkasan";
 import { ribuan, rupiah } from "@/lib/format";
 import { hitungRekomendasi } from "@/lib/pratinjau";
@@ -30,12 +31,13 @@ async function IsiRingkasan() {
   if (akses.status !== "admin") return <KhususAdmin />;
   const admin = akses.pengguna;
 
-  const [usulan, akun, komentar, dasar, log] = await Promise.all([
+  const [usulan, akun, komentar, dasar, log, tahunBerjalan] = await Promise.all([
     bacaSemuaUsulan(admin),
     bacaSemuaAkun(admin),
     bacaSemuaKomentar(admin),
     bacaDasarHitung(admin),
     bacaLogKeputusan(admin, { batas: 5 }),
+    bacaTahunBerjalan(admin),
   ]);
 
   // Lebih dari 16 usulan tidak bisa dihitung (batas pilih_optimal). Tidak seharusnya terjadi karena
@@ -106,6 +108,22 @@ async function IsiRingkasan() {
               <Link href="/admin/anggaran">Atur anggaran</Link>
               <Link href="/admin/usulan?status=voting">Lihat usulan dalam hitungan</Link>
             </span>
+          </div>
+        </li>
+
+        <li className={styles.registerBaris}>
+          <span className={styles.registerAngka}>{r.hitungan.jumlah}</span>
+          <div>
+            <h2 className={styles.registerJudul}>
+              {tahunBerjalan ? `${namaPeriode(tahunBerjalan)}: ` : ""}
+              usulan menunggu keputusan
+            </h2>
+            <p className={styles.registerKet}>
+              {r.hitungan.jumlah === 0
+                ? "Belum ada usulan dalam hitungan, jadi belum ada yang bisa diputuskan musyawarah."
+                : "Usulan dalam hitungan anggaran yang hasil musyawarahnya belum dicatat."}
+            </p>
+            <Link href="/admin/keputusan">{r.hitungan.jumlah === 0 ? "Buka keputusan" : "Catat keputusan musyawarah"}</Link>
           </div>
         </li>
 

@@ -18,6 +18,8 @@ export interface StatusAksi extends StatusAlasan {
    * masuk URL, sessionStorage, log server, atau cache.
    */
   rahasia: { namaPengguna: string; kataSandi: string } | null;
+  /** Tautan yang menyertai pesan, mis. ke hasil yang sudah ditetapkan admin lain. */
+  tautan: { href: string; teks: string } | null;
 }
 
 export const STATUS_AKSI_AWAL: StatusAksi = {
@@ -29,6 +31,7 @@ export const STATUS_AKSI_AWAL: StatusAksi = {
   perluMasuk: false,
   bentrok: null,
   rahasia: null,
+  tautan: null,
 };
 
 /** Hasil pencarian warga yang belum punya akun (langkah pertama membuat akun). */

@@ -4,7 +4,7 @@
 import "server-only";
 import { pesanGalat, type HasilRpc, type KodeGalat } from "./forum-aksi";
 import { STATUS_AKSI_AWAL, type StatusAksi } from "./admin-status";
-import { rupiahRinci } from "./format";
+import { rupiah, rupiahRinci } from "./format";
 import { tanggalDanJam, lamaTunggu } from "./waktu";
 
 /** Apa yang sedang dikerjakan; menentukan kalimat untuk kode galat yang sama. */
@@ -16,7 +16,10 @@ export type KonteksAdmin =
   | "buat-akun"
   | "atur-sandi"
   | "atur-aktif"
-  | "ganti-sandi";
+  | "ganti-sandi"
+  | "tetapkan"
+  | "batal-penetapan"
+  | "selesai";
 
 type Gagal = Extract<HasilRpc, { ok: false }>;
 
@@ -40,13 +43,23 @@ export function pesanGalatAdmin(kode: KodeGalat, konteks: KonteksAdmin, h: Gagal
     case "disembunyikan":
       return "Usulan ini disembunyikan, jadi statusnya tidak bisa diubah. Tampilkan kembali dulu di Moderasi.";
     case "bentrok":
+      if (konteks === "tetapkan" || konteks === "batal-penetapan") {
+        return "Periode ini sudah berubah sejak halaman dibuka (penetapannya dibatalkan atau dibuka lagi). Muat ulang untuk melihat keadaan terbaru.";
+      }
       if (konteks === "pagu") return `Pagu sudah diubah admin lain pada ${jamUbah(h)}. Muat ulang untuk melihat nilai terbaru.`;
       if (konteks === "bobot") return `Bobot sudah diubah admin lain pada ${jamUbah(h)}. Muat ulang untuk melihat nilai terbaru.`;
       return `Status usulan ini sudah diubah admin lain${teks(h.rincian?.status_sekarang) ? ` menjadi “${teks(h.rincian?.status_sekarang)}”` : ""}. Muat ulang halaman untuk melihat keadaan terbaru.`;
     case "transisi_tidak_diizinkan":
-      return "Perpindahan status ini tidak tersedia di halaman admin. Penetapan hasil musyawarah dilakukan di halaman Keputusan.";
+      return konteks === "selesai"
+        ? "Hanya usulan yang disetujui atau diajukan ke dana lain yang bisa ditandai selesai."
+        : "Perpindahan status ini tidak tersedia di halaman Usulan. Hasil musyawarah ditetapkan di halaman Keputusan.";
     case "batas_voting": {
       const batas = angka(h.rincian?.batas) ?? 16;
+      if (konteks === "batal-penetapan") {
+        const jumlah = angka(h.rincian?.jumlah) ?? batas + 1;
+        const pulih = angka(h.rincian?.dipulihkan) ?? 0;
+        return `Membatalkan penetapan mengembalikan ${pulih} usulan ke hitungan, sehingga hitungan berisi ${jumlah} usulan, melebihi batas ${batas}. Kembalikan ${jumlah - batas} usulan dari periode berikutnya ke pembahasan (di halaman Usulan), lalu coba lagi.`;
+      }
       return konteks === "tampilkan"
         ? `Hitungan anggaran sudah berisi ${batas} usulan, batas yang bisa dihitung SUARA sekaligus. Kembalikan satu usulan ke pembahasan dulu, lalu tampilkan lagi usulan ini.`
         : `Hitungan anggaran sudah berisi ${batas} usulan, batas yang bisa dihitung SUARA sekaligus. Kembalikan satu usulan ke pembahasan dulu, lalu coba lagi.`;
@@ -71,6 +84,33 @@ export function pesanGalatAdmin(kode: KodeGalat, konteks: KonteksAdmin, h: Gagal
       return "Warga ini sudah punya akun. Cari warga lain.";
     case "batas_laju":
       return `Anda sudah membuat 30 akun dalam satu jam terakhir. Akun berikutnya bisa dibuat ${lamaTunggu(h.ulangDetik ?? 3600)} lagi.`;
+    case "sudah_ditetapkan": {
+      const tahun = angka(h.rincian?.tahun);
+      const oleh = teks(h.rincian?.oleh);
+      const pada = teks(h.rincian?.pada);
+      return `Keputusan${tahun ? ` Tahun Anggaran ${tahun}` : ""} sudah ditetapkan${oleh ? ` oleh ${oleh}` : ""}${pada ? ` pada ${tanggalDanJam(pada)}` : ""}. Isian di halaman ini tidak dipakai.`;
+    }
+    case "hitungan_berubah":
+      return "Hitungan anggaran berubah sejak halaman ini dibuka. Muat ulang untuk melihat yang terbaru. Pilihan Anda tetap tersimpan di perangkat ini.";
+    case "melebihi_pagu": {
+      const pagu = angka(h.rincian?.pagu);
+      const lebih = angka(h.rincian?.kelebihan);
+      return pagu !== null && lebih !== null
+        ? `Total yang disetujui melebihi pagu ${rupiah(pagu)} sebesar ${rupiah(lebih)}. Kurangi yang disetujui, lalu coba lagi.`
+        : "Total yang disetujui melebihi pagu. Kurangi yang disetujui, lalu coba lagi.";
+    }
+    case "tidak_ada_usulan":
+      return "Tidak ada usulan dalam hitungan anggaran, jadi belum ada yang bisa ditetapkan.";
+    case "tahun_berikut_ada":
+      return "Periode tahun berikutnya sudah ada di database, jadi penetapan tidak bisa dilanjutkan. Hubungi pemilik proyek.";
+    case "tidak_bisa_dibatalkan":
+      return "Periode ini tidak punya penetapan yang bisa dibatalkan.";
+    case "bukan_terakhir":
+      return "Hanya penetapan yang terakhir yang bisa dibatalkan. Batalkan dulu penetapan tahun yang lebih baru.";
+    case "lewat_batas":
+      return "Sudah lewat 24 jam sejak penetapan, jadi tidak bisa dibatalkan lagi. Keputusan tetap.";
+    case "sudah_dikerjakan":
+      return "Sudah ada usulan dari penetapan ini yang ditandai selesai dikerjakan, jadi penetapan tidak bisa dibatalkan.";
     case "tidak_valid":
       return "Ada isian yang belum sesuai. Periksa isian yang bertanda galat.";
     default:
@@ -93,6 +133,9 @@ const PESAN_BIDANG: Record<string, string> = {
   alasan: "Tulis alasannya, 10 sampai 500 karakter.",
   nama_singkat: "Nama singkat harus 2 sampai 24 karakter.",
   pagu: "Pagu harus antara Rp 10 juta dan Rp 10 miliar.",
+  tanggal: "Isi tanggal musyawarah. Tanggalnya tidak boleh di masa depan.",
+  biaya_realisasi: "Biaya realisasi harus berupa rupiah bulat yang positif, atau biarkan kosong.",
+  tahun: "Periode ini tidak dikenal. Muat ulang halaman.",
   jumlah: "Jumlah bobot harus tepat 100.",
   popularitas: "Isi bilangan bulat 0 sampai 100.",
   pemerataan: "Isi bilangan bulat 0 sampai 100.",
@@ -124,8 +167,25 @@ export function hasilGalat(nomor: number, konteks: KonteksAdmin, h: Gagal): Stat
   const galatKolom: Record<string, string> = {};
   let galatAlasan: string | null = null;
 
-  if (h.kode === "tidak_valid" && h.bidang) {
-    const kalimat = PESAN_BIDANG[h.bidang] ?? pesan;
+  if (h.kode === "tidak_valid" && h.bidang === "butir") {
+    // Satu baris di lembar kerja keputusan: kuncinya "<kolom>-<id usulan>", kolom: hasil, alasan, sumber.
+    const id = teks(h.rincian?.id);
+    const kolom = teks(h.rincian?.kolom);
+    if (id && kolom) {
+      galatKolom[`${kolom === "sumber_dana" ? "sumber" : kolom}-${id}`] =
+        kolom === "alasan"
+          ? "Alasan wajib diisi, 20 sampai 500 karakter."
+          : kolom === "sumber_dana"
+            ? "Tulis sumber dananya, 3 sampai 80 karakter."
+            : "Pilih salah satu hasil.";
+    }
+  } else if (h.kode === "tidak_valid" && h.bidang) {
+    const kalimat =
+      h.bidang === "catatan"
+        ? konteks === "selesai"
+          ? "Tulis catatannya, 10 sampai 500 karakter."
+          : "Tulis catatan musyawarah, 20 sampai 1.000 karakter."
+        : (PESAN_BIDANG[h.bidang] ?? pesan);
     if (h.bidang === "alasan") galatAlasan = kalimat;
     else galatKolom[kolomDariBidang(h.bidang)] = kalimat;
   }
@@ -141,6 +201,10 @@ export function hasilGalat(nomor: number, konteks: KonteksAdmin, h: Gagal): Stat
     galatKolom,
     perluMasuk: h.kode === "belum_masuk",
     bentrok: h.kode === "bentrok" ? { jam: jamUbah(h), ringkas: ringkas ?? "" } : null,
+    tautan:
+      h.kode === "sudah_ditetapkan" && angka(h.rincian?.tahun) !== null
+        ? { href: `/keputusan/${angka(h.rincian?.tahun)}`, teks: "Lihat hasilnya" }
+        : null,
   };
 }
 

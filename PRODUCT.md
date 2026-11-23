@@ -27,7 +27,7 @@ Produk ini berhasil kalau warga RW kecil bisa melihat dengan angka kenapa usulan
 
 ## Operating Context
 
-- Siklus usulan: `forum` (baru diajukan, dibahas) → `voting` (masuk perhitungan anggaran) → `approved` / `rejected` / `done`.
+- Siklus usulan: `forum` (baru diajukan, dibahas) → `voting` (masuk perhitungan anggaran) → `approved` / `referred` (diajukan ke dana lain) / `rejected`, lalu `done` untuk yang disetujui atau diajukan ke dana lain. Usulan yang "dibawa ke periode berikutnya" tetap `voting`.
 - Data demo: 3 RW (RW 01 berpenduduk 3.000 dengan anggaran lalu Rp 250 jt, RW 03 berpenduduk 2.000 dengan Rp 60 jt, RW 07 berpenduduk 400 dengan Rp 0), 7 usulan berstatus voting, 162 dukungan, pagu Rp 300 jt.
 - Akun warga dibuat admin, bukan pendaftaran mandiri. Tujuannya mencegah satu orang membuat banyak akun untuk menambah dukungan.
 
@@ -58,10 +58,15 @@ Produk ini berhasil kalau warga RW kecil bisa melihat dengan angka kenapa usulan
 - **Sudah ada:**
   - forum (daftar, detail, ajukan usulan, komentar, moderasi), termasuk deteksi usulan mirip dengan embedding (`multilingual-e5-small`, 384 dimensi) dan cadangan `pg_trgm`. Lihat `docs/forum.md`;
   - halaman admin desa: ringkasan, usulan, anggaran (pagu dan bobot dengan pratinjau dampak), akun, dan moderasi, plus ganti kata sandi di `/akun` untuk semua peran. Lihat `docs/admin.md`;
+  - halaman Keputusan (`/keputusan`, `/keputusan/[tahun]`, `/admin/keputusan`): admin mencatat hasil musyawarah utuh untuk semua usulan
+    dalam hitungan (disetujui, diajukan ke dana lain, dibawa ke periode berikutnya, ditolak) dengan alasan yang wajib bila berbeda dari
+    rekomendasi; warga membacanya berdampingan dengan rekomendasi (dua Garis Pagu), bisa mencetak lembar A4 untuk papan
+    pengumuman, dan mengunduh CSV. Ini **ringkasan keputusan musyawarah, bukan pengesahan anggaran**. Penetapan terakhir bisa
+    dibatalkan 24 jam. Lihat `docs/keputusan.md`;
   - halaman Simulasi (`/simulasi`): pagu dan bobot yang bisa digeser, Peta Pagu, uji ketahanan bobot, tabel per RW, dan usulan forum
     andaian, tanpa menyimpan. Lihat `docs/simulasi.md`.
 - **Belum ada:**
-  - Keputusan (masih halaman stub);
+  - koreksi keputusan setelah 24 jam, tanda tangan digital, unggah berkas, rencana kerja rinci, dan notifikasi (di luar cakupan fitur Keputusan);
   - pengisian `location` pada usulan (deteksi mirip memakai RW);
   - penilaian urgensi oleh AI (admin mengisi urgensi dengan rubrik empat tingkat; tempat untuk saran AI sudah disiapkan di formulir tetapi tidak tampil sampai fiturnya ada);
   - pengaturan data wilayah (penduduk, anggaran periode lalu) dari antarmuka;

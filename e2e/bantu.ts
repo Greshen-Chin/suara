@@ -97,3 +97,53 @@ export async function segarkanCache(browser: Browser) {
   await expect(page.getByRole("status").filter({ hasText: "Dukungan dibatalkan" })).toBeAttached();
   await konteks.close();
 }
+
+// ---------------------------------------------------------------------------
+// Keputusan musyawarah: akses langsung ke server tiruan untuk menyiapkan atau mengubah keadaan di luar layar.
+// ---------------------------------------------------------------------------
+const DB = "http://localhost:54321";
+
+export async function rpcDb<T = Record<string, unknown>>(nama: string, args: Record<string, unknown> = {}): Promise<T> {
+  const r = await fetch(`${DB}/rest/v1/rpc/${nama}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(args) });
+  expect(r.ok, `rpc ${nama}: ${r.status}`).toBeTruthy();
+  return (await r.json()) as T;
+}
+
+export async function bacaDb<T = Record<string, unknown>>(jalur: string): Promise<T[]> {
+  const r = await fetch(`${DB}/rest/v1/${jalur}`);
+  expect(r.ok, `GET ${jalur}: ${r.status}`).toBeTruthy();
+  return (await r.json()) as T[];
+}
+
+export async function idAdmin(): Promise<string> {
+  return (await bacaDb<{ id: string }>("akun?nama_pengguna=eq.admin&select=id"))[0].id;
+}
+
+/** Memundurkan waktu penetapan keputusan 25 jam: batas 24 jam pembatalan terlewati. */
+export async function mundurkanPeriode() {
+  const r = await fetch(`${DB}/__uji/mundur-periode`, { method: "POST" });
+  expect(r.ok).toBeTruthy();
+}
+
+/**
+ * Menetapkan keputusan lewat fungsi SQL (tanpa layar), mengikuti rekomendasi: yang terpilih disetujui, sisanya dibawa ke
+ * periode berikutnya (atau ditolak bila `tolakSisa`). Mengembalikan jawaban SQL.
+ */
+export async function tetapkanLewatDb(o: { tolakSisa?: boolean; tahun?: number } = {}) {
+  const tahun = o.tahun ?? 2027;
+  const h = await rpcDb<{ sidik: string; usulan: { id: string; terpilih: boolean }[] }>("sidik_hitungan");
+  const [p] = await bacaDb<{ versi: number }>(`periode?tahun=eq.${tahun}&select=versi`);
+  return rpcDb<{ ok: boolean; kode?: string }>("tetapkan_keputusan", {
+    p_akun: await idAdmin(),
+    p_tahun: tahun,
+    p_versi_dibaca: p.versi,
+    p_sidik: h.sidik,
+    p_tanggal: "2026-11-20",
+    p_catatan: "Musyawarah desa di balai warga, dihadiri perwakilan RT dan RW, berjalan lancar.",
+    p_butir: h.usulan.map((u) => ({
+      id: u.id,
+      hasil: u.terpilih ? "disetujui" : o.tolakSisa ? "ditolak" : "dilanjutkan",
+      alasan: !u.terpilih && o.tolakSisa ? "Biayanya terlalu besar untuk pagu tahun ini dan akan diajukan lagi." : null,
+    })),
+  });
+}

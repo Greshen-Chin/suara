@@ -65,11 +65,13 @@ function ringkasanSuara(
       ? `semuanya di ${namaRwTerpilih[0]}`
       : `tersebar di ${gabung(namaRwTerpilih)}`;
 
+  // anggaran_lalu hanya menyangkut PERIODE LALU: sesudah sebuah penetapan, RW yang menerima 0 bisa saja pernah menerima
+  // anggaran di periode sebelumnya, jadi kalimatnya tidak boleh berkata "belum pernah".
   const tanpaBagian = wilayah
     .filter((w) => w.anggaran_lalu === 0 && !rwTerpilih.has(w.rw))
     .map((w) => w.nama);
   const akhir = tanpaBagian.length
-    ? ` ${gabung(tanpaBagian)} belum pernah menerima anggaran dan kali ini tetap tidak kebagian.`
+    ? ` ${gabung(tanpaBagian)} tidak menerima anggaran periode lalu dan kali ini tetap tidak kebagian.`
     : "";
 
   return `${terpilih.length} proyek, ${sebaran}.${akhir}`;
@@ -92,7 +94,7 @@ function ringkasanRekomendasi(
   const mendesak = terpilih.every((t) => t.urgensi >= URGENSI_MENDESAK);
   const proyek = `${terpilih.length} proyek${mendesak ? " yang mendesak" : ""}`;
   return tertinggal.length
-    ? `${proyek} untuk ${tertinggal.length} RW yang selama ini tertinggal, dari pagu yang sama.`
+    ? `${proyek} untuk ${tertinggal.length} RW yang periode lalu di bawah rata-rata anggaran per penduduk, dari pagu yang sama.`
     : `${proyek}, dari pagu yang sama.`;
 }
 
