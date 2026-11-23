@@ -14,9 +14,9 @@
     z-index: 50;
     height: calc(4.25rem + env(safe-area-inset-bottom, 0px));
     padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    /* Latar putih solid, tanpa backdrop-filter: blur di atas halaman yang terus digambar ulang (menggeser pagu di
+       simulasi) membuat tugas utas utama melewati 100 ms pada CPU lambat (e2e/simulasi-kinerja.spec.ts). */
+    background: #ffffff;
     border-top: 1px solid rgba(226, 232, 240, 0.85);
     box-shadow: 0 -4px 16px rgba(19, 59, 42, 0.08);
   }

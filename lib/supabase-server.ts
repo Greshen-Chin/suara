@@ -5,13 +5,15 @@ import "server-only";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./database.types";
 
-const url = process.env.SUPABASE_URL;
-const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const url = process.env.SUPABASE_URL || "https://placeholder-project.supabase.co";
+const key = process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-service-role-key";
 
-if (!url || !key) {
-  throw new Error(
-    "SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY harus diisi di .env.local (atau environment hosting).",
-  );
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  if (process.env.NODE_ENV === "development") {
+    console.warn(
+      "PERINGATAN: SUPABASE_URL atau SUPABASE_SERVICE_ROLE_KEY belum diisi. Aplikasi akan menggunakan fallback data.",
+    );
+  }
 }
 
 export const supabaseServer = createClient<Database>(url, key, {

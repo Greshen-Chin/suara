@@ -3,6 +3,7 @@
 export const RUTE = {
   beranda: "/",
   forum: "/forum",
+  peta: "/peta",
   simulasi: "/simulasi",
   keputusan: "/keputusan",
   masuk: "/masuk",

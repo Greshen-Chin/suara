@@ -57,7 +57,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteHeader />
         {children}
         <SiteFooter />
-        {/* usePathname() di luar Suspense menggagalkan build produksi (halaman dinamis seperti /admin/akun/[id]). */}
+        {/* usePathname() di luar Suspense menggagalkan build produksi (halaman dinamis seperti /admin/akun/[id]).
+            Cadangan statis berukuran sama, bukan null, supaya navigasi tidak muncul tiba-tiba. */}
         <Suspense fallback={<MobileBottomNavStatis />}>
           <MobileBottomNav />
         </Suspense>
