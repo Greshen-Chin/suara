@@ -36,7 +36,7 @@ sequenceDiagram
   else jatah ada
     D-->>S: panggilan_id, sidik, judul, deskripsi, kategori (dibaca dari tabel)
     S->>S: samarkan data pribadi, susun prompt dan skema
-    S->>G: generateContent (maks 12 detik)
+    S->>G: generateContent (maks 25 detik)
     G-->>S: JSON
     S->>S: validasi ulang (nilai, tingkat, panjang, kutipan)
     S->>D: simpan_saran atau catat_gagal_saran
@@ -53,7 +53,7 @@ sequenceDiagram
 | Antarmuka Gemini | `generateContent` lewat `fetch`, tanpa dependensi | Didukung penuh, bentuk keluaran terstruktur (`responseMimeType` + `responseSchema`) saya kenal pasti. Interactions disarankan Google, tetapi bentuk keluaran terstruktur dan cara menonaktifkan penyimpanan permintaannya tidak bisa saya pastikan dari dokumen yang dibaca; `generateContent` tidak membuat sumber daya yang bisa dilanjutkan. |
 | Model | `GEMINI_MODEL`, bawaan `gemini-3.5-flash-lite` | Nama model tidak konsisten antar halaman dokumen Google yang dibaca (22 November 2026), jadi tidak ditanam di kode. **Bawaan ini belum dikalibrasi**: dipilih karena varian *lite* paling mungkin tersedia di paket gratis. |
 | Kunci | Header `x-goog-api-key`, hanya di server | Tidak pernah di URL, log, respons, atau bundel klien. `GEMINI_BASE_URL` hanya diterima untuk alamat resmi atau `http://127.0.0.1`/`localhost` (server tiruan), supaya kunci tidak terkirim ke tujuan lain karena salah ketik. |
-| Batas waktu | 12 detik keseluruhan (`AbortSignal`) | Satu kali ulang **hanya** untuk galat jaringan atau 503, tidak untuk 429. Batas permintaan Cloud Run bawaan (300 detik) jauh lebih panjang. |
+| Batas waktu | 25 detik keseluruhan (`AbortSignal`) | Satu kali ulang **hanya** untuk galat jaringan atau 503, tidak untuk 429. Batas permintaan Cloud Run bawaan (300 detik) jauh lebih panjang. |
 | Data yang dikirim | Judul, deskripsi, kategori, **sudah disamarkan**, ditambah rubrik | Tidak dikirim: nama, RW, dukungan, biaya, komentar, id. Dukungan dan RW sudah dinilai komponen lain; mengirimnya membuat urgensi menghitung hal yang sama dua kali. |
 | Pengisian | Tidak pernah | Hanya admin yang memilih. Alasan AI hanya bisa disalin sebagai **draf** (ditandai "Draf dari AI") ke kolom alasan yang tetap divalidasi 20 sampai 500 karakter. |
 | Cache | Saran disimpan per (usulan, sidik isi, versi prompt, model) | Isi dan prompt yang sama memakai saran tersimpan: tidak memanggil AI, tidak menghabiskan jatah. Mengubah prompt: naikkan `VERSI_PROMPT`. |

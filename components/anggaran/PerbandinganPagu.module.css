@@ -38,7 +38,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .perubahan {
@@ -73,7 +73,7 @@
   align-items: center;
   padding: 0.125rem 0.5rem;
   border: 2px dashed var(--abu-semen);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   color: var(--abu-semen);
   font-size: var(--t-xs);
   font-weight: 700;

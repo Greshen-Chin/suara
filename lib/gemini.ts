@@ -140,7 +140,7 @@ function urai(status: number, badan: BadanJawaban | null): KodeGalatGemini | { t
 }
 
 /**
- * Satu permintaan, batas waktu keseluruhan 12 detik. Satu kali ulang HANYA untuk galat jaringan atau 503, dan
+ * Satu permintaan, batas waktu keseluruhan 25 detik (Vertex AI sering lebih lambat dari Gemini API). Satu kali ulang HANYA untuk galat jaringan atau 503, dan
  * hanya bila waktu masih cukup; 429 tidak diulang (mengulang hanya menghabiskan kuota lebih cepat).
  * Yang dicatat ke konsol hanya jenis galat, kode HTTP, model, dan durasi: tidak ada isi usulan, tidak ada kunci.
  */

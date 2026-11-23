@@ -181,7 +181,7 @@
   gap: 0.25rem;
   padding: 0.875rem 1rem;
   border: var(--tebal) solid var(--hijau-sawah);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--papan);
 }
 
@@ -200,7 +200,7 @@
   gap: 0.5rem;
   padding: 0.875rem 1rem;
   border: 2px solid var(--galat-tepi);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--galat-latar);
   color: var(--galat-teks);
   font-weight: 600;
@@ -344,7 +344,7 @@
 
 .tabel th {
   padding: 0.5rem 0.75rem;
-  border-block: 2px solid var(--tinta);
+  border-block: 1px solid #dce5dc;
   font-size: var(--t-xs);
   font-weight: 700;
   text-align: left;
@@ -452,7 +452,7 @@
   }
 
   .tabel tbody tr:first-child {
-    border-top: 2px solid var(--tinta);
+    border-top: 1px solid #dce5dc;
   }
 
   .tabel td {
@@ -490,7 +490,7 @@
   gap: 0.75rem;
   padding: 1rem;
   border: 1px solid var(--garis-halus); box-shadow: var(--bayangan-halus);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--papan);
 }
 
@@ -555,7 +555,7 @@
   min-height: 2.75rem;
   padding: 0.5rem 0.75rem;
   border: 1px solid #cbd5e1;
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--papan);
   color: var(--tinta);
   /* 16px ke atas mencegah iOS memperbesar halaman saat kolom disentuh. */
@@ -609,7 +609,7 @@
   max-width: 44rem;
   padding: clamp(1rem, 3vw, 1.5rem);
   border: 1px solid var(--garis-halus); box-shadow: var(--bayangan-halus);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--papan);
 }
 
@@ -673,7 +673,7 @@
   justify-content: center;
   min-height: 2.75rem;
   border: 1px solid #cbd5e1;
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--papan);
   color: var(--tinta);
   font-family: var(--f-judul);
@@ -763,7 +763,7 @@
   min-height: 2.75rem;
   padding: 0.5rem 0.75rem;
   border: 1px solid #cbd5e1;
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--papan);
   color: var(--tinta);
   font-family: var(--f-judul);
@@ -787,7 +787,7 @@
   align-items: center;
   gap: 0.25rem 1rem;
   padding: 0.5rem 0;
-  border-block: 2px solid var(--tinta);
+  border-block: 1px solid #dce5dc;
   font-weight: 700;
 }
 
@@ -855,7 +855,7 @@
   justify-items: start;
   padding: 1rem;
   border: 2px dashed var(--abu-semen);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--papan);
 }
 
@@ -987,7 +987,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .komentarDaftar li {
@@ -1019,7 +1019,7 @@
   gap: 0.75rem;
   padding: 1rem;
   border: 1px solid var(--garis-halus); box-shadow: var(--bayangan-halus);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--papan);
 }
 
@@ -1078,7 +1078,7 @@
 }
 
 .langkah li[aria-current="step"] {
-  border-bottom: 3px solid var(--tinta);
+  border-bottom: 1px solid #dce5dc;
   color: var(--tinta);
   font-weight: 700;
 }
@@ -1087,7 +1087,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .hasilCari li {
@@ -1109,7 +1109,7 @@
   gap: 0.25rem;
   padding: 0.75rem 1rem;
   border: 1px solid #cbd5e1;
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
 }
 
 .pilihanMode {
@@ -1159,7 +1159,7 @@
 
 .blok {
   height: 1rem;
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--garis-halus);
 }
 
@@ -1172,7 +1172,7 @@
   max-width: 44rem;
   padding: 1.25rem;
   border: var(--tebal) solid var(--galat-tepi);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--galat-latar);
   color: var(--galat-teks);
 }
@@ -1202,7 +1202,7 @@
   justify-items: start;
   gap: 0.75rem;
   padding: 1.5rem 0;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .kosong h2 {

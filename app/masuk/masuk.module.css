@@ -22,8 +22,9 @@
   margin-top: 0.5rem;
   padding: clamp(1rem, 4vw, 1.5rem);
   background: var(--papan);
-  border: var(--tebal) solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #d7e1d8;
+  box-shadow: var(--bayangan-kartu);
+  border-radius: var(--radius-lg);
 }
 
 .kolom {
@@ -39,8 +40,8 @@
   width: 100%;
   min-height: 2.75rem;
   padding: 0.5rem 0.75rem;
-  border: 2px solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #7d8f82;
+  border-radius: var(--radius-lg);
   background: var(--papan);
   color: var(--tinta);
   /* 16px ke atas mencegah iOS memperbesar halaman saat kolom disentuh. */
@@ -61,7 +62,7 @@
 .galat {
   padding: 0.75rem 0.875rem;
   border: 2px solid var(--galat-tepi);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--galat-latar);
   color: var(--galat-teks);
   font-weight: 600;

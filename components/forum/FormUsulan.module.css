@@ -34,7 +34,7 @@
   min-height: 46rem;
   margin-top: 1.5rem;
   border: var(--tebal) solid var(--garis-halus);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--papan);
 }
 
@@ -45,8 +45,8 @@
   max-width: 52ch;
   margin-top: 1.5rem;
   padding: 1rem;
-  border: 2px solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #7d8f82;
+  border-radius: var(--radius-lg);
   background: var(--papan);
 }
 
@@ -97,8 +97,9 @@
   display: grid;
   gap: 1.25rem;
   padding: clamp(1rem, 4vw, 1.5rem);
-  border: var(--tebal) solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #d7e1d8;
+  box-shadow: var(--bayangan-kartu);
+  border-radius: var(--radius-lg);
   background: var(--papan);
 }
 
@@ -118,8 +119,8 @@
   width: 100%;
   min-height: 2.75rem;
   padding: 0.5rem 0.75rem;
-  border: 2px solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #7d8f82;
+  border-radius: var(--radius-lg);
   background: var(--papan);
   color: var(--tinta);
   /* 16px ke atas mencegah iOS memperbesar halaman saat kolom disentuh. */
@@ -176,7 +177,7 @@
 .ringkasGalat {
   padding: 0.75rem 0.875rem;
   border: 2px solid var(--galat-tepi);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--galat-latar);
   color: var(--galat-teks);
   font-weight: 600;
@@ -197,7 +198,7 @@
   gap: 0.25rem 1rem;
   padding: 0.5rem 0.875rem;
   border: 2px solid var(--hijau-sawah);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   font-size: var(--t-sm);
   font-weight: 600;
 }
@@ -257,7 +258,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .itemMirip {
@@ -305,7 +306,7 @@
   display: grid;
   gap: 0;
   margin: 0;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .ringkasan > div {

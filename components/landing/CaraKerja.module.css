@@ -10,6 +10,7 @@
 .daftar p { max-width: 35ch; margin-top: 7px; color: #536159; font: 400 14px/1.6 var(--f-isi); }
 .catatan { max-width: 80ch; margin-top: 32px; color: #536159; font: 400 13px/1.55 var(--f-isi); }
 .catatan a { color: #176448; font-weight: 600; }
+.catatan + .catatan { margin-top: 8px; }
 @media (max-width: 760px) {
   .bagian { padding-block: 50px 56px; }
   .kepala { display: block; }

@@ -26,7 +26,7 @@ export function WilayahKontras({ wilayah }: Props) {
           <dl>
             <div><dt>Penduduk</dt><dd>{ribuan(w.penduduk)}</dd></div>
             <div><dt>Dukungan</dt><dd>{ribuan(w.jumlah_suara)} suara, {desimal(suaraPer1000(w))} per 1.000 penduduk</dd></div>
-            <div><dt>Anggaran periode lalu</dt><dd>{w.anggaran_lalu === 0 ? "Belum menerima" : rupiah(w.anggaran_lalu)}</dd></div>
+            <div><dt>Anggaran periode lalu</dt><dd>{/* "Tidak", bukan "Belum": nilai 0 hanya tentang periode lalu, bukan "tidak pernah". */}{w.anggaran_lalu === 0 ? "Tidak menerima anggaran" : rupiah(w.anggaran_lalu)}</dd></div>
           </dl>
         </div>)}
       </div>

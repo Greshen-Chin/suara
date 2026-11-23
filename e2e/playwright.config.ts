@@ -62,6 +62,10 @@ export default defineConfig({
         SUPABASE_URL: `http://localhost:${PORT_DB}`,
         SUPABASE_SERVICE_ROLE_KEY: "uji-lokal",
         SESSION_SECRET: process.env.SESSION_SECRET ?? "rahasia-uji-e2e-tidak-untuk-produksi-123456",
+        // Kosong sengaja: mengalahkan GOOGLE_CLOUD_PROJECT di .env.local, supaya pengujian tidak pernah memanggil Vertex AI
+        // sungguhan dan server tanpa kunci benar-benar tanpa AI. String kosong menang atas berkas .env di Next.
+        GOOGLE_CLOUD_PROJECT: "",
+        VERTEX_AI_PROJECT: "",
       },
     },
     {
@@ -77,6 +81,10 @@ export default defineConfig({
         SUPABASE_URL: `http://localhost:${PORT_DB}`,
         SUPABASE_SERVICE_ROLE_KEY: "uji-lokal",
         SESSION_SECRET: process.env.SESSION_SECRET ?? "rahasia-uji-e2e-tidak-untuk-produksi-123456",
+        // Kosong sengaja: mengalahkan GOOGLE_CLOUD_PROJECT di .env.local, supaya pengujian tidak pernah memanggil Vertex AI
+        // sungguhan dan server tanpa kunci benar-benar tanpa AI. String kosong menang atas berkas .env di Next.
+        GOOGLE_CLOUD_PROJECT: "",
+        VERTEX_AI_PROJECT: "",
         GEMINI_API_KEY: "kunci-uji-e2e",
         GEMINI_BASE_URL: `http://127.0.0.1:${PORT_GEMINI}`,
       },
@@ -96,6 +104,10 @@ export default defineConfig({
         SUPABASE_URL: "http://127.0.0.1:9",
         SUPABASE_SERVICE_ROLE_KEY: "uji-lokal",
         SESSION_SECRET: process.env.SESSION_SECRET ?? "rahasia-uji-e2e-tidak-untuk-produksi-123456",
+        // Kosong sengaja: mengalahkan GOOGLE_CLOUD_PROJECT di .env.local, supaya pengujian tidak pernah memanggil Vertex AI
+        // sungguhan dan server tanpa kunci benar-benar tanpa AI. String kosong menang atas berkas .env di Next.
+        GOOGLE_CLOUD_PROJECT: "",
+        VERTEX_AI_PROJECT: "",
       },
     },
   ],

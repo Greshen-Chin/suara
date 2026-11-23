@@ -7,7 +7,7 @@
   align-content: start;
   min-width: 0;
   padding-top: 0.75rem;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .judul {

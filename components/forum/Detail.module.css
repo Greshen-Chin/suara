@@ -60,7 +60,7 @@
   margin-bottom: 1.25rem;
   padding: 1rem;
   border: var(--tebal) solid var(--hijau-sawah);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--papan);
 }
 
@@ -75,7 +75,7 @@
 .tata {
   display: grid;
   gap: 2rem;
-  border-top: 6px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
   padding-top: 1.5rem;
 }
 
@@ -182,7 +182,7 @@
   gap: 0.25rem;
   padding: 1rem;
   border: 2px dashed var(--abu-semen);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--papan);
   color: var(--tinta);
 }
@@ -198,7 +198,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .langkah {
@@ -249,7 +249,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .komentar {
@@ -299,7 +299,7 @@
 
 .kosongKomentar {
   padding: 1rem 0;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
   color: var(--abu-semen);
 }
 
@@ -325,8 +325,8 @@
   width: 100%;
   min-height: 7rem;
   padding: 0.5rem 0.75rem;
-  border: 2px solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #7d8f82;
+  border-radius: var(--radius-lg);
   background: var(--papan);
   color: var(--tinta);
   font: inherit;
@@ -363,7 +363,7 @@
 .galatUmum {
   padding: 0.75rem 0.875rem;
   border: 2px solid var(--galat-tepi);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--galat-latar);
   color: var(--galat-teks);
   font-weight: 600;
@@ -418,18 +418,19 @@
 
 .blok {
   height: 1rem;
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--garis-halus);
 }
 
-/* ---- Keputusan musyawarah: blok tenang, hanya garis di kiri ---- */
+/* ---- Keputusan musyawarah: kotak tenang berlatar mint, seperti sorotan di UI baru ---- */
 
 .keputusan {
   display: grid;
   gap: 0.5rem;
   max-width: 65ch;
-  padding-left: 1rem;
-  border-left: 3px solid var(--tinta);
+  padding: 1rem 1.125rem;
+  border-radius: 10px;
+  background: #eaf3ec;
 }
 
 .keputusan a {

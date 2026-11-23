@@ -321,13 +321,13 @@ test("A-09 menunggu: 'Masih menunggu' setelah 6 detik, formulir tetap bisa dipak
   await konteks.close();
 });
 
-test("A-09 batas waktu 12 detik: pesan yang jujur dan tidak menghabiskan jatah", async ({ browser }) => {
+test("A-09 batas waktu 25 detik: pesan yang jujur dan tidak menghabiskan jatah", async ({ browser }) => {
   const { konteks, page } = await konteksSebagai(browser, "admin", 360, APP);
-  await atur({ mode: "normal", delayMs: 14_000 });
+  await atur({ mode: "normal", delayMs: 28_000 });
   const id = await tinjau(page, TONG);
   await pilih(page, 5);
   await tombolMinta(page).click();
-  await expect(catatan(page).getByText("AI terlalu lama menjawab. Coba lagi, atau lanjutkan tanpa saran.").first()).toBeVisible({ timeout: 25_000 });
+  await expect(catatan(page).getByText("AI terlalu lama menjawab. Coba lagi, atau lanjutkan tanpa saran.").first()).toBeVisible({ timeout: 45_000 });
   await expect(tombolMinta(page)).toHaveText("Coba lagi");
   const [r] = await bacaDb<{ kode: string; dihitung: boolean }>(`panggilan_ai?proposal_id=eq.${id}&hasil=eq.gagal&select=kode,dihitung`);
   expect(r).toEqual({ kode: "batas_waktu", dihitung: false });

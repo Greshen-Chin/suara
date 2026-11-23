@@ -74,7 +74,7 @@ test("tangkap galat dan halaman publik", async ({ browser }) => {
   }
   await page.setViewportSize({ width: 360, height: 900 });
   await page.goto("/");
-  await page.getByRole("heading", { name: "Tiga langkah dari usulan sampai keputusan" }).scrollIntoViewIfNeeded();
+  await page.getByRole("heading", { name: "Mengapa hasilnya bisa berbeda?" }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: `${LAYAR}/saran-6-beranda-360.png`, fullPage: false });
   await konteks.close();
 });

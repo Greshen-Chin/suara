@@ -82,7 +82,9 @@ test("K-12 alur penuh: isi, tetapkan, halaman publik, batalkan, tetapkan lagi, t
   await expect(tamu.page.getByText("Dicatat oleh admin").first()).toBeVisible();
 
   await tamu.page.goto("/");
-  await expect(tamu.page.getByRole("heading", { name: /Pagu Rp 300 juta: siapa yang kebagian/ })).toBeVisible();
+  // Beranda UI baru: judul perbandingan tidak lagi memuat angka pagu; pagunya ada di kalimat pengantar.
+  await expect(tamu.page.getByRole("heading", { name: "Bagaimana anggaran dialokasikan?" })).toBeVisible();
+  await expect(tamu.page.getByText(/Keduanya memakai pagu resmi Rp\s300\sjuta/)).toBeVisible();
   // Garis Pagu kini hanya memuat tiga usulan yang dibawa ke periode berikutnya; RW tanpa bagian dibaca "periode lalu".
   await expect(tamu.page.getByText(/belum pernah menerima/i)).toHaveCount(0);
   await expect(tamu.page.locator("body")).not.toContainText("NaN");

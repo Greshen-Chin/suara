@@ -35,12 +35,13 @@ test("admin: formulir urgensi persis seperti sebelum ada fitur, tanpa label, tom
 test("beranda: tidak mengklaim AI menilai urgensi, dan pernyataan tentang AI benar menurut keadaan", async ({ page }) => {
   const konsol = pantauKonsol(page);
   await page.goto("/");
-  await expect(page.getByText("AI tidak dipakai untuk menilai urgensi. Admin desa menilainya 1 sampai 10 dengan rubrik dan menuliskan alasannya.")).toBeVisible();
+  // Beranda UI baru: satu catatan "Peran AI" di bagian "Mengapa hasilnya bisa berbeda?".
+  await expect(page.getByText(/Urgensi dinilai admin desa, bukan AI\./)).toBeVisible();
   await expect(page.getByText(/AI menilai urgensi/)).toHaveCount(0);
   await expect(page.getByText(/AI menyarankan nilai urgensi/)).toHaveCount(0);
-  await expect(page.getByText("AI tidak ikut memutuskan. Musyawarah desa dan admin yang menetapkan, dan setiap perubahan tercatat.")).toBeVisible();
+  await expect(page.getByText(/AI tidak ikut memutuskan\./)).toBeVisible();
   // Deteksi usulan mirip tetap disebut, dengan catatan jujur bila AI tidak tersedia.
-  await expect(page.getByText(/AI mengenali usulan yang mirip dari maknanya/)).toBeVisible();
+  await expect(page.getByText(/mengenali usulan yang mirip dari maknanya/)).toBeVisible();
   expect(konsol()).toEqual([]);
 });
 

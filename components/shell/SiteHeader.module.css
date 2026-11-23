@@ -66,7 +66,7 @@
 .navigasi {
   grid-area: navigasi;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   gap: 0.25rem;
   overflow-x: auto;
@@ -75,6 +75,40 @@
 
 .navigasi::-webkit-scrollbar {
   display: none;
+}
+
+/* Rata kanan lewat margin otomatis, bukan justify-content: flex-end. Dengan flex-end, isi yang meluap keluar di
+   sisi KIRI dan tidak bisa digulir (tautan "Forum" terpotong menjadi "rum" di layar 360 px). */
+.navigasi > a:first-child {
+  margin-left: auto;
+}
+
+/* Layar 360 px: logo dan tiga tautan harus muat sebaris tanpa ada yang terpotong di tepi kanan. */
+@media (max-width: 26rem) {
+  .isi {
+    column-gap: 0.5rem;
+  }
+
+  .merek {
+    gap: 0.375rem;
+  }
+
+  .logoIcon {
+    width: 1.625rem;
+    height: 1.625rem;
+  }
+
+  .namaApp {
+    font-size: 1.125rem;
+  }
+
+  .navigasi {
+    gap: 0.125rem;
+  }
+
+  .navigasi a {
+    padding-inline: 0.375rem;
+  }
 }
 
 .navigasi a {
@@ -164,6 +198,11 @@
   .navigasi {
     justify-content: center;
     gap: 0.375rem;
+  }
+
+  /* Di layar lebar menu muat dan berada di tengah; margin otomatis untuk layar sempit tidak dipakai. */
+  .navigasi > a:first-child {
+    margin-left: 0;
   }
 
   .navigasi a {

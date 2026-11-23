@@ -10,7 +10,9 @@
   justify-items: start;
 }
 
-@container (min-width: 17rem) {
+/* 20rem, bukan 17rem: kolom samping detail usulan selebar 17rem, dan di sana angka dan tautan sebaris
+   membuat "20 per 1.000 penduduk RW" terlipat per kata. Di kolom samping keduanya bertumpuk. */
+@container (min-width: 20rem) {
   .dukung {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
