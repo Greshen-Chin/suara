@@ -96,7 +96,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-block: 2px solid var(--tinta);
+  border-block: 1px solid #dce5dc;
 }
 
 .baris {
@@ -327,7 +327,7 @@
 }
 
 .tabel thead th {
-  border-block: 2px solid var(--tinta);
+  border-block: 1px solid #dce5dc;
   font-size: var(--t-xs);
   font-weight: 700;
   vertical-align: bottom;

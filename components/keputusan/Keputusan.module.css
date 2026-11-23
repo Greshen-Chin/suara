@@ -23,11 +23,12 @@
   display: grid;
   gap: 1.25rem;
   padding-bottom: 1.5rem;
-  border-bottom: 6px solid var(--tinta);
+  border-bottom: 1px solid #dce5dc;
 }
 
 .kepala h1 {
-  font-size: clamp(2.5rem, 1.4rem + 4.5vw, 4rem);
+  font-size: clamp(2rem, 1.3rem + 2.6vw, 2.75rem);
+  letter-spacing: -0.035em;
   overflow-wrap: anywhere;
 }
 
@@ -57,7 +58,7 @@
   justify-self: start;
   margin: 0.25rem 0.25rem 0;
   padding: 0.375rem 0.875rem 0.25rem;
-  border: 3px solid var(--biru-stempel);
+  border: 1.5px solid var(--biru-stempel);
   border-radius: 0.25rem;
   color: var(--biru-stempel);
   font-family: var(--f-judul);
@@ -110,7 +111,7 @@
 
 .seksi > h2 {
   padding-top: 1rem;
-  border-top: 3px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
   font-size: var(--t-xl);
 }
 
@@ -177,15 +178,15 @@
   gap: 0.25rem;
   padding: 0.0625rem 0.5rem;
   border: 2px dashed var(--tinta);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   font-weight: 700;
 }
 
 .tanpaRekomendasi {
   max-width: 62ch;
   padding: 0.75rem 1rem;
-  border: 2px solid var(--abu-semen);
-  border-radius: var(--radius);
+  border: 1px solid #d7e1d8;
+  border-radius: var(--radius-lg);
   font-size: var(--t-sm);
 }
 
@@ -196,8 +197,9 @@
   gap: 1.5rem;
   padding: clamp(1rem, 3vw, 1.75rem);
   background: var(--papan);
-  border: var(--tebal) solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #d7e1d8;
+  box-shadow: var(--bayangan-kartu);
+  border-radius: var(--radius-lg);
 }
 
 .beda > h2 {
@@ -216,7 +218,7 @@
   display: grid;
   gap: 0.5rem;
   padding-top: 1.25rem;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
   min-width: 0;
 }
 
@@ -257,7 +259,7 @@
 .tabel {
   width: 100%;
   border-collapse: collapse;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .tabel caption {
@@ -279,7 +281,7 @@
   color: var(--abu-semen);
   font-size: var(--t-sm);
   font-weight: 600;
-  border-bottom: 2px solid var(--tinta);
+  border-bottom: 1px solid #dce5dc;
 }
 
 .tabel tbody th {
@@ -322,7 +324,7 @@
   gap: 0.25rem;
   padding: 0.0625rem 0.5rem;
   border: 2px dashed var(--tinta);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   font-size: var(--t-xs);
   font-weight: 700;
 }
@@ -407,7 +409,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .baris {
@@ -434,8 +436,9 @@
   gap: 0.75rem;
   justify-items: start;
   padding: 1rem 1.25rem;
-  border: var(--tebal) solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #d7e1d8;
+  box-shadow: var(--bayangan-kartu);
+  border-radius: var(--radius-lg);
   background: var(--papan);
 }
 
@@ -474,8 +477,8 @@
   align-items: center;
   min-height: 2.75rem;
   padding: 0.25rem 0.875rem;
-  border: 2px solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #7d8f82;
+  border-radius: var(--radius-lg);
   color: var(--tinta);
   font-size: var(--t-sm);
   font-weight: 600;
@@ -496,7 +499,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .jejakItem {
@@ -545,8 +548,8 @@
   grid-template-columns: auto minmax(0, 1fr);
   gap: 0.75rem;
   padding: 0.875rem 1rem;
-  border: 2px solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #7d8f82;
+  border-radius: var(--radius-lg);
   background: var(--papan);
   font-size: var(--t-sm);
 }

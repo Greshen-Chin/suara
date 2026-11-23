@@ -12,7 +12,8 @@
 }
 
 .kepala h1 {
-  font-size: var(--t-2xl);
+  font-size: clamp(2rem, 1.3rem + 2.6vw, 2.75rem);
+  letter-spacing: -0.035em;
 }
 
 .pengantar {
@@ -36,8 +37,8 @@
   grid-template-columns: auto minmax(0, 1fr);
   gap: 0.75rem;
   padding: 0.875rem 1rem;
-  border: 2px solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #7d8f82;
+  border-radius: var(--radius-lg);
   background: var(--papan);
   font-size: var(--t-sm);
 }
@@ -49,8 +50,8 @@
 .catatan {
   max-width: 66ch;
   padding: 0.625rem 0.875rem;
-  border: 2px solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #7d8f82;
+  border-radius: var(--radius-lg);
   background: var(--papan);
   font-size: var(--t-sm);
 }
@@ -86,7 +87,7 @@
   align-content: start;
   min-width: 0;
   padding-top: 1rem;
-  border-top: 6px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .judulSeksi {
@@ -105,7 +106,7 @@
 .penjelasan {
   padding: 0.75rem 0.875rem;
   border: 2px dashed var(--abu-semen);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
 }
 
 @media (min-width: 62rem) {
@@ -131,8 +132,9 @@
   align-content: start;
   padding: clamp(1rem, 3vw, 1.5rem);
   background: var(--papan);
-  border: var(--tebal) solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #d7e1d8;
+  box-shadow: var(--bayangan-kartu);
+  border-radius: var(--radius-lg);
 }
 
 .judulKendali {
@@ -171,44 +173,49 @@
 
 .geser::-webkit-slider-runnable-track {
   height: 6px;
-  background: linear-gradient(to right, var(--tinta) var(--isi), var(--abu-semen) var(--isi));
+  border-radius: var(--radius-full);
+  background: linear-gradient(to right, var(--green) var(--isi), #d7e1d8 var(--isi));
 }
 
 .geser::-moz-range-track {
   height: 6px;
-  background: var(--abu-semen);
+  border-radius: var(--radius-full);
+  background: #d7e1d8;
 }
 
 .geser::-moz-range-progress {
   height: 6px;
-  background: var(--tinta);
+  border-radius: var(--radius-full);
+  background: var(--green);
 }
 
 .geser::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 1.75rem;
-  height: 2.5rem;
-  margin-top: calc((6px - 2.5rem) / 2);
-  border: 3px solid var(--tinta);
-  border-radius: var(--radius);
-  background: linear-gradient(var(--tinta), var(--tinta)) center / 3px 1rem no-repeat, var(--papan);
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: calc((6px - 1.5rem) / 2);
+  border: 3px solid var(--papan);
+  border-radius: var(--radius-full);
+  background: var(--green);
+  box-shadow: 0 0 0 1px var(--green), var(--bayangan-kartu);
 }
 
 .geser::-moz-range-thumb {
   box-sizing: border-box;
-  width: 1.75rem;
-  height: 2.5rem;
-  border: 3px solid var(--tinta);
-  border-radius: var(--radius);
-  background: linear-gradient(var(--tinta), var(--tinta)) center / 3px 1rem no-repeat, var(--papan);
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid var(--papan);
+  border-radius: var(--radius-full);
+  background: var(--green);
+  box-shadow: 0 0 0 1px var(--green), var(--bayangan-kartu);
 }
 
 .geser:hover::-webkit-slider-thumb {
-  border-color: var(--biru-stempel);
+  background: var(--pine-primary);
 }
 
 .geser:hover::-moz-range-thumb {
-  border-color: var(--biru-stempel);
+  background: var(--pine-primary);
 }
 
 .ujungGeser {
@@ -222,7 +229,7 @@
 
 .ketik {
   padding-top: 0.75rem;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .kolomKetik,
@@ -244,8 +251,8 @@
   width: 100%;
   min-height: 2.75rem;
   padding: 0.5rem 0.75rem;
-  border: 2px solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #7d8f82;
+  border-radius: var(--radius-lg);
   background: var(--papan);
   color: var(--tinta);
   /* 16 px ke atas mencegah iOS memperbesar halaman saat kolom disentuh. */
@@ -366,7 +373,7 @@
   display: grid;
   gap: 0.75rem;
   padding-top: 0.75rem;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .kalimatPerubahan {
@@ -427,7 +434,7 @@
   align-items: center;
   gap: 0.5rem 1rem;
   padding: 0.75rem 0;
-  border-block: 2px solid var(--tinta);
+  border-block: 1px solid #dce5dc;
   font-weight: 600;
 }
 
@@ -435,7 +442,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .barisKetahanan {
@@ -466,7 +473,7 @@
   grid-area: kadar;
   display: block;
   height: 0.75rem;
-  border: 2px solid var(--tinta);
+  border: 1px solid #7d8f82;
 }
 
 .isiKadar {
@@ -480,7 +487,7 @@
   display: grid;
   gap: 0.5rem;
   padding-top: 0.75rem;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .dibandingResmi ul {
@@ -525,7 +532,7 @@
 }
 
 .tabelRw thead th {
-  border-bottom: 2px solid var(--tinta);
+  border-bottom: 1px solid #dce5dc;
   font-size: var(--t-xs);
   font-weight: 700;
   text-align: left;
@@ -533,7 +540,7 @@
 }
 
 .tabelRw thead tr:first-child th {
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .tabelRw tbody tr {
@@ -644,7 +651,7 @@
   }
 
   .tabelRw tbody tr:first-child {
-    border-top: 2px solid var(--tinta);
+    border-top: 1px solid #dce5dc;
   }
 
   .tabelRw th,
@@ -693,8 +700,9 @@
   gap: 1rem;
   padding: clamp(1rem, 3vw, 1.5rem);
   background: var(--papan);
-  border: var(--tebal) solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #d7e1d8;
+  box-shadow: var(--bayangan-kartu);
+  border-radius: var(--radius-lg);
 }
 
 .urgensi {
@@ -737,8 +745,8 @@
   align-items: center;
   justify-content: center;
   min-height: 2.75rem;
-  border: 2px solid var(--tinta);
-  border-radius: var(--radius);
+  border: 1px solid #7d8f82;
+  border-radius: var(--radius-lg);
   background: var(--papan);
   font-family: var(--f-judul);
   font-size: var(--t-lg);
@@ -765,7 +773,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .rubrik li {
@@ -803,7 +811,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .andaianBaris {
@@ -882,7 +890,7 @@
   min-height: 2.75rem;
   margin-inline: calc(-1 * var(--gutter));
   padding: 0.75rem var(--gutter) calc(0.75rem + env(safe-area-inset-bottom));
-  border-top: var(--tebal) solid var(--tinta);
+  border-top: 1px solid #dce5dc;
   background: var(--kapur);
   color: var(--tinta);
   font-family: var(--f-judul);
@@ -922,7 +930,7 @@
   justify-items: start;
   max-width: 40rem;
   padding-block: 1.5rem;
-  border-top: 2px solid var(--tinta);
+  border-top: 1px solid #dce5dc;
 }
 
 .kosong h2 {
