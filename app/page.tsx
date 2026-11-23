@@ -1,34 +1,50 @@
-import { CaraKerja } from "@/components/landing/CaraKerja";
-import { GarisPagu } from "@/components/landing/GarisPagu";
-import { Hero } from "@/components/landing/Hero";
+import { BerandaHero } from "@/components/landing/BerandaHero";
+import { BerandaSummary } from "@/components/landing/BerandaSummary";
+import { BerandaComparison } from "@/components/landing/BerandaComparison";
+import { BerandaProyekPrioritas } from "@/components/landing/BerandaProyekPrioritas";
+import { BerandaProses } from "@/components/landing/BerandaProses";
+import { WilayahKontras } from "@/components/landing/WilayahKontras";
 import { JejakKeputusan } from "@/components/landing/JejakKeputusan";
 import { TanpaUsulan } from "@/components/landing/TanpaUsulan";
-import { WilayahKontras } from "@/components/landing/WilayahKontras";
 import { muatBeranda } from "@/lib/beranda";
-import { saranAktif } from "@/lib/saran-urgensi-server";
 
 export default async function Beranda() {
   const data = await muatBeranda();
+  const totalDukungan = data.usulan.reduce(
+    (acc, u) => acc + (u.vote_count ?? 0),
+    0,
+  );
   const judulUsulan = new Map(data.usulan.map((u) => [u.id, u.title]));
 
   return (
     <main id="isi" tabIndex={-1}>
-      <Hero pagu={data.pagu} dataContoh={data.dataContoh} />
-      {/* Tanpa usulan dalam hitungan (misalnya sesudah musyawarah memutuskan semuanya), perbandingan "0 usulan
-          lawan 0 usulan" terbaca seperti galat. Keadaannya dijelaskan, dengan jalan ke keputusan terakhir dan forum. */}
+      <BerandaHero dataContoh={data.dataContoh} />
+
       {data.usulan.length === 0 ? (
-        <section id="perbandingan" aria-label="Perbandingan anggaran" className="wadah">
-          <TanpaUsulan pagu={data.pagu} periodeTerakhir={data.periodeTerakhir} />
-        </section>
+        <TanpaUsulan pagu={data.pagu} periodeTerakhir={data.periodeTerakhir} />
       ) : (
-        <GarisPagu
-          pagu={data.pagu}
-          modeSuara={data.modeSuara}
-          modeRekomendasi={data.modeRekomendasi}
-        />
+        <>
+          <BerandaSummary
+            pagu={data.pagu}
+            jumlahUsulan={data.usulan.length}
+            totalDukungan={totalDukungan}
+            jumlahWilayah={data.wilayah.length}
+          />
+          <BerandaComparison
+            pagu={data.pagu}
+            modeSuara={data.modeSuara}
+            modeRekomendasi={data.modeRekomendasi}
+            bobot={data.bobot}
+          />
+          <BerandaProyekPrioritas
+            modeRekomendasi={data.modeRekomendasi}
+            dataContoh={data.dataContoh}
+          />
+        </>
       )}
-      <WilayahKontras wilayah={data.wilayah} />
-      <CaraKerja bobot={data.bobot} saranAi={saranAktif()} />
+
+      <BerandaProses />
+      <WilayahKontras wilayah={data.wilayah} usulan={data.usulan} />
       <JejakKeputusan log={data.log} judulUsulan={judulUsulan} />
     </main>
   );

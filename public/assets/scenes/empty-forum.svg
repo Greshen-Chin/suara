@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 335" role="img" aria-label="Tunas maskot SUARA, pose thinking">
+    <circle cx="150" cy="164" r="137" fill="#E6F5D9"/>
+    <ellipse cx="151" cy="304" rx="100" ry="12" fill="#143D2D" opacity=".08"/>
+    <path d="M122 263l-22 25q-5 14 10 18h24l20-29m17-13 16 28q8 13-7 16h-24l-19-30" fill="#0C6D43" stroke="#104A32" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M102 217q-20 39-11 58 13 21 49 16l36-7q23-6 23-36l-10-29" fill="#F6EBD2" stroke="#0E5136" stroke-width="7"/>
+    <path d="M186 219q28 -7 23 -40" stroke="#08663E" stroke-width="20" fill="none" stroke-linecap="round"/>
+    <path d="M84 222q-28 -4 -35 16" stroke="#0B6943" stroke-width="18" fill="none" stroke-linecap="round"/>
+    <path d="M69 88Q65 30 139 45Q206 27 223 92Q248 156 211 206Q178 245 119 236Q49 220 47 157Q43 119 69 88Z" fill="#F7EFD9" stroke="#0E6140" stroke-width="8"/>
+    <path d="M66 94Q45 79 58 58Q86 14 144 41Q166 31 183 34Q177 66 143 87Q101 105 66 94Z" fill="#75B92F" stroke="#12693A" stroke-width="7"/>
+    <path d="M141 51Q173 13 217 16Q220 71 169 84Q148 89 143 80" fill="#95D13D" stroke="#12693A" stroke-width="6"/>
+    <path d="M143 82Q170 65 194 39" fill="none" stroke="#2E8C3E" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M104 116q10-10 21-2M154 114q12-9 22 0" fill="none" stroke="#31553A" stroke-width="4" stroke-linecap="round"/>
+    <path d="M103 138q10 -8 19 0" fill="none" stroke="#162D23" stroke-width="5" stroke-linecap="round"/><ellipse cx="166" cy="137" rx="6.5" ry="9" fill="#162D23"/>
+    <ellipse cx="91" cy="163" rx="14" ry="8" fill="#F4AF92" opacity=".8"/><ellipse cx="184" cy="165" rx="14" ry="8" fill="#F4AF92" opacity=".8"/>
+    <path d="M132 164q9 7 18 0" fill="none" stroke="#173E2B" stroke-width="3.7" stroke-linecap="round"/>
+    <path d="M113 233v43m49-43v47" stroke="#A7BFA4" stroke-width="3" opacity=".7"/>
+    <path d="M119 226q21 16 42-1" fill="none" stroke="#0D6040" stroke-width="3"/>
+    <rect x="164" y="243" width="20" height="22" rx="5" fill="#63BA73"/><path d="M169 253l4 4 7-9" stroke="white" stroke-width="2.5" fill="none"/>
+    <path d="M64 200q20-20 51 3l-4 50q-20 6-43-5z" fill="#FFE2A0" stroke="#175239" stroke-width="5"/><text x="77" y="234" fill="#175239" font-size="23" font-weight="700">?</text><text x="204" y="100" font-size="38" font-family="Arial" font-weight="800" fill="#E9AC26">?</text>
+    </svg>

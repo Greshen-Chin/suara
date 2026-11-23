@@ -1,0 +1,496 @@
+[
+  {
+    "page": "account",
+    "view": "desktop",
+    "h1": "Keamanan akun",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 900,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-account-new",
+    "view": "desktop",
+    "h1": "Buat akun warga",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 900,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-accounts",
+    "view": "desktop",
+    "h1": "Akun warga",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 900,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-budget",
+    "view": "desktop",
+    "h1": "Anggaran dan bobot penilaian",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 900,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-decisions",
+    "view": "desktop",
+    "h1": "Tetapkan keputusan periode 2027",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 1036,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-moderation",
+    "view": "desktop",
+    "h1": "Moderasi konten",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 900,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-proposal-review",
+    "view": "desktop",
+    "h1": "Periksa usulan",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 944,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-proposals",
+    "view": "desktop",
+    "h1": "Kelola usulan",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 950,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin",
+    "view": "desktop",
+    "h1": "Yang perlu ditangani hari ini",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 900,
+    "imagesBroken": []
+  },
+  {
+    "page": "decision-2026",
+    "view": "desktop",
+    "h1": "Keputusan musyawarah 2026",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 1002,
+    "imagesBroken": []
+  },
+  {
+    "page": "decisions",
+    "view": "desktop",
+    "h1": "Keputusan musyawarah",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 900,
+    "imagesBroken": []
+  },
+  {
+    "page": "detail",
+    "view": "desktop",
+    "h1": "Normalisasi drainase yang sering banjir",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 951,
+    "imagesBroken": []
+  },
+  {
+    "page": "forum",
+    "view": "desktop",
+    "h1": "Forum warga",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 1014,
+    "imagesBroken": []
+  },
+  {
+    "page": "home",
+    "view": "desktop",
+    "h1": "Suara warga.\nPerubahan nyata.",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 1754,
+    "imagesBroken": []
+  },
+  {
+    "page": "login",
+    "view": "desktop",
+    "h1": "Masuk ke SUARA",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 900,
+    "imagesBroken": []
+  },
+  {
+    "page": "simulation",
+    "view": "desktop",
+    "h1": "Coba keputusan yang berbeda.",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 1922,
+    "imagesBroken": []
+  },
+  {
+    "page": "submit",
+    "view": "desktop",
+    "h1": "Ajukan usulan baru",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "pageHeight": 929,
+    "imagesBroken": []
+  },
+  {
+    "page": "account",
+    "view": "mobile",
+    "h1": "Keamanan akun",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 844,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-account-new",
+    "view": "mobile",
+    "h1": "Buat akun warga",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 948,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-accounts",
+    "view": "mobile",
+    "h1": "Akun warga",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 876,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-budget",
+    "view": "mobile",
+    "h1": "Anggaran dan bobot penilaian",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 1310,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-decisions",
+    "view": "mobile",
+    "h1": "Tetapkan keputusan periode 2027",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 1838,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-moderation",
+    "view": "mobile",
+    "h1": "Moderasi konten",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 844,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-proposal-review",
+    "view": "mobile",
+    "h1": "Periksa usulan",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 1624,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin-proposals",
+    "view": "mobile",
+    "h1": "Kelola usulan",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 1299,
+    "imagesBroken": []
+  },
+  {
+    "page": "admin",
+    "view": "mobile",
+    "h1": "Yang perlu ditangani hari ini",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 1303,
+    "imagesBroken": []
+  },
+  {
+    "page": "decision-2026",
+    "view": "mobile",
+    "h1": "Keputusan musyawarah 2026",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 1247,
+    "imagesBroken": []
+  },
+  {
+    "page": "decisions",
+    "view": "mobile",
+    "h1": "Keputusan musyawarah",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 1479,
+    "imagesBroken": []
+  },
+  {
+    "page": "detail",
+    "view": "mobile",
+    "h1": "Normalisasi drainase yang sering banjir",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 1565,
+    "imagesBroken": []
+  },
+  {
+    "page": "forum",
+    "view": "mobile",
+    "h1": "Forum warga",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 1600,
+    "imagesBroken": []
+  },
+  {
+    "page": "home",
+    "view": "mobile",
+    "h1": "Suara warga.\nPerubahan nyata.",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 2723,
+    "imagesBroken": []
+  },
+  {
+    "page": "login",
+    "view": "mobile",
+    "h1": "Masuk ke SUARA",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 844,
+    "imagesBroken": []
+  },
+  {
+    "page": "simulation",
+    "view": "mobile",
+    "h1": "Coba keputusan yang berbeda.",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 3089,
+    "imagesBroken": []
+  },
+  {
+    "page": "submit",
+    "view": "mobile",
+    "h1": "Ajukan usulan baru",
+    "errors": [],
+    "overflow": false,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "pageHeight": 1383,
+    "imagesBroken": []
+  },
+  {
+    "page": "home",
+    "view": "320px",
+    "overflow": false
+  },
+  {
+    "page": "forum",
+    "view": "320px",
+    "overflow": false
+  },
+  {
+    "page": "simulation",
+    "view": "320px",
+    "overflow": false
+  },
+  {
+    "page": "admin",
+    "view": "320px",
+    "overflow": false
+  },
+  {
+    "page": "admin-budget",
+    "view": "320px",
+    "overflow": false
+  },
+  {
+    "page": "submit",
+    "view": "320px",
+    "overflow": false
+  },
+  {
+    "page": "home",
+    "view": "768px",
+    "overflow": false
+  },
+  {
+    "page": "forum",
+    "view": "768px",
+    "overflow": false
+  },
+  {
+    "page": "simulation",
+    "view": "768px",
+    "overflow": false
+  },
+  {
+    "page": "admin",
+    "view": "768px",
+    "overflow": false
+  },
+  {
+    "page": "admin-budget",
+    "view": "768px",
+    "overflow": false
+  },
+  {
+    "page": "submit",
+    "view": "768px",
+    "overflow": false
+  },
+  {
+    "page": "home",
+    "view": "1024px",
+    "overflow": false
+  },
+  {
+    "page": "forum",
+    "view": "1024px",
+    "overflow": false
+  },
+  {
+    "page": "simulation",
+    "view": "1024px",
+    "overflow": false
+  },
+  {
+    "page": "admin",
+    "view": "1024px",
+    "overflow": false
+  },
+  {
+    "page": "admin-budget",
+    "view": "1024px",
+    "overflow": false
+  },
+  {
+    "page": "submit",
+    "view": "1024px",
+    "overflow": false
+  },
+  {
+    "page": "home",
+    "view": "1280px",
+    "overflow": false
+  },
+  {
+    "page": "forum",
+    "view": "1280px",
+    "overflow": false
+  },
+  {
+    "page": "simulation",
+    "view": "1280px",
+    "overflow": false
+  },
+  {
+    "page": "admin",
+    "view": "1280px",
+    "overflow": false
+  },
+  {
+    "page": "admin-budget",
+    "view": "1280px",
+    "overflow": false
+  },
+  {
+    "page": "submit",
+    "view": "1280px",
+    "overflow": false
+  }
+]

@@ -1,0 +1,37 @@
+desktop account PASS 900 error= [] broken= 0
+desktop admin-account-new PASS 900 error= [] broken= 0
+desktop admin-accounts PASS 900 error= [] broken= 0
+desktop admin-budget PASS 900 error= [] broken= 0
+desktop admin-decisions PASS 1036 error= [] broken= 0
+desktop admin-moderation PASS 900 error= [] broken= 0
+desktop admin-proposal-review PASS 944 error= [] broken= 0
+desktop admin-proposals PASS 950 error= [] broken= 0
+desktop admin PASS 900 error= [] broken= 0
+desktop decision-2026 PASS 1002 error= [] broken= 0
+desktop decisions PASS 900 error= [] broken= 0
+desktop detail PASS 951 error= [] broken= 0
+desktop forum PASS 1014 error= [] broken= 0
+desktop home PASS 1754 error= [] broken= 0
+desktop login PASS 900 error= [] broken= 0
+Simulation 300: Suara terbanyak | 2 proyek | Rp290 juta dialokasikan | 97% dari pagu Rp300 juta · sisa Rp10 juta | Rekomendasi SUARA | 4
+Simulation 750: Suara terbanyak | 6 proyek | Rp725 juta dialokasikan | 97% dari pagu Rp750 juta · sisa Rp25 juta | Rekomendasi SUARA | 6
+desktop simulation PASS 1922 error= [] broken= 0
+desktop submit PASS 929 error= [] broken= 0
+mobile account PASS 844 error= [] broken= 0
+mobile admin-account-new PASS 948 error= [] broken= 0
+mobile admin-accounts PASS 876 error= [] broken= 0
+mobile admin-budget PASS 1310 error= [] broken= 0
+mobile admin-decisions PASS 1838 error= [] broken= 0
+mobile admin-moderation PASS 844 error= [] broken= 0
+mobile admin-proposal-review PASS 1624 error= [] broken= 0
+mobile admin-proposals PASS 1299 error= [] broken= 0
+mobile admin PASS 1303 error= [] broken= 0
+mobile decision-2026 PASS 1247 error= [] broken= 0
+mobile decisions PASS 1479 error= [] broken= 0
+mobile detail PASS 1565 error= [] broken= 0
+mobile forum PASS 1600 error= [] broken= 0
+mobile home PASS 2912 error= [] broken= 0
+mobile login PASS 844 error= [] broken= 0
+mobile simulation PASS 3089 error= [] broken= 0
+mobile submit PASS 1383 error= [] broken= 0
+Total screenshots 34
