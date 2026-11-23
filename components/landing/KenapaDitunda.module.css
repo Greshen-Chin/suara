@@ -5,10 +5,10 @@
 
 /* Panel memakai warna status "ditunda" di tepi kiri, seperti marka kuning di pinggir papan. */
 .panel {
-  border: 2px solid var(--tinta);
-  border-left: 0.75rem solid var(--status-ditunda-latar);
+  border: 1px solid var(--garis-halus);
+  border-left: 4px solid var(--kuning-marka);
   border-radius: var(--radius);
-  background: var(--papan);
+  background: #fffbeb;
 }
 
 .pertanyaan {

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#0F5132" />
+  <!-- White leaf symbol inside green rounded square -->
+  <path d="M14 48C13 34 21 20 48 12C48 28 43 44 24 49C20 50 16 50 14 48Z" fill="#FFFFFF" />
+  <path d="M16 47C22 34 31 25 45 14" stroke="#0F5132" stroke-width="3.5" stroke-linecap="round" />
+</svg>

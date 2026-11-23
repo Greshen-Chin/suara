@@ -3,73 +3,34 @@ import type { Bobot } from "@/lib/seleksi";
 import { RUTE } from "@/lib/tautan";
 import styles from "./CaraKerja.module.css";
 
-interface Props {
-  bobot: Bobot;
-  /** true bila saran urgensi dari AI aktif (kunci terpasang). Nilainya dibaca saat build atau revalidasi halaman. */
-  saranAi: boolean;
-}
+interface Props { bobot: Bobot }
 
-interface Langkah {
-  judul: string;
-  isi: string;
-  peranAi: string;
-  tautan: { href: string; teks: string };
-}
-
-function susunLangkah(bobot: Bobot, saranAi: boolean): Langkah[] {
-  return [
-    {
-      judul: "Sampaikan aspirasi",
-      isi: "Warga menulis usulan, atau mendukung usulan yang sudah ada.",
-      peranAi:
-        "AI mengenali usulan yang mirip dari maknanya, lalu menawarkan gabung dukungan. Bila AI tidak tersedia, SUARA mencocokkan kata dan mengatakannya terus terang.",
-      tautan: { href: RUTE.forum, teks: "Buka forum warga" },
-    },
-    {
-      judul: "Bandingkan pilihan anggaran",
-      isi: `Skor tiap usulan menggabungkan dukungan per 1.000 penduduk, urgensi, dan pemerataan anggaran, dengan bobot ${bobot.popularitas}, ${bobot.urgensi}, dan ${bobot.pemerataan} hasil musyawarah.`,
-      peranAi: saranAi
-        ? "AI menyarankan nilai urgensi beserta alasan yang mengutip usulan. Admin desa yang menetapkan."
-        : "AI tidak dipakai untuk menilai urgensi. Admin desa menilainya 1 sampai 10 dengan rubrik dan menuliskan alasannya.",
-      tautan: { href: RUTE.simulasi, teks: "Coba simulasi anggaran" },
-    },
-    {
-      judul: "Putuskan dengan alasan tertulis",
-      isi: "Musyawarah desa memutuskan, dan setiap perubahan bobot atau status dicatat.",
-      peranAi: saranAi
-        ? "AI tidak ikut memutuskan. Sarannya hanya bahan, dan bila admin membukanya sebelum menilai, nilai saran itu tercatat di jejak."
-        : "AI tidak ikut memutuskan. Musyawarah desa dan admin yang menetapkan, dan setiap perubahan tercatat.",
-      tautan: { href: RUTE.keputusan, teks: "Lihat keputusan desa" },
-    },
+export function CaraKerja({ bobot }: Props) {
+  const kriteria = [
+    { nama: "Urgensi", nilai: bobot.urgensi, isi: "Admin desa menilai kebutuhan mendesak pada skala 1–10 dan menulis alasannya." },
+    { nama: "Dukungan warga", nilai: bobot.popularitas, isi: "Dukungan dihitung per 1.000 penduduk agar RW kecil tetap terwakili." },
+    { nama: "Pemerataan", nilai: bobot.pemerataan, isi: "Anggaran yang diterima tiap RW pada periode lalu ikut dipertimbangkan." },
   ];
-}
-
-/** Tiga tahap berurutan, jadi pakai penomoran. Tiap tahap menyebut peran AI dan tertaut ke layarnya. */
-export function CaraKerja({ bobot, saranAi }: Props) {
-  return (
-    <section aria-labelledby="judul-cara" className="bagian">
-      <div className="wadah">
-        <div className="bagian-kepala">
-          <h2 id="judul-cara">Tiga langkah dari usulan sampai keputusan</h2>
+  return <section aria-labelledby="judul-cara" className={styles.bagian}>
+    <div className="wadah">
+      <div className={styles.kepala}>
+        <div>
+          <h2 id="judul-cara">Mengapa hasilnya bisa berbeda?</h2>
+          <p>Rekomendasi menggabungkan tiga pertimbangan. Bobot di bawah ini adalah pengaturan resmi saat ini.</p>
         </div>
-        <ol className={styles.daftar}>
-          {susunLangkah(bobot, saranAi).map((l, i) => (
-            <li key={l.judul} className={styles.langkah}>
-              <span className={styles.nomor} aria-hidden="true">
-                {i + 1}
-              </span>
-              <h3>{l.judul}</h3>
-              <p>{l.isi}</p>
-              <p className={styles.ai}>
-                <strong>Peran AI.</strong> {l.peranAi}
-              </p>
-              <Link href={l.tautan.href} className={styles.tautan}>
-                {l.tautan.teks}
-              </Link>
-            </li>
-          ))}
-        </ol>
+        <Link href={RUTE.simulasi}>Uji bobot di simulasi <span aria-hidden="true">↗</span></Link>
       </div>
-    </section>
-  );
+      <ol className={styles.daftar}>
+        {kriteria.map((item) => <li key={item.nama}>
+          <span className={styles.nilai}>{item.nilai}%</span>
+          <h3>{item.nama}</h3>
+          <p>{item.isi}</p>
+        </li>)}
+      </ol>
+      <p className={styles.catatan}>
+        Rekomendasi membantu musyawarah desa, bukan mengesahkan proyek.
+        <Link href={RUTE.keputusan}> Periksa jejak perubahan yang sudah tercatat.</Link>
+      </p>
+    </div>
+  </section>;
 }

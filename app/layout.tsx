@@ -1,26 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Public_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import { SiteFooter } from "@/components/shell/SiteFooter";
 import { SiteHeader } from "@/components/shell/SiteHeader";
 import "./globals.css";
 
-// Huruf judul: rapat dan tegas seperti papan penunjuk jalan dan papan proyek desa.
-const judul = Barlow_Condensed({
+// Huruf judul, navigasi, dan UI: Plus Jakarta Sans (Master Design System)
+const judul = Plus_Jakarta_Sans({
   variable: "--font-judul",
   subsets: ["latin"],
-  weight: ["600", "700"],
+  weight: ["500", "600", "700", "800"],
   display: "swap",
 });
 
-// Huruf isi: dirancang untuk layanan publik, angkanya bisa tabular.
-const isi = Public_Sans({
+// Huruf isi, data, dan label: Inter (Master Design System)
+const isi = Inter({
   variable: "--font-isi",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
 const DESKRIPSI =
-  "Setiap suara warga tetap dihitung, dan kebutuhan yang paling mendesak ikut ditimbang. Lihat bagaimana pagu desa dibagi.";
+  "SUARA — Sistem Usulan dan Aspirasi Rakyat. Platform musyawarah dan alokasi anggaran pembangunan desa yang berkeadilan, transparan, dan akuntabel.";
 
 export const metadata: Metadata = {
   title: {
@@ -28,6 +29,9 @@ export const metadata: Metadata = {
     template: "%s | SUARA",
   },
   description: DESKRIPSI,
+  icons: {
+    icon: "/suara-icon.svg",
+  },
   openGraph: {
     title: "SUARA: Sistem Usulan dan Aspirasi Rakyat",
     description: DESKRIPSI,
@@ -38,7 +42,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F3F5EF",
+  themeColor: "#0F5132",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

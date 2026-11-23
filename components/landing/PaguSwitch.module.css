@@ -4,9 +4,9 @@
   gap: 0.75rem;
   min-height: 2.75rem;
   padding: 0.25rem 0.75rem;
-  border: var(--tebal) solid var(--tinta);
+  border: 1px solid var(--garis-halus);
   border-radius: var(--radius);
-  background: var(--kapur);
+  background: var(--mint);
   color: var(--tinta);
   font: inherit;
   font-size: var(--t-sm);
@@ -34,7 +34,7 @@
   flex: none;
   width: 3.25rem;
   height: 1.75rem;
-  border: 2px solid var(--tinta);
+  border: 1px solid var(--pine-primary);
   border-radius: 0.25rem;
   background: var(--papan);
 }
@@ -46,17 +46,17 @@
   width: 1.375rem;
   height: calc(100% - 4px);
   border-radius: 0.125rem;
-  background: var(--tinta);
+  background: var(--pine-primary);
   transition: translate 0.2s var(--gerak-tenang), background-color 0.2s;
 }
 
 .sakelar[aria-checked="true"] .geser {
   translate: 1.25rem 0;
-  background: var(--hijau-sawah);
+  background: var(--leaf-green);
 }
 
 .sakelar[aria-checked="true"] .jalur {
-  border-color: var(--hijau-sawah);
+  border-color: var(--leaf-green);
 }
 
 /* Layar sempit: sakelar selebar papan, tulisan di kedua sisi tetap utuh. */

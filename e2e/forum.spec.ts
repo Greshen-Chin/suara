@@ -178,7 +178,10 @@ test("warga: periksa usulan serupa lalu gabung dukungan (usulan baru dibatalkan)
   // Label AI hanya muncul karena embedding benar-benar dipakai.
   await expect(page.getByText(/^AI membandingkan makna usulan Anda/)).toBeVisible();
   await expect(page.getByRole("heading", { name: new RegExp(LAMPU_GANG) })).toBeVisible();
-  await expect(page.getByText(/Sama-sama menyebut .*di RW yang sama/)).toBeVisible();
+  const hasilLampu = page.getByRole("listitem").filter({
+    has: page.getByRole("heading", { name: new RegExp(LAMPU_GANG) }),
+  });
+  await expect(hasilLampu.getByText(/Sama-sama menyebut .*di RW yang sama/)).toBeVisible();
 
   await page.getByRole("button", { name: new RegExp(`Dukung usulan ini.*${LAMPU_GANG}`) }).click();
   await expect(page).toHaveURL(/\/forum\/[0-9a-f-]{36}\?gabung=1$/);

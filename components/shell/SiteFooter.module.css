@@ -1,17 +1,47 @@
 .kaki {
-  background: var(--tinta);
+  background: var(--pine);
   color: var(--papan);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: auto;
 }
 
 .isi {
   display: grid;
-  gap: 1.25rem;
+  gap: 1.5rem;
   padding-block: 2.5rem;
 }
 
+.merek {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.logoRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.logoIcon {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+}
+
+.namaApp {
+  font-family: var(--f-judul);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
 .batas {
-  max-width: 52ch;
-  font-size: var(--t-md);
+  max-width: 56ch;
+  font-size: var(--t-sm);
+  color: #c9d0c6;
+  line-height: 1.5;
 }
 
 .tautan {
@@ -27,8 +57,16 @@
   display: inline-flex;
   align-items: center;
   min-height: 2.75rem;
-  color: var(--papan);
+  color: #e8f3e9;
+  font-size: var(--t-sm);
   font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.tautan a:hover {
+  color: #ffffff;
+  text-decoration: underline;
 }
 
 .tautan a:focus-visible {

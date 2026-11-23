@@ -43,7 +43,7 @@ test("admin: pita mode, tautan di header, navigasi bagian, dan ringkasan pekerja
 
   await page.goto("/admin");
   await expect(page.getByText("Mode admin desa")).toBeVisible();
-  await expect(page.getByRole("link", { name: "Admin", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Panel Admin", exact: true })).toBeVisible();
   const nav = page.getByRole("navigation", { name: "Bagian admin" });
   await expect(nav.getByRole("link", { name: "Ringkasan" })).toHaveAttribute("aria-current", "page");
   for (const bagian of ["Usulan", "Anggaran", "Akun", "Moderasi"]) await expect(nav.getByRole("link", { name: bagian })).toBeVisible();
@@ -380,7 +380,7 @@ test("admin tidak bisa menonaktifkan akunnya sendiri; akun admin tidak bisa dibu
   const konsol = pantauKonsol(page);
 
   await page.goto("/admin/akun?peran=admin");
-  await page.getByRole("link", { name: "admin", exact: true }).first().click();
+  await page.getByRole("main").getByRole("link", { name: "admin", exact: true }).click();
   await expect(page.getByText("Ini akun Anda.")).toBeVisible();
   await expect(page.getByRole("button", { name: /^Nonaktifkan/ })).toHaveCount(0);
   await expect(page.getByRole("button", { name: /^Atur ulang kata sandi/ })).toHaveCount(0);
