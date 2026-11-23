@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test \"lib/**/*.test.ts\" \"supabase/tests/*.test.ts\"",
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test \"lib/**/*.test.ts\" \"supabase/tests/*.test.ts\"",
     "akun:buat": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/buat-akun.ts",
     "kemiripan:kalibrasi": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/kalibrasi-kemiripan.ts",
     "urgensi:kalibrasi": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local scripts/kalibrasi-urgensi.ts",
