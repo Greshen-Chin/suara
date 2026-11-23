@@ -16,6 +16,8 @@ const HEADER_KEAMANAN = [
 ];
 
 const nextConfig: NextConfig = {
+  // Hanya untuk uji E2E: server dev kedua (dengan kunci Gemini tiruan) memakai folder keluaran sendiri supaya tidak bentrok.
+  ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,

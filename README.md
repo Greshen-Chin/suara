@@ -20,6 +20,7 @@ Di kebanyakan desa, usulan dengan suara terbanyak otomatis menang. Akibatnya RW 
 | **Admin desa.** Meninjau usulan, mengatur pagu dan bobot dengan pratinjau dampak, mengelola akun warga, dan memoderasi. | Selesai, lihat [Admin desa](#admin-desa) dan [docs/admin.md](docs/admin.md). Perlu migrasi 0005 |
 | **Simulasi anggaran.** Warga mengubah pagu dan bobot dan langsung melihat usulan mana yang terbiayai, dengan Peta Pagu, uji ketahanan bobot, tabel per RW, dan usulan forum andaian. Tidak menyimpan apa pun. | Selesai, lihat [Simulasi anggaran](#simulasi-anggaran) dan [docs/simulasi.md](docs/simulasi.md). Tanpa SQL baru |
 | **Keputusan musyawarah.** Admin mencatat hasil rapat untuk semua usulan dalam hitungan; warga membacanya berdampingan dengan rekomendasi (dua Garis Pagu), dengan alasan di tiap perbedaan, lembar cetak A4, dan unduhan CSV. | Selesai, lihat [Keputusan musyawarah](#keputusan-musyawarah) dan [docs/keputusan.md](docs/keputusan.md). Perlu migrasi 0006 dan `seed_keputusan.sql` |
+| **Saran urgensi dari AI (opsional).** Admin memilih nilainya sendiri dulu, baru boleh meminta saran Gemini: nilai 1–10 dengan alasan yang mengutip kalimat usulan (diperiksa server), selisih dijelaskan netral, data pribadi disamarkan sebelum dikirim, jatah 10 per jam per admin dan 100 per hari untuk desa. Nilai AI tidak pernah mengisi pilihan. Bila dibuka, halaman usulan dan jejak menyebut keduanya. Tanpa `GEMINI_API_KEY` tidak ada jejaknya di antarmuka. | Selesai, teruji dengan Gemini **tiruan**; mutu belum dikalibrasi. Lihat [docs/saran-urgensi.md](docs/saran-urgensi.md). Perlu migrasi 0007 |
 
 ---
 
@@ -40,6 +41,7 @@ skor = (30 × popularitas + 40 × urgensi + 30 × pemerataan) / 100
 - **Bobot:** disimpan di tabel `scoring_weights`, jumlahnya wajib 100. Setiap perubahan tercatat otomatis di `accountability_logs`.
 - **Rekomendasi SUARA:** mencari kombinasi usulan dengan **total skor terbesar** yang masih muat dalam pagu (*knapsack* eksak, maksimal 16 usulan). Fungsinya `pilih_optimal` di SQL dan `pilihOptimal` di [lib/seleksi.ts](lib/seleksi.ts).
 - **Suara terbanyak:** mengambil usulan berurutan dari dukungan terbanyak selama masih muat (*greedy*).
+- **Siapa yang menilai urgensi:** admin desa, dengan rubrik empat tingkat dan alasan tertulis. Bila `GEMINI_API_KEY` terpasang, AI bisa memberi **saran** nilai (setelah admin memilih nilainya sendiri); yang masuk ke skor tetap nilai admin. Ringkasnya: satu warga tetap satu suara, dan skor juga mempertimbangkan seberapa mendesak kebutuhan serta RW mana yang jarang menerima anggaran.
 
 Dengan data demo, mode **suara terbanyak** memilih Gapura dan Balai warga (Rp 290 jt). Mode **rekomendasi** memilih Drainase, Jembatan, Lampu PJU, dan Jalan SDN 03 (Rp 285 jt). Talud berperingkat 1, tetapi biayanya (Rp 220 jt) melebihi sisa pagu, sehingga ditunda dengan penjelasan.
 
@@ -196,6 +198,7 @@ Isi `.env.local`:
 | `SUPABASE_URL` | Supabase → Project Settings → API |
 | `SUPABASE_SERVICE_ROLE_KEY` | Di halaman yang sama, kunci `service_role`. **Rahasia, jangan dibagikan.** |
 | `SESSION_SECRET` | Minimal 32 karakter acak: `node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"` |
+| `GEMINI_API_KEY` | **Opsional.** Kunci dari <https://aistudio.google.com/apikey>. Tanpanya saran urgensi AI mati dan tidak ada jejaknya di antarmuka. Setelah memasang atau mencabutnya, build dan deploy ulang (beranda diprerender). Variabel lain: `GEMINI_MODEL`, `GEMINI_THINKING`; lihat [docs/saran-urgensi.md](docs/saran-urgensi.md). |
 
 Kalau database tidak bisa dijangkau, halaman utama tetap tampil dengan data cadangan dari [lib/fallback-data.json](lib/fallback-data.json). Login tidak punya cadangan dan akan menampilkan pesan bahwa server sedang bermasalah.
 
@@ -217,6 +220,7 @@ Jalankan file berikut **berurutan** di **SQL Editor** Supabase. Untuk setiap fil
 10. [supabase/migrations/0006_keputusan.sql](supabase/migrations/0006_keputusan.sql): keputusan musyawarah. Status `referred`, jenis log `decision`, tabel `periode` (membuat **Tahun Anggaran 2027** sebagai periode berjalan) dan `keputusan`, fungsi atomik `tetapkan_keputusan`, `batalkan_penetapan`, `tandai_selesai`, `sidik_hitungan`, dan view `v_periode` dan `v_keputusan`. **Tidak mengubah data hitungan**: usulan, dukungan, bobot, pagu, dan `anggaran_lalu` tetap, jadi angka halaman utama tidak berubah. Satu transaksi. Harus sesudah langkah 9.
 11. [supabase/seed_keputusan.sql](supabase/seed_keputusan.sql): **periode lampau Tahun Anggaran 2026** (data purwarupa, diputuskan sebelum SUARA dipakai): empat usulan berstatus `done` atau `rejected` dan jumlahnya cocok dengan `anggaran_lalu` (RW 01 Rp 250 juta, RW 03 Rp 60 juta, RW 07 Rp 0). Tidak ada usulan `voting` dan tidak ada dukungan baru. Aman dijalankan ulang.
 12. **Isi embedding lagi** (`npm run embedding:isi`, lalu tempel SQL yang tercetak): usulan 2026 belum punya embedding.
+13. [supabase/migrations/0007_saran_urgensi.sql](supabase/migrations/0007_saran_urgensi.sql): saran urgensi AI. Tabel `saran_urgensi` dan `panggilan_ai` (RLS tanpa policy), kolom `proposals.saran_dibuka_id`, fungsi `ambil_jatah_saran`, `simpan_saran`, `catat_gagal_saran`, `sidik_isi_usulan`, `pindahkan_status` yang diperluas (parameter `p_saran`; versi lama dihapus), dan kolom `saran_*` di `v_usulan`. **Tidak mengubah data hitungan**, jadi angka halaman utama tidak berubah (cek: `rekomendasi_resmi(300000000)` tetap 4 terpilih, 162 dukungan pada usulan voting, `select count(*) from saran_urgensi` = 0). Satu transaksi. Harus sesudah langkah 11. **Jalankan sebelum memasang kodenya**: kode membaca kolom `saran_*`, dan `/api/health` menjawab `"db":"error"` tanpa 0007.
 
 **Sebelum push atau deploy**, jalankan langkah 10 dan 11 **lebih dulu**, cek angkanya (di bawah), baru deploy; bila Cloud Build terhubung ke GitHub, push ke `main` bisa berarti deploy. Kode baru membaca `periode` (halaman utama, `/api/health`): tanpa 0006, `/api/health` menjawab `"db":"error"` dan `/keputusan` menampilkan data contoh. Cadangkan lebih dulu (Supabase → Database → Backups), atau catat bahwa data demo bisa dibuat ulang dari seed.
 
@@ -342,11 +346,11 @@ Kedua akun ini **hanya untuk database demo**. Kata sandinya sengaja sederhana, j
 ## Pengujian
 
 ```bash
-npm test             # 678 tes: unit (lib/) dan SQL di PGlite (supabase/tests/)
+npm test             # 811 tes: unit (lib/) dan SQL di PGlite (supabase/tests/)
 npm run lint
 npx tsc --noEmit
 npm run build
-npm run e2e          # 127 tes Playwright + axe di build produksi, melawan server tiruan (lihat docs/forum.md, docs/admin.md, dan docs/simulasi.md)
+npm run e2e          # 150 tes Playwright + axe di build produksi, melawan server tiruan (lihat docs/forum.md, docs/admin.md, dan docs/simulasi.md)
 ```
 
 `npm run e2e` perlu browser Playwright (`npx playwright install chromium`) dan model embedding terunduh (atau `E2E_TANPA_EMBEDDING=1`). Skrip lain: `npm run kemiripan:kalibrasi` (mengukur deteksi usulan mirip), `npm run fallback:buat` (membuat ulang data cadangan forum dari seed), `npm run embedding:isi`.
@@ -379,10 +383,10 @@ components/
   shell/             header (dengan penanda halaman aktif dan sesi) dan footer
   ui/                komponen kecil yang dipakai ulang (StatusLabel, StatusSiklus, DialogAlasan, HalamanStub)
 lib/                 logika murni dan akses data (seleksi, pagu, format, data, auth, sesi, forum-*, admin-*, keputusan*, pratinjau, simulasi*, peta-pagu, ketahanan, bobot-simulasi, kemiripan, embedding)
-scripts/             skrip baris perintah (buat-akun, isi-embedding, kalibrasi-kemiripan, buat-fallback)
+scripts/             skrip baris perintah (buat-akun, isi-embedding, kalibrasi-kemiripan, kalibrasi-urgensi, buat-fallback)
 supabase/            migrasi dan seed SQL; tests/ berisi tes SQL (PGlite)
 e2e/                 tes Playwright dan server tiruan Supabase untuk pengujian
-docs/                forum.md, admin.md, simulasi.md, keputusan.md; prompts/ berisi brief fitur
+docs/                forum.md, admin.md, simulasi.md, keputusan.md, saran-urgensi.md; prompts/ berisi brief fitur
 DESIGN.md            sistem visual (token, komponen, aturan)
 PRODUCT.md           pengguna, tujuan, prinsip, dan keputusan produk
 ```
@@ -392,4 +396,4 @@ PRODUCT.md           pengguna, tujuan, prinsip, dan keputusan produk
 ## Keputusan yang masih terbuka
 
 - **Aturan dukungan.** Untuk sementara, satu dukungan per usulan per warga, dan warga boleh mendukung banyak usulan. Alternatifnya jatah terbatas, misalnya 3 dukungan per warga per periode. Ini perlu diputuskan sebelum karya dikumpulkan. Aturannya hanya ada di dua tempat, jadi mudah diganti: lihat [docs/forum.md](docs/forum.md#aturan-dukungan-sementara).
-- **Penilaian urgensi oleh AI.** Halaman utama menyebut peran AI, tetapi fiturnya belum dibangun. Urgensi kini diisi admin di halaman tinjau usulan, dengan rubrik empat tingkat; tempat untuk saran AI sudah disiapkan di formulirnya, tetapi tidak tampil sampai fiturnya ada.
+- **Mutu saran urgensi AI belum diukur.** Fiturnya ada ([docs/saran-urgensi.md](docs/saran-urgensi.md)) dan teruji dengan Gemini tiruan, tetapi tidak pernah dipanggil Gemini sungguhan dari sini. Jalankan `npm run urgensi:kalibrasi -- --jalankan` dengan kunci Anda sebelum mengandalkan angkanya. Tanpa `GEMINI_API_KEY` tidak ada jejak AI urgensi di antarmuka.

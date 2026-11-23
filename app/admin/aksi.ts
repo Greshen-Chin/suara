@@ -84,6 +84,8 @@ export async function pindahkanStatus(sebelum: StatusAksi, form: FormData): Prom
   let alasanUrgensi: string | null = null;
   let namaSingkat: string | null = null;
   let alasan: string | null = null;
+  // Saran AI yang sedang terbuka di layar (kosong bila tidak pernah dibuka). Hanya id: nilainya dibaca SQL dari tabel.
+  const saranId = ke === "voting" && adalahUuid(teks(form, "saranId")) ? teks(form, "saranId") : null;
 
   if (ke === "voting") {
     const u = periksaUrgensi(teks(form, "urgensi"));
@@ -120,6 +122,7 @@ export async function pindahkanStatus(sebelum: StatusAksi, form: FormData): Prom
         p_alasan_urgensi: alasanUrgensi,
         p_nama_singkat: namaSingkat,
         p_alasan: alasan,
+        ...(saranId && { p_saran: saranId }),
       })
       .abortSignal(sinyal),
   );

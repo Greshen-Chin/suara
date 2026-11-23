@@ -41,6 +41,7 @@ async function siapkan(): Promise<PGlite> {
   await muat(db, "m0005");
   await muat(db, "m0006");
   await muat(db, "seedKeputusan");
+  await muat(db, "m0007");
 
   // Isi embedding seperti `npm run embedding:isi`, supaya jalur "AI" ikut teruji. Bila model
   // tidak bisa dimuat (mis. tanpa internet), dilewati: aplikasi lalu memakai cadangan kata.

@@ -23,8 +23,9 @@ export async function masuk(page: Page, peran: keyof typeof AKUN, lanjut?: strin
   await page.waitForURL((u) => !u.pathname.startsWith("/masuk"));
 }
 
-export async function konteksSebagai(browser: Browser, peran: keyof typeof AKUN, lebar = 360): Promise<{ konteks: BrowserContext; page: Page }> {
-  const konteks = await browser.newContext({ viewport: { width: lebar, height: 800 }, locale: "id-ID", timezoneId: "Asia/Jakarta", baseURL: "http://localhost:3100" });
+/** `alamat`: server aplikasi yang dituju (bawaan: build produksi tanpa kunci Gemini; 3102 untuk saran urgensi). */
+export async function konteksSebagai(browser: Browser, peran: keyof typeof AKUN, lebar = 360, alamat = "http://localhost:3100"): Promise<{ konteks: BrowserContext; page: Page }> {
+  const konteks = await browser.newContext({ viewport: { width: lebar, height: 800 }, locale: "id-ID", timezoneId: "Asia/Jakarta", baseURL: alamat });
   const page = await konteks.newPage();
   await masuk(page, peran);
   return { konteks, page };

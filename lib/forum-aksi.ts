@@ -6,7 +6,7 @@ import { lamaTunggu } from "./waktu";
 
 /**
  * Kode galat yang dikenal aplikasi. Berasal dari fungsi SQL (supabase/migrations/0004_forum.sql
- * untuk forum, 0005_admin.sql untuk admin, 0006_keputusan.sql untuk keputusan musyawarah). Kalimat untuk kode admin ada di lib/admin-aksi.ts;
+ * untuk forum, 0005_admin.sql untuk admin, 0006_keputusan.sql untuk keputusan musyawarah, 0007_saran_urgensi.sql untuk saran AI). Kalimat untuk kode admin ada di lib/admin-aksi.ts;
  * mesinnya (penguraian hasil, batas waktu, pencatatan galat) satu, di file ini.
  */
 export type KodeGalat =
@@ -42,7 +42,11 @@ export type KodeGalat =
   | "tidak_bisa_dibatalkan"
   | "bukan_terakhir"
   | "lewat_batas"
-  | "sudah_dikerjakan";
+  | "sudah_dikerjakan"
+  // Khusus saran urgensi AI (0007):
+  | "batas_harian"
+  | "sedang_diproses"
+  | "saran_tidak_valid";
 
 export interface Galat {
   ok: false;
@@ -157,6 +161,9 @@ const KODE_DIKENAL = new Set<string>([
   "bukan_terakhir",
   "lewat_batas",
   "sudah_dikerjakan",
+  "batas_harian",
+  "sedang_diproses",
+  "saran_tidak_valid",
 ]);
 
 /** Mengurai jsonb dari fungsi SQL: {"ok": true, ...} atau {"ok": false, "kode": "..."}. */
@@ -194,7 +201,10 @@ type NamaFungsi =
   | "ganti_sandi_sendiri"
   | "tetapkan_keputusan"
   | "batalkan_penetapan"
-  | "tandai_selesai";
+  | "tandai_selesai"
+  | "ambil_jatah_saran"
+  | "simpan_saran"
+  | "catat_gagal_saran";
 
 /**
  * Memanggil fungsi SQL penulis. `panggil` membuat permintaannya (dengan tipe argumen lengkap

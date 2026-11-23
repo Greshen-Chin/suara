@@ -358,11 +358,10 @@ dengan PostgREST asli, dan database Supabase milik pemilik (tidak boleh disentuh
 
 ## Pekerjaan berikutnya
 
-1. **Penilaian urgensi oleh AI** (di luar cakupan fitur ini). Terjadi saat admin memindahkan
-   usulan ke `voting`: skor 1 sampai 10 beserta alasan tertulis yang bisa diperiksa, hanya
-   sebagai bahan musyawarah. Kolom `urgency_score` dan `urgency_reason` sudah siap, formulir
-   admin sudah punya tempatnya (belum tampil), dan batasan
-   `proposals_urgensi_wajib_setelah_forum` memastikan nilainya terisi.
+1. ~~**Penilaian urgensi oleh AI**~~ sudah ada sebagai **saran** opsional (butuh `GEMINI_API_KEY`): lihat
+   [saran-urgensi.md](saran-urgensi.md). Halaman detail usulan menampilkan "Urgensi 8 dari 10, ditetapkan admin. Saran AI
+   sebelumnya: 7." bila admin membuka saran sebelum memasukkan usulan; `v_usulan` memuat kolom `saran_*` (migrasi 0007).
+   Nilai yang berlaku tetap `urgency_score` yang dipilih admin.
 2. ~~Fitur Keputusan~~ selesai: lihat [keputusan.md](keputusan.md).
 3. Putuskan aturan dukungan (jatah terbatas atau tidak).
 4. Kalibrasi ulang kemiripan dengan usulan nyata; pertimbangkan model yang lebih besar atau

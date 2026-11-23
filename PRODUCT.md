@@ -23,7 +23,7 @@ Produk ini berhasil kalau warga RW kecil bisa melihat dengan angka kenapa usulan
 
 - Suara terbanyak tidak otomatis menang. Skor menggabungkan dukungan per 1.000 penduduk RW, urgensi (1 sampai 10, dengan alasan tertulis), dan pemerataan anggaran per kapita periode lalu. Bobotnya ditetapkan musyawarah dan setiap perubahannya tercatat.
 - "Garis Pagu" memperlihatkan, untuk pagu yang sama, apa yang terbiayai jika memakai suara terbanyak dan jika memakai rekomendasi SUARA.
-- AI hanya memberi bahan musyawarah (mengenali usulan mirip, menilai urgensi beserta alasannya). AI tidak pernah memutuskan.
+- AI hanya memberi bahan musyawarah (mengenali usulan mirip, menyarankan nilai urgensi beserta alasan yang mengutip usulan). AI tidak pernah memutuskan.
 
 ## Operating Context
 
@@ -64,11 +64,15 @@ Produk ini berhasil kalau warga RW kecil bisa melihat dengan angka kenapa usulan
     pengumuman, dan mengunduh CSV. Ini **ringkasan keputusan musyawarah, bukan pengesahan anggaran**. Penetapan terakhir bisa
     dibatalkan 24 jam. Lihat `docs/keputusan.md`;
   - halaman Simulasi (`/simulasi`): pagu dan bobot yang bisa digeser, Peta Pagu, uji ketahanan bobot, tabel per RW, dan usulan forum
-    andaian, tanpa menyimpan. Lihat `docs/simulasi.md`.
+    andaian, tanpa menyimpan. Lihat `docs/simulasi.md`;
+  - **saran urgensi dari AI (Gemini)**, opsional dan hanya aktif bila `GEMINI_API_KEY` terpasang: admin memilih nilainya sendiri lebih
+    dulu, baru boleh meminta saran; setiap alasan AI mengutip kalimat usulan (diperiksa server); nilai AI tidak pernah mengisi
+    pilihan; bila admin membukanya sebelum memutuskan, halaman usulan dan jejak menyebut keduanya ("Urgensi 8 dari 10, ditetapkan admin.
+    Saran AI sebelumnya: 7."). Tanpa kunci tidak ada jejak AI di antarmuka. Lihat `docs/saran-urgensi.md`.
 - **Belum ada:**
   - koreksi keputusan setelah 24 jam, tanda tangan digital, unggah berkas, rencana kerja rinci, dan notifikasi (di luar cakupan fitur Keputusan);
   - pengisian `location` pada usulan (deteksi mirip memakai RW);
-  - penilaian urgensi oleh AI (admin mengisi urgensi dengan rubrik empat tingkat; tempat untuk saran AI sudah disiapkan di formulir tetapi tidak tampil sampai fiturnya ada);
+  - kalibrasi saran urgensi AI dengan Gemini sungguhan (fiturnya sudah ada, tetapi mutunya belum diukur; lihat `docs/saran-urgensi.md`);
   - pengaturan data wilayah (penduduk, anggaran periode lalu) dari antarmuka;
   - pengujian dengan pembaca layar dan perangkat sentuh nyata.
 

@@ -4,6 +4,7 @@
 import "server-only";
 import { pesanGalat, type HasilRpc, type KodeGalat } from "./forum-aksi";
 import { STATUS_AKSI_AWAL, type StatusAksi } from "./admin-status";
+import { PESAN_SARAN_BASI } from "./saran-urgensi-tipe";
 import { rupiah, rupiahRinci } from "./format";
 import { tanggalDanJam, lamaTunggu } from "./waktu";
 
@@ -111,6 +112,8 @@ export function pesanGalatAdmin(kode: KodeGalat, konteks: KonteksAdmin, h: Gagal
       return "Sudah lewat 24 jam sejak penetapan, jadi tidak bisa dibatalkan lagi. Keputusan tetap.";
     case "sudah_dikerjakan":
       return "Sudah ada usulan dari penetapan ini yang ditandai selesai dikerjakan, jadi penetapan tidak bisa dibatalkan.";
+    case "saran_tidak_valid":
+      return PESAN_SARAN_BASI;
     case "tidak_valid":
       return "Ada isian yang belum sesuai. Periksa isian yang bertanda galat.";
     default:

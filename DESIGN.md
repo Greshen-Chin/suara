@@ -317,6 +317,17 @@ tabular) lalu nama tingkat dan keterangan kecil abu. Tingkat yang sesuai dengan 
 **ditebalkan dan rentangnya digarisbawahi 3 px**, bukan hanya diwarnai. Kelompok radio diberi `key` supaya
 pilihan tidak kembali ke nilai awal saat React mereset formulir. Tidak ada nilai bawaan.
 
+### Catatan pinggir (saran urgensi AI)
+Elemen khas fitur saran AI, hanya ada bila kunci Gemini terpasang. Kolom sempit **bergaris tepi penuh 2 px** (tinta di atas
+kapur) dengan pita label tinta "Saran AI · [nama model]" di atasnya, menempel di sebelah kelompok pilihan urgensi (di
+bawahnya pada ponsel; dua kolom mulai 64rem, `Admin.module.css` `.urgensiDanSaran`). Isinya: nilai saran (Barlow, besar, tabular)
+dengan nama tingkat rubrik, kalimat selisih yang netral (tanpa warna galat untuk perbedaan pendapat), alasan masing-masing dengan
+kutipan dari usulan dan tombol "Sorot di usulan" yang menyorot kutipan itu di isi usulan dengan **marka kuning + garis tinta**
+(`<mark>`, bisa difokus dengan keyboard; kuning marka dengan teks tinta, bukan putih), "Belum jelas" berisi pertanyaan untuk admin,
+dan penutup "Keyakinan sedang. Ini bahan, bukan keputusan." Teks yang dikirim ke AI dilipat di bawahnya, bagian yang disamarkan
+ditandai garis bawah putus-putus dan kurung siku. Tanpa gerak sama sekali; hasil diumumkan lewat wilayah `status` yang sopan.
+Di halaman usulan publik, saran yang dibuka tampil sebagai satu kalimat di blok Urgensi dengan `<details>` berisi alasannya.
+
 ### Pratinjau dampak
 Bagian dengan garis atas 2 px tinta (bukan kotak) berjudul "Pratinjau dampak": dua `PaguBar` varian `ringkas` ("Sekarang",
 "Sesudah disimpan") dengan nama di tiap blok (elipsis bila terlalu sempit) dan biaya hanya untuk pembaca
@@ -454,7 +465,8 @@ tidak melihatnya.
   fokus tidak hilang.
 - **Don't** menambah warna atau huruf baru tanpa mencatat alasannya di sini.
 - **Don't** menampilkan penanda "AI", "segera hadir", atau tempat kosong untuk fitur yang belum berjalan
-  (mis. saran urgensi AI di formulir admin): klaim di antarmuka harus sudah ada fiturnya.
+  (mis. saran urgensi AI tanpa `GEMINI_API_KEY`): klaim di antarmuka harus sudah ada fiturnya.
+- **Don't** memberi saran AI ikon kilau, gradasi, warna ungu, atau animasi mengetik; ia catatan rekan, bukan kotak ajaib.
 - **Don't** menaruh kata sandi (atau apa pun yang rahasia) di URL, penyimpanan peramban, atau cache.
 - **Don't** memakai garis tebal di satu sisi sebagai penanda galat atau peringatan; pakai bingkai penuh.
 - **Don't** memakai `<output>` untuk angka yang berubah terus (geseran): berperan "status", jadi diumumkan tiap langkah.

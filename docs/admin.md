@@ -98,10 +98,10 @@ Tingkat yang sesuai dengan angka terpilih ditebalkan dan digarisbawahi (bukan ha
 demo mengikuti rubrik ini: Gapura 3 (tampilan), Jalan SDN 03 8 (merugikan setiap hari), Talud 10 (keselamatan).
 Tidak ada nilai bawaan: angka harus dipilih, supaya penilaian tidak terjangkar pada angka yang sudah terisi.
 
-Tempat untuk **saran urgensi AI** sudah disiapkan sebagai slot di dalam kelompok urgensi
-(`saranUrgensi` pada `FormPindahStatus`), tetapi **tidak dirender sama sekali** dan tanpa label "AI" atau "segera
-hadir": fiturnya belum berjalan, dan klaim di antarmuka hanya boleh ada bila fiturnya benar-benar ada
-([PRODUCT.md](../PRODUCT.md), prinsip 3).
+**Saran urgensi AI** muncul di samping kelompok urgensi (`SaranUrgensi` di `FormPindahStatus`, prop `saranAktif`) **hanya bila**
+`GEMINI_API_KEY` terpasang dan usulannya usulan warga berstatus forum. Tanpa kunci formulir ini persis seperti sebelumnya, tanpa label
+"AI" atau tombol (klaim di antarmuka hanya boleh ada bila fiturnya ada, [PRODUCT.md](../PRODUCT.md) prinsip 3). Cara kerjanya
+ada di [saran-urgensi.md](saran-urgensi.md).
 
 ## Pratinjau dampak
 
@@ -322,11 +322,10 @@ Hal-hal yang brief tidak menentukan, dan pilihan yang diambil:
 1. ~~**Fitur Keputusan**~~ selesai: penetapan hasil musyawarah ada di bagian Keputusan (`/admin/keputusan`), bukan di
    halaman Usulan; lihat [keputusan.md](keputusan.md). Navigasi admin kini berisi enam bagian (Ringkasan, Usulan, Anggaran,
    Keputusan, Akun, Moderasi), dan filter Usulan punya "Sudah diputuskan".
-2. **Saran urgensi oleh AI**, hanya sebagai bahan: slot di formulir sudah disiapkan (tanpa label sampai fiturnya ada).
+2. ~~**Saran urgensi oleh AI**~~ sudah ada (opsional, butuh kunci Gemini): lihat [saran-urgensi.md](saran-urgensi.md). Yang belum: kalibrasi dengan Gemini sungguhan.
 3. **Data wilayah**: penduduk dan anggaran periode lalu belum bisa diubah dari antarmuka.
 4. **Jatah dukungan**: putuskan aturannya (lihat [forum.md](forum.md#aturan-dukungan-sementara)).
 5. **Uji dengan pembaca layar**, lalu E2E melawan PostgREST/Supabase sungguhan di proyek uji.
 6. ~~Halaman `/simulasi`~~ sudah ada: lihat [simulasi.md](simulasi.md).
 
-Brief untuk fitur yang belum ada ada di [docs/prompts/](prompts/): `keputusan.md` dan `saran-urgensi.md`
-(`simulasi.md` sudah dikerjakan).
+Brief fitur ada di [docs/prompts/](prompts/): `keputusan.md`, `saran-urgensi.md`, dan `simulasi.md` sudah dikerjakan.

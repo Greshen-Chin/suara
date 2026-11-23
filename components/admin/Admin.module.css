@@ -1280,3 +1280,27 @@
   min-height: 2.75rem;
   font-weight: 600;
 }
+
+/* ---- Urgensi bersama catatan pinggir (saran AI) -------------------------------------------------------- */
+
+/* Hanya dipakai bila saran AI aktif. Satu kolom di ponsel (catatan di bawah pilihan), dua kolom di layar lebar. */
+.formLebar {
+  max-width: 64rem;
+}
+
+.formLebar > :not(.urgensiDanSaran) {
+  max-width: 44rem;
+}
+
+.urgensiDanSaran {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (min-width: 64rem) {
+  .urgensiDanSaran {
+    grid-template-columns: minmax(0, 1fr) minmax(17rem, 22rem);
+    gap: 1.5rem;
+  }
+}

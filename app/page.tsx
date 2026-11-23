@@ -5,6 +5,7 @@ import { JejakKeputusan } from "@/components/landing/JejakKeputusan";
 import { TanpaUsulan } from "@/components/landing/TanpaUsulan";
 import { WilayahKontras } from "@/components/landing/WilayahKontras";
 import { muatBeranda } from "@/lib/beranda";
+import { saranAktif } from "@/lib/saran-urgensi-server";
 
 export default async function Beranda() {
   const data = await muatBeranda();
@@ -24,7 +25,7 @@ export default async function Beranda() {
         )}
       </Hero>
       <WilayahKontras wilayah={data.wilayah} usulan={data.usulan} />
-      <CaraKerja bobot={data.bobot} />
+      <CaraKerja bobot={data.bobot} saranAi={saranAktif()} />
       <JejakKeputusan log={data.log} judulUsulan={judulUsulan} />
     </main>
   );

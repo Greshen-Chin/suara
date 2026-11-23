@@ -18,8 +18,8 @@ export function Hero({ children, dataContoh }: Props) {
           paling sedikit suaranya?
         </h1>
         <p className={styles.penjelas}>
-          Setiap suara tetap dihitung satu per satu, dan yang diberi bobot
-          adalah kebutuhan, bukan orangnya.
+          Satu warga, satu suara. Skor usulan juga mempertimbangkan seberapa
+          mendesak kebutuhannya dan RW mana yang jarang menerima anggaran.
         </p>
       </div>
 

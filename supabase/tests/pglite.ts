@@ -2,7 +2,7 @@
 // dan PostGIS. Tidak menyentuh database Supabase milik siapa pun.
 //
 // Urutan memuat file sama dengan urutan yang dijalankan pemilik proyek di SQL Editor:
-//   0001 -> 0002 -> seed.sql -> 0003 -> 0004 -> seed_forum.sql -> 0005 -> 0006 -> seed_keputusan.sql
+//   0001 -> 0002 -> seed.sql -> 0003 -> 0004 -> seed_forum.sql -> 0005 -> 0006 -> seed_keputusan.sql -> 0007
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,6 +22,7 @@ export const BERKAS = {
   seedForum: "seed_forum.sql",
   m0005: "migrations/0005_admin.sql",
   m0006: "migrations/0006_keputusan.sql",
+  m0007: "migrations/0007_saran_urgensi.sql",
   seedKeputusan: "seed_keputusan.sql",
   pulihkanPeriode: "demo_pulihkan_periode.sql",
 } as const;
@@ -82,6 +83,8 @@ export const SEMUA = [...SEBELUM_FORUM, "m0004", "seedForum"] as const;
 export const SEMUA_DENGAN_ADMIN = [...SEMUA, "m0005"] as const;
 /** Sampai migrasi keputusan (m0006); seedKeputusan dimuat sesudahnya oleh pemanggil yang membutuhkannya. */
 export const SEMUA_DENGAN_KEPUTUSAN = [...SEMUA_DENGAN_ADMIN, "m0006"] as const;
+/** Sampai migrasi saran urgensi (m0007), dimuat sesudah seedKeputusan. */
+export const SEMUA_DENGAN_SARAN = [...SEMUA_DENGAN_KEPUTUSAN, "seedKeputusan", "m0007"] as const;
 
 /** Hasil rekomendasi_resmi sebagai teks yang stabil, untuk dibandingkan sebelum dan sesudah. */
 export async function sidikRekomendasi(db: PGlite, pagu = 300_000_000): Promise<string> {

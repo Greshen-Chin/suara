@@ -10,6 +10,7 @@ import { FormKomentar } from "@/components/forum/FormKomentar";
 import { KeputusanUsulan } from "@/components/forum/KeputusanUsulan";
 import { PosisiAnggaran } from "@/components/forum/PosisiAnggaran";
 import { RiwayatUsulan } from "@/components/forum/RiwayatUsulan";
+import { SaranAiPublik } from "@/components/forum/SaranAiPublik";
 import { TombolDukung } from "@/components/forum/TombolDukung";
 import { StatusSiklus } from "@/components/ui/StatusSiklus";
 import styles from "@/components/forum/Detail.module.css";
@@ -221,6 +222,7 @@ async function IsiUsulan({ params, searchParams }: Props) {
                 <div className={styles.urgensi}>
                   <p className={styles.nilaiUrgensi}>Nilai {usulan.urgency_score} dari 10</p>
                   {usulan.urgency_reason && <p>{usulan.urgency_reason}</p>}
+                  {usulan.saran && <SaranAiPublik urgensi={usulan.urgency_score} saran={usulan.saran} />}
                 </div>
               ) : (
                 <p className={styles.catatanUrgensi}>

@@ -7,6 +7,7 @@ import { DialogKembalikan, DialogTidakDilanjutkan } from "@/components/admin/Dia
 import { FormPindahStatus } from "@/components/admin/FormPindahStatus";
 import { Kerangka } from "@/components/admin/Kerangka";
 import { KhususAdmin } from "@/components/admin/KhususAdmin";
+import { IsiUsulanSorot, SaranProvider } from "@/components/admin/SaranProvider";
 import styles from "@/components/admin/Admin.module.css";
 import { RiwayatUsulan } from "@/components/forum/RiwayatUsulan";
 import { StatusSiklus } from "@/components/ui/StatusSiklus";
@@ -15,6 +16,7 @@ import { bacaDasarHitung, bacaKomentarUsulan, bacaLogKeputusan, bacaUsulan } fro
 import { BATAS_ADMIN } from "@/lib/admin-skema";
 import { desimal, ribuan, rupiah } from "@/lib/format";
 import { cariUsulanMirip } from "@/lib/forum-mirip";
+import { saranAktif } from "@/lib/saran-urgensi-server";
 import { transisiTersedia, keteranganTanpaAksi, teksStatusAdmin } from "@/lib/transisi-status";
 import { LABEL_KATEGORI, adalahKategori, adalahUuid } from "@/lib/usulan-skema";
 import { tanggalDanJam, tanggalPanjang, waktuRelatif } from "@/lib/waktu";
@@ -58,8 +60,11 @@ async function IsiTinjau({ params }: Props) {
   const kategori = adalahKategori(u.category) ? LABEL_KATEGORI[u.category] : u.category;
   const penuh = dasar.usulan.length >= BATAS_ADMIN.usulanVoting;
   const rw = u.rw !== null ? labelRw(u.rw) : "Tanpa RW";
+  // Saran AI hanya ada bila kunci Gemini terpasang dan usulan ini warga yang belum dinilai. Tanpa itu, halaman
+  // persis seperti sebelum fitur ada: tidak ada label, tombol, atau pembungkus.
+  const saran = saranAktif() && !tersembunyi && u.source === "forum" && u.status === "forum";
 
-  return (
+  const halaman = (
     <>
       <Link href="/admin/usulan" className={styles.kembali}>
         <span aria-hidden="true">←&nbsp;</span>Semua usulan
@@ -105,7 +110,7 @@ async function IsiTinjau({ params }: Props) {
 
           <section className={styles.seksi} aria-labelledby="judul-isi">
             <h2 id="judul-isi">Isi usulan</h2>
-            <p className={styles.deskripsi}>{u.description}</p>
+            <IsiUsulanSorot teks={u.description ?? ""} className={styles.deskripsi} />
           </section>
 
           <section className={styles.seksi} aria-labelledby="judul-data">
@@ -193,7 +198,15 @@ async function IsiTinjau({ params }: Props) {
           <h2 id="form-masuk" tabIndex={-1}>
             Masukkan ke hitungan anggaran
           </h2>
-          <FormPindahStatus id={u.id} statusDibaca={u.status} namaSingkatAwal={u.nama_singkat ?? ""} />
+          <FormPindahStatus
+            id={u.id}
+            statusDibaca={u.status}
+            namaSingkatAwal={u.nama_singkat ?? ""}
+            saranAktif={saran}
+            judul={u.title ?? ""}
+            deskripsi={u.description ?? ""}
+            kategori={u.category}
+          />
         </section>
       )}
 
@@ -234,6 +247,7 @@ async function IsiTinjau({ params }: Props) {
       </div>
     </>
   );
+  return saran ? <SaranProvider>{halaman}</SaranProvider> : halaman;
 }
 
 async function UsulanSerupa({
