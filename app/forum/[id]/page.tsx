@@ -12,6 +12,7 @@ import { PosisiAnggaran } from "@/components/forum/PosisiAnggaran";
 import { RiwayatUsulan } from "@/components/forum/RiwayatUsulan";
 import { SaranAiPublik } from "@/components/forum/SaranAiPublik";
 import { TombolDukung } from "@/components/forum/TombolDukung";
+import { PetaMini } from "@/components/peta/PetaMini";
 import { StatusSiklus } from "@/components/ui/StatusSiklus";
 import styles from "@/components/forum/Detail.module.css";
 import { tentukanKeadaanDukungan } from "@/lib/aturan-dukungan";
@@ -19,6 +20,7 @@ import { ambilPenggunaUntukBaca } from "@/lib/auth";
 import { dukunganSaya, muatUsulan } from "@/lib/forum-data";
 import { rupiah } from "@/lib/format";
 import { muatKeputusanUsulan } from "@/lib/keputusan-data";
+import { koordinatUntukUsulan } from "@/lib/peta-data";
 import { RUTE } from "@/lib/tautan";
 import { LABEL_KATEGORI, adalahKategori, adalahUuid } from "@/lib/usulan-skema";
 import { tanggalPanjang, waktuRelatif } from "@/lib/waktu";
@@ -177,6 +179,24 @@ async function IsiUsulan({ params, searchParams }: Props) {
                   Lihat kalau usulan ini dihitung
                 </Link>
               )}
+
+              <div className={styles.sisi}>
+                <h2>Lokasi Usulan</h2>
+                <p style={{ margin: "0 0 0.5rem 0", fontSize: "0.85rem", color: "var(--tinta-lemah)" }}>
+                  {usulan.rw !== null ? `Kawasan Dusun RW 0${usulan.rw}` : "Wilayah Desa"}
+                </p>
+                <PetaMini
+                  lat={koordinatUntukUsulan(id, usulan.rw).lat}
+                  lng={koordinatUntukUsulan(id, usulan.rw).lng}
+                  judul={usulan.title ?? ""}
+                  rw={usulan.rw}
+                />
+                <p style={{ margin: "0.5rem 0 0 0", fontSize: "0.8rem" }}>
+                  <Link href="/peta" style={{ fontWeight: 600 }}>
+                    Buka di Peta Persebaran Desa &rarr;
+                  </Link>
+                </p>
+              </div>
             </>
           )}
 

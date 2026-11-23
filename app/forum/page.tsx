@@ -40,9 +40,19 @@ export default function HalamanForum({ searchParams }: { searchParams: Promise<P
             Baca usulan warga, dukung yang Anda setujui, dan lihat posisinya terhadap pagu anggaran desa.
           </p>
         </div>
-        <Link href={URL_USUL} className={`tombol tombol-utama ${styles.ajukan}`}>
-          Ajukan usulan
-        </Link>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
+          <Link href="/peta" className="tombol tombol-kedua" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+              <line x1="8" y1="2" x2="8" y2="18" />
+              <line x1="16" y1="6" x2="16" y2="22" />
+            </svg>
+            Lihat Peta
+          </Link>
+          <Link href={URL_USUL} className={`tombol tombol-utama ${styles.ajukan}`}>
+            Ajukan usulan
+          </Link>
+        </div>
       </div>
 
       <Suspense fallback={<SkeletonDaftar />}>
