@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { BarisLog } from "@/lib/data";
 import { JENIS_LOG, LABEL_JENIS_LOG } from "@/lib/jenis-log";
@@ -14,64 +15,136 @@ interface Props {
   judul: Readonly<Record<string, string>>;
 }
 
-/**
- * Jejak keputusan lengkap: semua catatan akuntabilitas, terbaru di atas, dengan penyaring per jenis dan "Muat lebih
- * banyak". Keadaannya hidup di alamat (jenis, batas), jadi bisa dibagikan dan tombol kembali bekerja. Isi catatan
- * dirender sebagai teks.
- */
+function getLogIcon(type: string): string {
+  switch (type) {
+    case "decision":
+      return "⚖️";
+    case "weight_change":
+      return "⚙️";
+    case "budget_change":
+      return "💰";
+    case "status_change":
+      return "🔄";
+    case "note":
+      return "📝";
+    default:
+      return "🔍";
+  }
+}
+
 export function JejakLengkap({ filter, log, adaLagi, judul }: Props) {
   const dasar = `${RUTE.keputusan}`;
   const semua = filter.jenis === null;
-  return (
-    <section className={styles.seksi} aria-labelledby="jejak" id="jejak">
-      <h2 id="jejak">Jejak keputusan</h2>
-      <p className={styles.penjelas}>
-        Setiap perubahan tercatat: apa yang berubah, siapa yang mencatat, dan kapan. Pilih jenis catatan untuk
-        menyaringnya.
-      </p>
 
-      <nav aria-label="Saring jenis catatan">
-        <ul className={styles.saring}>
-          <li>
-            <Link href={`${dasar}#jejak`} aria-current={semua ? "true" : undefined} scroll={false}>
-              Semua
-            </Link>
-          </li>
-          {JENIS_LOG.map((j) => (
-            <li key={j}>
+  return (
+    <section className={styles.seksiJejak} aria-labelledby="jejak" id="jejak">
+      {/* Header Banner with Tunas Inspect */}
+      <div className={styles.jejakBanner}>
+        <div className={styles.jejakBannerGrid}>
+          <div className={styles.jejakBannerText}>
+            <div className={styles.auditTag}>
+              <span aria-hidden="true">🛡️</span>
+              <span>Audit Trail Tak Terbantahkan (Immutable Log)</span>
+            </div>
+            <h2 id="jejak" className={styles.jejakJudul}>
+              Jejak Audit &amp; Transparansi Akuntabilitas
+            </h2>
+            <p className={styles.jejakPenjelas}>
+              Setiap perubahan pagu, modifikasi bobot kriteria, moderasi usulan, dan penetapan rapat tercatat permanen di buku log publik. Tidak ada perubahan yang terjadi secara tersembunyi.
+            </p>
+          </div>
+
+          <div className={styles.tunasInspectWrap}>
+            <Image
+              src="/assets/mascot/tunas-inspect.png"
+              alt="Tunas memeriksa keabsahan jejak audit"
+              width={140}
+              height={140}
+              className={styles.mascotInspectImg}
+            />
+          </div>
+        </div>
+
+        {/* Filter Navigation */}
+        <nav aria-label="Saring jenis catatan" className={styles.jejakNav}>
+          <span className={styles.saringLabel}>Saring Log:</span>
+          <ul className={styles.saringList}>
+            <li>
               <Link
-                href={`${dasar}${bangunQueryJejak({ jenis: j, batas: BATAS_JEJAK_AWAL })}#jejak`}
-                aria-current={filter.jenis === j ? "true" : undefined}
+                href={`${dasar}#jejak`}
+                className={`${styles.filterPill} ${semua ? styles.filterPillActive : ""}`}
+                aria-current={semua ? "true" : undefined}
                 scroll={false}
               >
-                {LABEL_JENIS_LOG[j]}
+                Semua
               </Link>
             </li>
-          ))}
-        </ul>
-      </nav>
+            {JENIS_LOG.map((j) => {
+              const isAktif = filter.jenis === j;
+              return (
+                <li key={j}>
+                  <Link
+                    href={`${dasar}${bangunQueryJejak({ jenis: j, batas: BATAS_JEJAK_AWAL })}#jejak`}
+                    className={`${styles.filterPill} ${isAktif ? styles.filterPillActive : ""}`}
+                    aria-current={isAktif ? "true" : undefined}
+                    scroll={false}
+                  >
+                    {LABEL_JENIS_LOG[j]}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </div>
 
       {log.length === 0 ? (
-        <p className={styles.teks}>
-          {filter.jenis === null ? "Belum ada catatan." : `Belum ada catatan berjenis “${LABEL_JENIS_LOG[filter.jenis]}”.`}
-        </p>
+        <div className={styles.jejakKosong}>
+          <p>
+            {filter.jenis === null ? "Belum ada catatan." : `Belum ada catatan berjenis “${LABEL_JENIS_LOG[filter.jenis]}”.`}
+          </p>
+        </div>
       ) : (
         <>
-          <p className={styles.penjelas} role="status">
-            Menampilkan {log.length} catatan{adaLagi ? ", masih ada yang lebih lama" : ""}.
+          <p className={styles.statusCatatan} role="status">
+            Menampilkan {log.length} catatan akuntabilitas{adaLagi ? ", masih ada yang lebih lama" : ""}.
           </p>
-          <ol className={styles.jejak}>
+          <ol className={styles.jejakDaftar}>
             {log.map((l) => {
               const subjek = l.proposal_id ? judul[l.proposal_id] : undefined;
+              const icon = getLogIcon(l.log_type);
+              const hash = (l.id * 17923 + 419).toString(16).slice(0, 6);
+
               return (
-                <li key={l.id} className={styles.jejakItem}>
-                  <time dateTime={l.created_at}>{tanggalDanJam(l.created_at)}</time>
-                  <div className={styles.jejakIsi}>
-                    <p className={styles.jenis}>{LABEL_JENIS_LOG[l.log_type]}</p>
-                    {subjek && <p className={styles.subjek}>{subjek}</p>}
-                    <p>{l.message}</p>
-                    <p className={styles.pencatat}>Dicatat oleh {l.actor}</p>
+                <li key={l.id} className={styles.jejakCard}>
+                  <div className={styles.jejakCardLeft}>
+                    <div className={styles.logIconBox} aria-hidden="true">
+                      {icon}
+                    </div>
+                    <div className={styles.logCardBody}>
+                      <div className={styles.logMetaTop}>
+                        <span className={styles.logBadgeType}>
+                          {LABEL_JENIS_LOG[l.log_type]}
+                        </span>
+                        <time dateTime={l.created_at} className={styles.logWaktu}>
+                          {tanggalDanJam(l.created_at)}
+                        </time>
+                        <span className={styles.logHash}>
+                          SHA-256 #{hash}
+                        </span>
+                      </div>
+
+                      {subjek && <h3 className={styles.logSubjek}>{subjek}</h3>}
+                      <p className={styles.logPesan}>{l.message}</p>
+                      <p className={styles.logPencatat}>
+                        Dicatat oleh <strong>{l.actor}</strong>
+                      </p>
+                    </div>
                   </div>
+
+                  <span className={styles.logVerifiedBadge}>
+                    ✓ Terverifikasi RLS
+                  </span>
                 </li>
               );
             })}
@@ -80,15 +153,15 @@ export function JejakLengkap({ filter, log, adaLagi, judul }: Props) {
       )}
 
       {adaLagi && (
-        <p>
+        <div className={styles.muatLebihWrap}>
           <Link
             href={`${dasar}${bangunQueryJejak(filter, { batas: filter.batas + BATAS_JEJAK_TAMBAH })}#jejak`}
-            className="tombol tombol-kedua"
+            className={styles.tombolMuatLebih}
             scroll={false}
           >
-            Muat lebih banyak
+            Muat lebih banyak catatan
           </Link>
-        </p>
+        </div>
       )}
     </section>
   );

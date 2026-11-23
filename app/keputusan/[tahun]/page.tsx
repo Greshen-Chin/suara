@@ -3,16 +3,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { BedaDariRekomendasi } from "@/components/keputusan/BedaDariRekomendasi";
-import { CapKeputusan } from "@/components/keputusan/CapKeputusan";
 import { CatatanCadanganKeputusan } from "@/components/keputusan/CatatanCadanganKeputusan";
 import { DuaGaris } from "@/components/keputusan/DuaGaris";
+import { KeputusanPeriodeHeader } from "@/components/keputusan/KeputusanPeriodeHeader";
 import { TabelKeputusan } from "@/components/keputusan/TabelKeputusan";
 import { TabelRwKeputusan } from "@/components/keputusan/TabelRwKeputusan";
-import { AlamatHalaman, TombolCetak } from "@/components/keputusan/TombolCetak";
+import { TombolCetak } from "@/components/keputusan/TombolCetak";
 import styles from "@/components/keputusan/Keputusan.module.css";
 import { anggaranTiapRw, susunDuaBatang } from "@/lib/keputusan-banding";
 import {
-  CATATAN_BUKAN_PENGESAHAN,
   namaPeriode,
   rincianHasil,
   ringkasTerpakai,
@@ -35,7 +34,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const judul = `${namaPeriode(tahun)}: keputusan musyawarah`;
   if (periode.status !== "diputuskan") return { title: judul, description: `${namaPeriode(tahun)} belum diputuskan.` };
-  // Teks, bukan gambar: ringkasan untuk dibagikan.
   const deskripsi = `${ringkasTerpakai(periode)}. ${rincianHasil(periode.jumlah)}. Ringkasan keputusan musyawarah, bukan pengesahan anggaran.`;
   return { title: judul, description: deskripsi, openGraph: { title: judul, description: deskripsi, type: "article", locale: "id_ID" } };
 }
@@ -49,8 +47,8 @@ export default function HalamanKeputusanPeriode({ params }: Props) {
       <Suspense
         fallback={
           <div role="status" aria-label="Memuat keputusan" className={styles.seksi}>
-            <div style={{ height: "4rem", width: "55%", background: "var(--garis-halus)" }} aria-hidden="true" />
-            <div style={{ height: "10rem", background: "var(--garis-halus)" }} aria-hidden="true" />
+            <div style={{ height: "4rem", width: "55%", background: "var(--garis-halus)", borderRadius: "1rem" }} aria-hidden="true" />
+            <div style={{ height: "10rem", background: "var(--garis-halus)", borderRadius: "1rem" }} aria-hidden="true" />
             <span className="sr-only">Memuat keputusan…</span>
           </div>
         }
@@ -68,7 +66,6 @@ async function IsiPeriode({ params }: Props) {
   const data = await muatPeriode(tahun);
   const { periode } = data;
   if (periode === null) {
-    // Bila yang tidak terjangkau adalah databasenya, "tidak ditemukan" akan menyesatkan.
     if (data.dataCadangan) {
       return (
         <>
@@ -81,7 +78,6 @@ async function IsiPeriode({ params }: Props) {
     notFound();
   }
 
-  // Periode yang belum diputuskan, termasuk yang penetapannya dibatalkan: tidak ada potret untuk ditampilkan.
   if (periode.status !== "diputuskan") {
     return (
       <>
@@ -112,16 +108,7 @@ async function IsiPeriode({ params }: Props) {
     <>
       {data.dataCadangan && <CatatanCadanganKeputusan />}
 
-      <header className={styles.kepala}>
-        <div>
-          <h1>{namaPeriode(tahun)}</h1>
-          <p className={styles.sorot}>{ringkasTerpakai(periode)}</p>
-          <p className={styles.keterangan}>
-            Ringkasan keputusan musyawarah desa, bukan pengesahan anggaran. {rincianHasil(periode.jumlah)}.
-          </p>
-        </div>
-        <CapKeputusan tanggal={periode.tanggalMusyawarah} />
-      </header>
+      <KeputusanPeriodeHeader periode={periode} />
 
       {batang && <DuaGaris batang={batang} />}
 
@@ -141,19 +128,12 @@ async function IsiPeriode({ params }: Props) {
         </p>
       </section>
 
-      <div className={`${styles.aksi} tanpa-cetak`}>
+      <div className={`${styles.aksi} tanpa-cetak`} style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginTop: "1rem" }}>
         <TombolCetak />
         <a className="tombol tombol-kedua" href={`${RUTE.keputusan}/${tahun}/csv`} download>
           Unduh data (CSV)
         </a>
       </div>
-
-      <footer className={styles.catatanKaki}>
-        <p>{CATATAN_BUKAN_PENGESAHAN}</p>
-        <p>
-          Alamat halaman: <AlamatHalaman />
-        </p>
-      </footer>
     </>
   );
 }

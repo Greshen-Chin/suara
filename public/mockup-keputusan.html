@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Keputusan Musyawarah Desa — SUARA (Awwwards Caliber Design Kit)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine: '#0F5132',
+            'pine-dark': '#0B3D25',
+            'pine-deep': '#062817',
+            emerald: '#176345',
+            'emerald-light': '#EAF4EB',
+            sage: '#F4F7F4',
+            moss: '#2E8B57',
+            sun: '#F59E0B',
+            clay: '#B45309',
+            creamy: '#FBFDF9',
+          },
+          fontFamily: {
+            heading: ['"Plus Jakarta Sans"', 'sans-serif'],
+            sans: ['"Inter"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #14261E;
+      background: #F4F6F0;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: -0.02em;
+    }
+    
+    /* Subtle Grain / Ambient Glow */
+    .hero-mesh {
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(234, 244, 235, 0.95) 0%, rgba(244, 246, 240, 0.4) 70%),
+        radial-gradient(circle at 90% 10%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
+        linear-gradient(180deg, #FFFFFF 0%, #F4F7F4 100%);
+    }
+
+    /* Glassmorphic Luxury Cards */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(226, 232, 240, 0.85);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px -5px rgba(15, 81, 50, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-panel:hover {
+      box-shadow: 0 20px 40px -10px rgba(15, 81, 50, 0.09), 0 4px 10px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Stamp Effect */
+    .stempel-resmi {
+      border: 3px double #1E40AF;
+      border-radius: 10px;
+      padding: 6px 14px;
+      color: #1E40AF;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 11.5px;
+      font-weight: 850;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transform: rotate(-2.5deg);
+      box-shadow: 0 2px 8px rgba(30, 64, 175, 0.15);
+      background: rgba(239, 246, 255, 0.85);
+    }
+    .stempel-tolak {
+      border: 3px double #DC2626;
+      border-radius: 10px;
+      padding: 6px 14px;
+      color: #DC2626;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 11.5px;
+      font-weight: 850;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transform: rotate(2deg);
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.15);
+      background: rgba(254, 242, 242, 0.85);
+    }
+
+    /* Tab switcher */
+    .tab-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 12px 22px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .tab-pill.active {
+      background: #0F5132;
+      color: #FFFFFF;
+      box-shadow: 0 6px 20px rgba(15, 81, 50, 0.28);
+      transform: translateY(-2px);
+    }
+    .tab-pill:not(.active) {
+      background: #FFFFFF;
+      color: #4A5568;
+      border: 1px solid #E2E8F0;
+    }
+    .tab-pill:not(.active):hover {
+      background: #F4F8F4;
+      color: #0F5132;
+      border-color: #CBD8CD;
+    }
+
+    /* Pagu Segment Hover */
+    .pagu-segment {
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+      cursor: pointer;
+    }
+    .pagu-segment:hover {
+      transform: translateY(-3px);
+      opacity: 0.95;
+    }
+
+    /* Mascot subtle float animation */
+    @keyframes mascotFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    .mascot-float {
+      animation: mascotFloat 4s ease-in-out infinite;
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      background: rgba(15, 40, 25, 0.65);
+      backdrop-filter: blur(8px);
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- ================= TOPBAR ================= -->
+  <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200/80 px-4 lg:px-12 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-9 h-9 rounded-xl bg-pine flex items-center justify-center p-1.5 shadow-md shadow-pine/20 group-hover:scale-105 transition-transform">
+          <img src="assets/logo/suara-mark.svg" alt="SUARA" class="w-full h-full filter invert brightness-200" />
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-tight font-heading text-pine block leading-none">SUARA</span>
+          <span class="text-[10px] text-slate-500 font-semibold tracking-wide">Aspirasi & Anggaran Desa</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-1 bg-slate-100/80 p-1.5 rounded-full border border-slate-200/60">
+        <a href="#" class="px-4 py-1.5 text-xs font-bold text-slate-600 hover:text-pine rounded-full transition-colors">Beranda</a>
+        <a href="#" class="px-4 py-1.5 text-xs font-bold text-slate-600 hover:text-pine rounded-full transition-colors">Forum Warga</a>
+        <a href="#" class="px-4 py-1.5 text-xs font-bold text-slate-600 hover:text-pine rounded-full transition-colors">Simulasi</a>
+        <a href="#" class="px-4 py-1.5 text-xs font-bold text-white bg-pine rounded-full shadow-sm">Keputusan</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        <button onclick="openPrintModal()" class="hidden sm:inline-flex items-center gap-2 text-xs font-bold text-pine bg-emerald-light hover:bg-emerald-light/80 border border-pine/20 px-3.5 py-2 rounded-xl transition-all">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+          Papan Balai Desa
+        </button>
+        <a href="#" class="text-xs font-bold text-white bg-pine hover:bg-pine-dark px-4 py-2 rounded-xl shadow-md shadow-pine/20 transition-all flex items-center gap-1.5">
+          <span>Masuk Akun</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= HERO MASTERPIECE BANNER ================= -->
+  <section class="relative hero-mesh border-b border-emerald-900/10 overflow-hidden pt-8 pb-14 md:py-16">
+    <!-- Ambient village scenery illustration layer -->
+    <div class="max-w-7xl mx-auto px-4 lg:px-12 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Left: Headline & Mandat Musyawarah -->
+        <div class="lg:col-span-7 space-y-5">
+          <div class="inline-flex items-center gap-2 bg-emerald-light border border-pine/20 px-3.5 py-1.5 rounded-full">
+            <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
+            <span class="w-2 h-2 rounded-full bg-pine -ml-3"></span>
+            <span class="text-[11.5px] font-extrabold text-pine uppercase tracking-wider">Kedaulatan Warga & Akuntabilitas APBDes</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-pine-deep leading-[1.12]">
+            Keputusan Musyawarah Desa.<br>
+            <span class="text-emerald-700 bg-gradient-to-r from-emerald-700 via-pine to-emerald-800 bg-clip-text text-transparent">Keadilan Nyata yang Tertulis.</span>
+          </h1>
+
+          <p class="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl font-normal">
+            Musyawarah desa memegang mandat tertinggi penetapan pembangunan. Algoritma SUARA memberi rekomendasi objektif multi-kriteria; <strong>setiap perbedaan keputusan dicatat terbuka beserta berita acara dan alasan yang dapat dibaca seluruh warga.</strong>
+          </p>
+
+          <!-- Core Axiom Badges -->
+          <div class="pt-2 flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-semibold text-slate-700">
+            <div class="flex items-center gap-2 bg-white/80 border border-slate-200/80 px-3 py-1.5 rounded-lg shadow-sm">
+              <span class="w-5 h-5 rounded-md bg-emerald-100 text-pine flex items-center justify-center font-bold text-[11px]">⚖️</span>
+              <span>SUARA Merekomendasikan</span>
+            </div>
+            <div class="text-slate-400 font-bold">→</div>
+            <div class="flex items-center gap-2 bg-white/80 border border-slate-200/80 px-3 py-1.5 rounded-lg shadow-sm">
+              <span class="w-5 h-5 rounded-md bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[11px]">🏛️</span>
+              <span>Musyawarah Memutuskan</span>
+            </div>
+            <div class="text-slate-400 font-bold">→</div>
+            <div class="flex items-center gap-2 bg-white/80 border border-slate-200/80 px-3 py-1.5 rounded-lg shadow-sm">
+              <span class="w-5 h-5 rounded-md bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-[11px]">📜</span>
+              <span>Perbedaan Wajib Beralasan</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Grand Visual Artwork with Balai Desa & Welcoming Tunas -->
+        <div class="lg:col-span-5 relative">
+          <div class="relative w-full max-w-md mx-auto aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/80 group">
+            <!-- Village Scenic Backdrop -->
+            <img 
+              src="assets/scenes/hero-approved-tunas-village.png" 
+              alt="Balai Musyawarah Desa Sukamaju" 
+              class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-pine-deep/80 via-transparent to-transparent"></div>
+            
+            <!-- Balai Desa Floating Tag -->
+            <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/40 shadow-lg flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-xs font-black text-pine font-heading">Balai Desa Sukamaju</span>
+            </div>
+
+            <!-- Tunas mascot welcoming citizens -->
+            <div class="absolute -bottom-2 right-2 w-36 sm:w-44 h-auto mascot-float z-20">
+              <img 
+                src="assets/mascot/tunas-wave.png" 
+                alt="Tunas Maskot SUARA Menyambut Warga" 
+                class="w-full h-auto drop-shadow-xl"
+              />
+            </div>
+
+            <!-- Speech Bubble -->
+            <div class="absolute bottom-6 left-4 right-32 bg-white/95 backdrop-blur-md p-3 rounded-2xl border border-white/60 shadow-xl z-10">
+              <p class="text-[11.5px] font-bold text-pine leading-tight">
+                "Musyawarah bukan cap stempel. Mari kita teliti mana usulan yang disetujui & mengapa!"
+              </p>
+              <span class="text-[9.5px] font-semibold text-slate-500 block mt-1">Tunas · Maskot Akuntabilitas SUARA</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Decorative Hills Wave Divider -->
+    <div class="absolute bottom-0 left-0 right-0 h-10 overflow-hidden pointer-events-none opacity-40">
+      <img src="assets/scenes/decorative-hills.svg" alt="" class="w-full h-full object-cover object-bottom" />
+    </div>
+  </section>
+
+  <!-- ================= INTERACTIVE TAB SWITCHER ================= -->
+  <main class="max-w-7xl mx-auto px-4 lg:px-12 py-8 space-y-8">
+    
+    <!-- Tab Controls -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-200/80 pb-5">
+      <div class="flex items-center gap-2.5 overflow-x-auto w-full sm:w-auto p-1 bg-slate-200/50 rounded-2xl border border-slate-200/70">
+        <button onclick="switchTab('tab-berjalan')" id="btn-tab-berjalan" class="tab-pill active">
+          <span>📅 Periode Berjalan 2027</span>
+          <span class="text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full uppercase tracking-wider font-extrabold">Aktif</span>
+        </button>
+        <button onclick="switchTab('tab-arsip')" id="btn-tab-arsip" class="tab-pill">
+          <span>📜 Buku Register 2026</span>
+          <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">Diputuskan</span>
+        </button>
+        <button onclick="switchTab('tab-audit')" id="btn-tab-audit" class="tab-pill">
+          <span>🔍 Jejak Audit Terbuka</span>
+          <span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-bold">18 Log</span>
+        </button>
+      </div>
+
+      <!-- Live Context Info -->
+      <div class="text-xs text-slate-500 flex items-center gap-2 self-start sm:self-auto">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Data purwarupa terverifikasi · Algoritma Knapsack 0/1 v2.4</span>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 1: PERIODE BERJALAN 2027 (REKOMENDASI MENUJU MUSYAWARAH) -->
+    <!-- ======================================================== -->
+    <section id="tab-berjalan" class="space-y-8 transition-opacity duration-300">
+      
+      <!-- Top 4-Metric Ribbon -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <div class="glass-panel p-5 relative overflow-hidden group">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Pagu Anggaran Desa</span>
+            <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-sm">💰</div>
+          </div>
+          <div class="mt-3 flex items-baseline gap-1">
+            <span class="text-2xl sm:text-3xl font-extrabold text-pine font-heading">Rp 300</span>
+            <span class="text-sm font-bold text-slate-500">Juta</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1">Batas mutlak APBDes murni 2027</p>
+          <div class="absolute bottom-0 left-0 right-0 h-1 bg-amber-400"></div>
+        </div>
+
+        <div class="glass-panel p-5 relative overflow-hidden group">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Rekomendasi Terpilih</span>
+            <div class="w-8 h-8 rounded-xl bg-emerald-50 text-pine flex items-center justify-center font-bold text-sm">🎯</div>
+          </div>
+          <div class="mt-3 flex items-baseline gap-1">
+            <span class="text-2xl sm:text-3xl font-extrabold text-pine font-heading">4</span>
+            <span class="text-sm font-bold text-slate-500">Usulan Proyek</span>
+          </div>
+          <p class="text-[11px] text-emerald-700 font-semibold mt-1">Total alokasi Rp 285 Juta (95%)</p>
+          <div class="absolute bottom-0 left-0 right-0 h-1 bg-pine"></div>
+        </div>
+
+        <div class="glass-panel p-5 relative overflow-hidden group">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Sisa Cadangan Kas</span>
+            <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">🛡️</div>
+          </div>
+          <div class="mt-3 flex items-baseline gap-1">
+            <span class="text-2xl sm:text-3xl font-extrabold text-blue-900 font-heading">Rp 15</span>
+            <span class="text-sm font-bold text-slate-500">Juta</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1">Cadangan tanggap darurat (5%)</p>
+          <div class="absolute bottom-0 left-0 right-0 h-1 bg-blue-500"></div>
+        </div>
+
+        <div class="glass-panel p-5 relative overflow-hidden group">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Partisipasi Warga</span>
+            <div class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-sm">👥</div>
+          </div>
+          <div class="mt-3 flex items-baseline gap-1">
+            <span class="text-2xl sm:text-3xl font-extrabold text-purple-900 font-heading">162</span>
+            <span class="text-sm font-bold text-slate-500">Dukungan</span>
+          </div>
+          <p class="text-[11px] text-purple-700 font-semibold mt-1">RW 01, RW 03, RW 07 terwakili</p>
+          <div class="absolute bottom-0 left-0 right-0 h-1 bg-purple-500"></div>
+        </div>
+
+      </div>
+
+      <!-- ================= THE SIGNATURE DUAL GARIS PAGU ================= -->
+      <div class="glass-panel p-6 sm:p-8 space-y-6 border-2 border-emerald-900/10">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 text-xs font-extrabold text-emerald-800 uppercase tracking-wider mb-1">
+              <span>📊 Dua Garis, Satu Keputusan</span>
+              <span class="text-slate-300">|</span>
+              <span class="text-slate-500 font-semibold">Skala Anggaran Seragam Rp 300 Juta</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black text-pine-deep font-heading">
+              Komparasi: Rekomendasi Algoritma vs Rancangan Musyawarah
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">
+              Bandingkan bagaimana pagu dialokasikan. Proyek yang <strong>berbeda</strong> ditandai dengan bingkai putus-putus dan tanda <span class="font-bold text-amber-700">≠</span>.
+            </p>
+          </div>
+
+          <!-- Simulation shortcut -->
+          <a href="#" class="inline-flex items-center gap-2 text-xs font-bold text-pine bg-emerald-light hover:bg-emerald-light/70 px-4 py-2.5 rounded-xl border border-pine/20 transition-all self-start md:self-auto">
+            <span>Uji di Simulasi Pagu</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+
+        <!-- Segmented Bar 1: Rekomendasi SUARA -->
+        <div class="space-y-2 bg-slate-50/70 p-4 sm:p-5 rounded-2xl border border-slate-200/80">
+          <div class="flex items-center justify-between text-xs font-bold">
+            <span class="flex items-center gap-2 text-pine font-heading text-sm">
+              <span class="w-3 h-3 rounded-full bg-pine"></span>
+              Garis 1: Rekomendasi Sistem SUARA (Berdasarkan Skor Knapsack 0/1)
+            </span>
+            <span class="text-slate-600">Terpakai: <strong class="text-pine">Rp 285 Juta (95.0%)</strong></span>
+          </div>
+
+          <!-- The Stacked Bar -->
+          <div class="w-full h-11 bg-slate-200/80 rounded-xl overflow-hidden flex p-1 gap-1 shadow-inner">
+            <!-- Drainase 30% -->
+            <div class="pagu-segment h-full rounded-lg bg-pine text-white flex items-center justify-center px-2 text-[11px] font-extrabold truncate" style="width: 30.0%" title="Normalisasi Drainase RW 07: Rp 90 Jt (30.0%)">
+              Drainase (Rp 90 Jt)
+            </div>
+            <!-- Jalan SDN 03 28.3% -->
+            <div class="pagu-segment h-full rounded-lg bg-emerald-700 text-white flex items-center justify-center px-2 text-[11px] font-extrabold truncate" style="width: 28.3%" title="Jalan SDN 03 RW 03: Rp 85 Jt (28.3%)">
+              Jalan SDN 03 (Rp 85 Jt)
+            </div>
+            <!-- Jembatan 23.3% -->
+            <div class="pagu-segment h-full rounded-lg bg-amber-600 text-white flex items-center justify-center px-2 text-[11px] font-extrabold truncate" style="width: 23.3%" title="Jembatan Sekolah RW 07: Rp 70 Jt (23.3%)">
+              Jembatan (Rp 70 Jt)
+            </div>
+            <!-- Lampu PJU 13.3% -->
+            <div class="pagu-segment h-full rounded-lg bg-lime-700 text-white flex items-center justify-center px-2 text-[11px] font-extrabold truncate" style="width: 13.3%" title="Lampu PJU RW 07: Rp 40 Jt (13.3%)">
+              Lampu PJU (Rp 40 Jt)
+            </div>
+            <!-- Sisa 5% -->
+            <div class="h-full rounded-lg border-2 border-dashed border-slate-400 bg-white/70 text-slate-600 flex items-center justify-center px-2 text-[10px] font-bold" style="width: 5.0%" title="Sisa Cadangan Kas: Rp 15 Jt (5.0%)">
+              Sisa 15 Jt
+            </div>
+          </div>
+        </div>
+
+        <!-- Segmented Bar 2: Rancangan Keputusan Musyawarah (Opsi Divergensi) -->
+        <div class="space-y-2 bg-amber-50/40 p-4 sm:p-5 rounded-2xl border border-amber-200/80">
+          <div class="flex items-center justify-between text-xs font-bold">
+            <span class="flex items-center gap-2 text-amber-900 font-heading text-sm">
+              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+              Garis 2: Usulan Kompromi Musyawarah Desa (Dengan Alokasi Dana Lain)
+            </span>
+            <span class="text-slate-600">Terpakai Pagu Desa: <strong class="text-amber-900">Rp 285 Jt</strong> + <strong class="text-blue-700">BPBD Rp 220 Jt</strong></span>
+          </div>
+
+          <!-- Stacked Bar with Divergence Mark -->
+          <div class="w-full h-11 bg-slate-200/80 rounded-xl overflow-hidden flex p-1 gap-1 shadow-inner relative">
+            <div class="pagu-segment h-full rounded-lg bg-pine text-white flex items-center justify-center px-2 text-[11px] font-extrabold truncate" style="width: 30.0%">
+              Drainase (Rp 90 Jt)
+            </div>
+            <div class="pagu-segment h-full rounded-lg bg-emerald-700 text-white flex items-center justify-center px-2 text-[11px] font-extrabold truncate" style="width: 28.3%">
+              Jalan SDN 03 (Rp 85 Jt)
+            </div>
+            <div class="pagu-segment h-full rounded-lg bg-amber-600 text-white flex items-center justify-center px-2 text-[11px] font-extrabold truncate" style="width: 23.3%">
+              Jembatan (Rp 70 Jt)
+            </div>
+            <div class="pagu-segment h-full rounded-lg bg-lime-700 text-white flex items-center justify-center px-2 text-[11px] font-extrabold truncate" style="width: 13.3%">
+              Lampu PJU (Rp 40 Jt)
+            </div>
+            <div class="h-full rounded-lg border-2 border-dashed border-slate-400 bg-white/70 text-slate-600 flex items-center justify-center px-2 text-[10px] font-bold" style="width: 5.0%">
+              Sisa 15 Jt
+            </div>
+          </div>
+
+          <!-- Divergence Callout Banner -->
+          <div class="mt-3 flex items-center justify-between gap-3 text-xs bg-white p-3 rounded-xl border border-amber-200">
+            <div class="flex items-center gap-2.5">
+              <span class="text-amber-600 font-extrabold text-sm">≠</span>
+              <span class="text-slate-700 font-medium">
+                Musyawarah sepakat mengalihkan <strong>Talud Tebing RW 07 (Rp 220 Jt)</strong> ke <em>Dana Tanggap Bencana BPBD</em> agar 4 proyek dasar di atas tetap terealisasi penuh.
+              </span>
+            </div>
+            <span class="hidden sm:inline-block text-[11px] font-extrabold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200 shrink-0">
+              Status: Diajukan ke Dana Lain
+            </span>
+          </div>
+        </div>
+
+        <!-- Legend / Explanation Keys -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs text-slate-600 border-t border-slate-100">
+          <div class="flex flex-wrap items-center gap-4">
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-pine"></span> Drainase RW 07 (Rp 90 Jt)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-emerald-700"></span> Jalan SDN 03 (Rp 85 Jt)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-amber-600"></span> Jembatan RW 07 (Rp 70 Jt)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-lime-700"></span> Lampu PJU RW 07 (Rp 40 Jt)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm border border-dashed border-slate-500 bg-white"></span> Sisa Cadangan (Rp 15 Jt)</span>
+          </div>
+          <span class="font-semibold text-pine">Formula Skor = 40% Urgensi + 30% Dukungan + 30% Pemerataan</span>
+        </div>
+
+      </div>
+
+      <!-- ================= SPOTLIGHT: TUNAS EXPLAINING KNAPSACK DEFERRAL ================= -->
+      <div class="glass-panel bg-gradient-to-br from-amber-50/80 via-white to-emerald-50/50 p-6 sm:p-8 border-2 border-amber-200/90 relative overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+          
+          <!-- Tunas Thinking Mascot -->
+          <div class="md:col-span-3 flex justify-center">
+            <div class="relative w-36 sm:w-44 h-auto mascot-float">
+              <img 
+                src="assets/mascot/tunas-thinking.png" 
+                alt="Tunas Menimbang Solusi Knapsack" 
+                class="w-full h-auto drop-shadow-xl"
+              />
+              <div class="absolute -top-2 -right-2 bg-amber-500 text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-md">
+                Transparansi AI
+              </div>
+            </div>
+          </div>
+
+          <!-- Explanation Details -->
+          <div class="md:col-span-9 space-y-3">
+            <div class="inline-flex items-center gap-2 bg-amber-100 text-amber-900 px-3 py-1 rounded-full text-xs font-bold">
+              <span>⚠️ Catatan Akuntabilitas Algoritma (Knapsack 0/1)</span>
+            </div>
+            
+            <h3 class="text-xl sm:text-2xl font-black text-pine-deep font-heading">
+              Mengapa Proyek Talud RW 07 (Urgensi 10/10) Ditunda oleh Sistem?
+            </h3>
+            
+            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
+              Usulan <em>Talud Penahan Longsor Tebing RW 07</em> dinilai memiliki urgensi darurat maksimal (<strong>10/10</strong>). Namun biayanya mencapai <strong>Rp 220 Juta</strong> (73.3% dari seluruh pagu desa). Jika dipaksakan masuk anggaran murni, pagu desa yang tersisa hanya Rp 80 Juta sehingga <strong>3 kebutuhan vital lainnya (Jalan SDN 03, Drainase, dan Lampu) terpaksa dibatalkan sekaligus</strong>.
+            </p>
+
+            <div class="bg-white/90 p-4 rounded-xl border border-amber-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <span class="text-xs font-bold text-pine block">Keputusan Solutif Musyawarah Desa:</span>
+                <span class="text-xs text-slate-600">Alokasikan 4 usulan berbiaya proporsional, dan rekomendasikan Talud ke <strong>BPBD Kabupaten</strong> sebagai penanganan bencana alam.</span>
+              </div>
+              <button onclick="openDialog('talud-info')" class="text-xs font-bold text-white bg-amber-700 hover:bg-amber-800 px-4 py-2 rounded-xl shrink-0 transition-colors shadow-sm">
+                Lihat Berita Acara Talud →
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================= RICH SCENIC PROJECT CARDS (4 PRIORITY USULAN) ================= -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-xl font-black text-pine-deep font-heading">Daftar Usulan Prioritas Periode 2027</h3>
+            <p class="text-xs sm:text-sm text-slate-500">4 usulan masuk alokasi rekomendasi Knapsack 0/1 berdasarkan data voting warga</p>
+          </div>
+          <span class="text-xs font-bold text-emerald-800 bg-emerald-light px-3 py-1.5 rounded-full border border-pine/20">
+            Total Terbiayai: Rp 285.000.000
+          </span>
+        </div>
+
+        <!-- 2x2 Scenic Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          
+          <!-- Card 1: Drainase Sawah/Desa -->
+          <div class="glass-panel overflow-hidden border border-slate-200 group hover:border-pine/40">
+            <!-- Scene Header -->
+            <div class="relative h-44 overflow-hidden">
+              <img 
+                src="assets/scenes/sawah-desa.png" 
+                alt="Saluran Drainase RW 07" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+              
+              <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-black text-pine font-heading">
+                01 · REKOMENDASI TERATAS
+              </div>
+              <div class="absolute top-3 right-3 bg-pine text-white px-2.5 py-1 rounded-lg text-[11px] font-bold shadow-md">
+                Skor 9.20 / 10
+              </div>
+
+              <div class="absolute bottom-3 left-3 right-3 text-white">
+                <span class="text-[11px] font-semibold text-emerald-200 uppercase tracking-wider">Infrastruktur Lingkungan · RW 07</span>
+                <h4 class="text-base font-bold leading-snug drop-shadow-md">Normalisasi Drainase yang Sering Banjir</h4>
+              </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-5 space-y-4">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-slate-500 font-medium">Estimasi Biaya Pembangunan:</span>
+                <span class="text-base font-extrabold text-pine font-heading">Rp 90.000.000</span>
+              </div>
+
+              <!-- Indicators -->
+              <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 font-bold block">URGENSI</span>
+                  <span class="font-extrabold text-amber-700">9 / 10</span>
+                </div>
+                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 font-bold block">DUKUNGAN</span>
+                  <span class="font-extrabold text-pine">8 Warga (20/1k)</span>
+                </div>
+                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 font-bold block">PEMERATAAN</span>
+                  <span class="font-extrabold text-emerald-600">Maksimal (0 Lalu)</span>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="inline-flex items-center gap-1.5 text-emerald-700 font-bold">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  Terpilih dalam Pagu
+                </span>
+                <a href="#" class="text-pine font-bold hover:underline flex items-center gap-1">Detail Usulan →</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Perbaikan Jalan SDN 03 -->
+          <div class="glass-panel overflow-hidden border border-slate-200 group hover:border-pine/40">
+            <!-- Scene Header -->
+            <div class="relative h-44 overflow-hidden">
+              <img 
+                src="assets/scenes/hero-village-reference.jpg" 
+                alt="Jalan Depan SDN 03 RW 03" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+              
+              <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-black text-pine font-heading">
+                02 · REKOMENDASI TINGGI
+              </div>
+              <div class="absolute top-3 right-3 bg-pine text-white px-2.5 py-1 rounded-lg text-[11px] font-bold shadow-md">
+                Skor 8.90 / 10
+              </div>
+
+              <div class="absolute bottom-3 left-3 right-3 text-white">
+                <span class="text-[11px] font-semibold text-emerald-200 uppercase tracking-wider">Akses Pendidikan · RW 03</span>
+                <h4 class="text-base font-bold leading-snug drop-shadow-md">Perbaikan Jalan Berlubang Depan SDN 03</h4>
+              </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-5 space-y-4">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-slate-500 font-medium">Estimasi Biaya Pembangunan:</span>
+                <span class="text-base font-extrabold text-pine font-heading">Rp 85.000.000</span>
+              </div>
+
+              <!-- Indicators -->
+              <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 font-bold block">URGENSI</span>
+                  <span class="font-extrabold text-amber-700">8 / 10</span>
+                </div>
+                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 font-bold block">DUKUNGAN</span>
+                  <span class="font-extrabold text-pine">30 Warga (15/1k)</span>
+                </div>
+                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 font-bold block">PEMERATAAN</span>
+                  <span class="font-extrabold text-emerald-600">Sedang (60 Jt Lalu)</span>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="inline-flex items-center gap-1.5 text-emerald-700 font-bold">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  Terpilih dalam Pagu
+                </span>
+                <a href="#" class="text-pine font-bold hover:underline flex items-center gap-1">Detail Usulan →</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Jembatan Penghubung Sekolah -->
+          <div class="glass-panel overflow-hidden border border-slate-200 group hover:border-pine/40">
+            <!-- Scene Header -->
+            <div class="relative h-44 overflow-hidden">
+              <img 
+                src="assets/scenes/jembatan-desa.png" 
+                alt="Jembatan Kecil RW 07" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+              
+              <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-black text-pine font-heading">
+                03 · JALUR KESELAMATAN
+              </div>
+              <div class="absolute top-3 right-3 bg-pine text-white px-2.5 py-1 rounded-lg text-[11px] font-bold shadow-md">
+                Skor 8.50 / 10
+              </div>
+
+              <div class="absolute bottom-3 left-3 right-3 text-white">
+                <span class="text-[11px] font-semibold text-emerald-200 uppercase tracking-wider">Konektivitas Warga · RW 07</span>
+                <h4 class="text-base font-bold leading-snug drop-shadow-md">Jembatan Kecil Penghubung ke Sekolah</h4>
+              </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-5 space-y-4">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-slate-500 font-medium">Estimasi Biaya Pembangunan:</span>
+                <span class="text-base font-extrabold text-pine font-heading">Rp 70.000.000</span>
+              </div>
+
+              <!-- Indicators -->
+              <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 font-bold block">URGENSI</span>
+                  <span class="font-extrabold text-amber-700">8 / 10</span>
+                </div>
+                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 font-bold block">DUKUNGAN</span>
+                  <span class="font-extrabold text-pine">5 Warga (12/1k)</span>
+                </div>
+                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 font-bold block">PEMERATAAN</span>
+                  <span class="font-extrabold text-emerald-600">Prioritas Terdepan</span>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="inline-flex items-center gap-1.5 text-emerald-700 font-bold">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  Terpilih dalam Pagu
+                </span>
+                <a href="#" class="text-pine font-bold hover:underline flex items-center gap-1">Detail Usulan →</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Lampu PJU Setapak -->
+          <div class="glass-panel overflow-hidden border border-slate-200 group hover:border-pine/40">
+            <!-- Scene Header -->
+            <div class="relative h-44 overflow-hidden">
+              <img 
+                src="assets/scenes/balai-desa.png" 
+                alt="Penerangan Lampu PJU RW 07" 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+              
+              <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-black text-pine font-heading">
+                04 · KESELAMATAN MALAM
+              </div>
+              <div class="absolute top-3 right-3 bg-pine text-white px-2.5 py-1 rounded-lg text-[11px] font-bold shadow-md">
+                Skor 7.80 / 10
+              </div>
+
+              <div class="absolute bottom-3 left-3 right-3 text-white">
+                <span class="text-[11px] font-semibold text-emerald-200 uppercase tracking-wider">Fasilitas Umum · RW 07</span>
+                <h4 class="text-base font-bold leading-snug drop-shadow-md">Lampu PJU Jalan Setapak RW 07</h4>
+              </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-5 space-y-4">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-slate-500 font-medium">Estimasi Biaya Pembangunan:</span>
+                <span class="text-base font-extrabold text-pine font-heading">Rp 40.000.000</span>
+              </div>
+
+              <!-- Indicators -->
+              <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 font-bold block">URGENSI</span>
+                  <span class="font-extrabold text-amber-700">7 / 10</span>
+                </div>
+                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 font-bold block">DUKUNGAN</span>
+                  <span class="font-extrabold text-pine">6 Warga (15/1k)</span>
+                </div>
+                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 font-bold block">PEMERATAAN</span>
+                  <span class="font-extrabold text-emerald-600">Prioritas Terdepan</span>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="inline-flex items-center gap-1.5 text-emerald-700 font-bold">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  Terpilih dalam Pagu
+                </span>
+                <a href="#" class="text-pine font-bold hover:underline flex items-center gap-1">Detail Usulan →</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================= WILAYAH EQUITY CARDS (PEMERATAAN RW) ================= -->
+      <div class="glass-panel p-6 sm:p-8 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-lg sm:text-xl font-black text-pine-deep font-heading">
+              Dampak Terhadap Pemerataan Anggaran Antar-Wilayah
+            </h3>
+            <p class="text-xs text-slate-500">Normalisasi per 1.000 penduduk memastikan RW kecil terpencil tidak terabaikan</p>
+          </div>
+          <span class="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-lg self-start sm:self-auto">
+            Target Keadilan Sosial Desa
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- RW 01 -->
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-pine text-sm font-heading">RW 01 (Pusat Desa)</span>
+              <span class="text-[11px] font-bold text-slate-500">Populasi: 3.000 Jiwa</span>
+            </div>
+            <div class="text-xs text-slate-600 space-y-1">
+              <div class="flex justify-between"><span>Anggaran Periode Lalu:</span><strong class="text-slate-800">Rp 250 Juta</strong></div>
+              <div class="flex justify-between"><span>Alokasi Periode 2027:</span><strong class="text-slate-500">Rp 0 Juta</strong></div>
+              <div class="flex justify-between border-t border-slate-200 pt-1"><span>Alokasi per Jiwa:</span><span class="font-bold text-slate-600">Rp 0 / jiwa</span></div>
+            </div>
+            <p class="text-[10px] text-slate-400 italic pt-1">RW 01 telah menerima alokasi dominan di tahun lalu, sehingga skor pemerataannya disesuaikan.</p>
+          </div>
+
+          <!-- RW 03 -->
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-pine text-sm font-heading">RW 03 (Pemukiman)</span>
+              <span class="text-[11px] font-bold text-slate-500">Populasi: 2.000 Jiwa</span>
+            </div>
+            <div class="text-xs text-slate-600 space-y-1">
+              <div class="flex justify-between"><span>Anggaran Periode Lalu:</span><strong class="text-slate-800">Rp 60 Juta</strong></div>
+              <div class="flex justify-between"><span>Alokasi Periode 2027:</span><strong class="text-emerald-700">Rp 85 Juta</strong></div>
+              <div class="flex justify-between border-t border-slate-200 pt-1"><span>Alokasi per Jiwa:</span><span class="font-bold text-emerald-700">Rp 42.500 / jiwa</span></div>
+            </div>
+            <p class="text-[10px] text-emerald-800 font-medium pt-1">Mendapatkan perbaikan jalan sekolah dasar untuk akses anak-anak.</p>
+          </div>
+
+          <!-- RW 07 -->
+          <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-pine text-sm font-heading">RW 07 (Dusun Terpencil)</span>
+              <span class="text-[11px] font-bold text-pine">Populasi: 400 Jiwa</span>
+            </div>
+            <div class="text-xs text-slate-600 space-y-1">
+              <div class="flex justify-between"><span>Anggaran Periode Lalu:</span><strong class="text-amber-800">Rp 0 Juta (Tertinggal)</strong></div>
+              <div class="flex justify-between"><span>Alokasi Periode 2027:</span><strong class="text-pine font-black">Rp 200 Juta</strong></div>
+              <div class="flex justify-between border-t border-emerald-200 pt-1"><span>Alokasi per Jiwa:</span><span class="font-black text-pine">Rp 500.000 / jiwa</span></div>
+            </div>
+            <p class="text-[10px] text-emerald-900 font-semibold pt-1">Pemerataan optimal terwujud: 3 proyek prioritas (drainase, jembatan, PJU) terealisasi.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- TAB 2: BUKU REGISTER MUSYAWARAH 2026 (RESMI DIPUTUSKAN) -->
+    <!-- ======================================================== -->
+    <section id="tab-arsip" class="space-y-8 hidden transition-opacity duration-300">
+      
+      <!-- Official Decree Header Banner -->
+      <div class="glass-panel p-6 sm:p-8 bg-gradient-to-r from-blue-50/70 via-white to-emerald-50/50 border-2 border-blue-900/15 relative overflow-hidden">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="space-y-3">
+            <div class="flex flex-wrap items-center gap-3">
+              <div class="stempel-resmi">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                <span>DIPUTUSKAN · 20 NOVEMBER 2025</span>
+              </div>
+              <span class="text-xs font-bold text-slate-500">Berita Acara No. 141/BA-DES/XI/2025</span>
+            </div>
+
+            <h2 class="text-2xl sm:text-3xl font-black text-pine-deep font-heading">
+              Buku Register Keputusan Musyawarah — TA 2026
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
+              <em>Catatan:</em> Periode ini diputuskan <strong>sebelum sistem SUARA diterapkan</strong>. Angka dan keputusan di bawah merupakan data riil penetapan manual musyawarah desa tahun lalu untuk mengunci baseline pemerataan periode 2027.
+            </p>
+          </div>
+
+          <!-- Tunas Celebrate Mascot -->
+          <div class="relative w-32 sm:w-40 h-auto mascot-float shrink-0 self-center md:self-auto">
+            <img 
+              src="assets/mascot/tunas-celebrate.png" 
+              alt="Tunas Merayakan Keputusan Desa" 
+              class="w-full h-auto drop-shadow-xl"
+            />
+          </div>
+        </div>
+
+        <!-- KPI Strip 2026 -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-200">
+          <div>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">PAGU TAHUN 2026</span>
+            <span class="text-xl sm:text-2xl font-extrabold text-slate-800 font-heading">Rp 320 <small class="text-xs">Jt</small></span>
+          </div>
+          <div>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">TOTAL DISETUJUI</span>
+            <span class="text-xl sm:text-2xl font-extrabold text-pine font-heading">3 <small class="text-xs">Usulan</small></span>
+          </div>
+          <div>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">REALISASI TERPAKAI</span>
+            <span class="text-xl sm:text-2xl font-extrabold text-blue-900 font-heading">Rp 310 <small class="text-xs">Jt</small></span>
+          </div>
+          <div>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">SISA CADANGAN (SILPA)</span>
+            <span class="text-xl sm:text-2xl font-extrabold text-slate-600 font-heading">Rp 10 <small class="text-xs">Jt</small></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Decision Records List -->
+      <div class="space-y-4">
+        <h3 class="text-xl font-black text-pine-deep font-heading">Keputusan Musyawarah untuk Setiap Usulan 2026</h3>
+
+        <div class="space-y-3">
+          
+          <!-- Item 1: Disetujui Irigasi -->
+          <div class="glass-panel p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-l-4 border-l-emerald-600">
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">Disetujui Musyawarah</span>
+                <span class="text-xs text-slate-400">·</span>
+                <span class="text-xs font-semibold text-slate-500">RW 01 · Irigasi Sawah</span>
+              </div>
+              <h4 class="text-base sm:text-lg font-bold text-pine font-heading">Rehabilitasi Saluran Irigasi Sawah RW 01</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                <strong>Alasan Keputusan:</strong> Mengamankan pengairan untuk 45 hektar sawah produktif warga menjelang musim tanam pertama.
+              </p>
+            </div>
+            <div class="text-left md:text-right shrink-0">
+              <span class="text-xs text-slate-400 block font-semibold">Alokasi Anggaran:</span>
+              <span class="text-lg font-extrabold text-pine font-heading">Rp 150.000.000</span>
+              <span class="block text-[11px] font-bold text-emerald-700">Status: Selesai (Realisasi Rp 148 Jt)</span>
+            </div>
+          </div>
+
+          <!-- Item 2: Disetujui Jalan Lingkungan -->
+          <div class="glass-panel p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-l-4 border-l-emerald-600">
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">Disetujui Musyawarah</span>
+                <span class="text-xs text-slate-400">·</span>
+                <span class="text-xs font-semibold text-slate-500">RW 01 · Akses Pemukiman</span>
+              </div>
+              <h4 class="text-base sm:text-lg font-bold text-pine font-heading">Perbaikan Jalan Lingkungan RW 01</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                <strong>Alasan Keputusan:</strong> Pavingisasi jalan lingkar warga dan penutupan lubang curam demi keselamatan lansia dan balita.
+              </p>
+            </div>
+            <div class="text-left md:text-right shrink-0">
+              <span class="text-xs text-slate-400 block font-semibold">Alokasi Anggaran:</span>
+              <span class="text-lg font-extrabold text-pine font-heading">Rp 100.000.000</span>
+              <span class="block text-[11px] font-bold text-emerald-700">Status: Selesai (Realisasi Rp 102 Jt)</span>
+            </div>
+          </div>
+
+          <!-- Item 3: Disetujui MCK RW 03 -->
+          <div class="glass-panel p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-l-4 border-l-emerald-600">
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">Disetujui Musyawarah</span>
+                <span class="text-xs text-slate-400">·</span>
+                <span class="text-xs font-semibold text-slate-500">RW 03 · Sanitasi Lingkungan</span>
+              </div>
+              <h4 class="text-base sm:text-lg font-bold text-pine font-heading">Pembangunan MCK Umum RW 03</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                <strong>Alasan Keputusan:</strong> Sanitasi dasar komunal bagi 30 KK di bantaran sungai untuk mencegah pencemaran sumber air warga.
+              </p>
+            </div>
+            <div class="text-left md:text-right shrink-0">
+              <span class="text-xs text-slate-400 block font-semibold">Alokasi Anggaran:</span>
+              <span class="text-lg font-extrabold text-pine font-heading">Rp 60.000.000</span>
+              <span class="block text-[11px] font-bold text-emerald-700">Status: Selesai (Realisasi Rp 58 Jt)</span>
+            </div>
+          </div>
+
+          <!-- Item 4: DITOLAK Kolam Renang -->
+          <div class="glass-panel p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-l-4 border-l-red-600 bg-red-50/20">
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2">
+                <div class="stempel-tolak text-[10px] py-0.5 px-2">
+                  Ditolak Musyawarah
+                </div>
+                <span class="text-xs text-slate-400">·</span>
+                <span class="text-xs font-semibold text-slate-500">RW 01 · Sarana Rekreasi</span>
+              </div>
+              <h4 class="text-base sm:text-lg font-bold text-slate-700 font-heading">Pembangunan Kolam Renang Wisata Desa</h4>
+              <p class="text-xs text-red-800 leading-relaxed font-medium">
+                <strong>Alasan Penolakan:</strong> Biaya (Rp 400 Juta) melebihi batas total pagu tahunan desa (Rp 320 Jt). Proyek bukan kebutuhan dasar mendesak warga dan risiko biaya pemeliharaan mandiri terlalu tinggi.
+              </p>
+            </div>
+            <div class="text-left md:text-right shrink-0">
+              <span class="text-xs text-slate-400 block font-semibold">Biaya Diajukan:</span>
+              <span class="text-lg font-extrabold text-red-700 line-through font-heading">Rp 400.000.000</span>
+              <span class="block text-[11px] font-bold text-red-600">Alokasi APBDes: Rp 0</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Official Musyawarah Signatories Box -->
+      <div class="glass-panel p-6 bg-slate-50 border border-slate-200 space-y-4">
+        <h4 class="text-sm font-extrabold text-pine-deep uppercase tracking-wider">Pejabat & Perwakilan Penandatangan Berita Acara</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+          <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+            <span class="text-[10px] text-slate-400 font-bold block">KEPALA DESA</span>
+            <span class="font-extrabold text-pine text-sm">H. Bambang Soedirman</span>
+            <span class="text-[10px] text-emerald-700 font-semibold block mt-0.5">Tanda Tangan Digital Sah</span>
+          </div>
+          <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+            <span class="text-[10px] text-slate-400 font-bold block">KETUA BPD</span>
+            <span class="font-extrabold text-pine text-sm">Drs. Suryanto, M.Si</span>
+            <span class="text-[10px] text-emerald-700 font-semibold block mt-0.5">Tanda Tangan Digital Sah</span>
+          </div>
+          <div class="bg-white p-3.5 rounded-xl border border-slate-200">
+            <span class="text-[10px] text-slate-400 font-bold block">PERWAKILAN TOKOH WARGA</span>
+            <span class="font-extrabold text-pine text-sm">Siti Aminah (Kader RW 03)</span>
+            <span class="text-[10px] text-emerald-700 font-semibold block mt-0.5">Tanda Tangan Digital Sah</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center gap-3">
+        <button onclick="openPrintModal()" class="px-5 py-2.5 rounded-xl bg-pine hover:bg-pine-dark text-white font-bold text-xs shadow-md shadow-pine/20 transition-all flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+          Cetak Ringkasan Balai Desa (A4)
+        </button>
+        <button onclick="downloadDemoCSV()" class="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200 transition-all flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Unduh Register CSV (Formula Netral)
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- TAB 3: JEJAK AUDIT & TRANSPARANSI AKUNTABILITAS -->
+    <!-- ======================================================== -->
+    <section id="tab-audit" class="space-y-8 hidden transition-opacity duration-300">
+      
+      <!-- Audit Header Banner with Tunas Inspect -->
+      <div class="glass-panel p-6 sm:p-8 bg-gradient-to-r from-emerald-50/80 via-white to-blue-50/60 border border-slate-200">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="space-y-2">
+            <div class="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold">
+              <span>🛡️ Audit Trail Tak Terbantahkan (Immutable Log)</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-pine-deep font-heading">
+              Jejak Audit & Transparansi Akuntabilitas
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
+              Setiap perubahan pagu, modifikasi bobot kriteria, moderasi usulan, dan penetapan rapat tercatat permanen di buku log publik. Tidak ada perubahan yang terjadi secara tersembunyi.
+            </p>
+          </div>
+
+          <!-- Tunas Inspect Mascot -->
+          <div class="relative w-32 sm:w-36 h-auto mascot-float shrink-0 self-center md:self-auto">
+            <img 
+              src="assets/mascot/tunas-inspect.png" 
+              alt="Tunas Memeriksa Keabsahan Jejak Audit" 
+              class="w-full h-auto drop-shadow-xl"
+            />
+          </div>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="flex flex-wrap items-center gap-2 mt-6 pt-5 border-t border-slate-200">
+          <span class="text-xs font-bold text-slate-500 mr-2">Saring Log:</span>
+          <button class="px-3 py-1 rounded-lg text-xs font-bold bg-pine text-white">Semua (18)</button>
+          <button class="px-3 py-1 rounded-lg text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50">Keputusan Musyawarah (4)</button>
+          <button class="px-3 py-1 rounded-lg text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50">Perubahan Pagu & Bobot (6)</button>
+          <button class="px-3 py-1 rounded-lg text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50">Status Usulan (8)</button>
+        </div>
+      </div>
+
+      <!-- Audit Items Feed -->
+      <div class="space-y-3">
+        
+        <!-- Log 1: Penetapan 2026 -->
+        <div class="glass-panel p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-start gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm shrink-0">
+              ⚖️
+            </div>
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">Penetapan Musyawarah</span>
+                <span class="text-xs text-slate-400 font-semibold">20 Nov 2025 · 14:30 WIB</span>
+                <span class="text-[10px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">SHA-256 #8f2a41</span>
+              </div>
+              <h4 class="text-sm sm:text-base font-bold text-pine font-heading mt-1">
+                Penetapan APBDes TA 2026: 3 Usulan Disetujui (Rp 310 Jt), 1 Ditolak
+              </h4>
+              <p class="text-xs text-slate-600 mt-0.5">
+                Oleh <strong>admin_desa (Bambang Soedirman)</strong> dengan lampiran Berita Acara Rapat Nomor 141/BA-DES/XI/2025.
+              </p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 self-start sm:self-center shrink-0">
+            ✓ Terverifikasi RLS
+          </span>
+        </div>
+
+        <!-- Log 2: Bobot Kriteria -->
+        <div class="glass-panel p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-start gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-sm shrink-0">
+              ⚙️
+            </div>
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">Perubahan Bobot Kriteria</span>
+                <span class="text-xs text-slate-400 font-semibold">15 Jan 2026 · 09:15 WIB</span>
+                <span class="text-[10px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">SHA-256 #c7103e</span>
+              </div>
+              <h4 class="text-sm sm:text-base font-bold text-pine font-heading mt-1">
+                Bobot Resmi SUARA Ditetapkan: Urgensi 40%, Dukungan 30%, Pemerataan 30%
+              </h4>
+              <p class="text-xs text-slate-600 mt-0.5">
+                Penyesuaian untuk mengutamakan dusun tertinggal yang belum menerima anggaran di periode sebelumnya.
+              </p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 self-start sm:self-center shrink-0">
+            ✓ Terverifikasi RLS
+          </span>
+        </div>
+
+        <!-- Log 3: Pagu Anggaran Baru -->
+        <div class="glass-panel p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-start gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-pine flex items-center justify-center font-bold text-sm shrink-0">
+              💰
+            </div>
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Pagu Anggaran 2027</span>
+                <span class="text-xs text-slate-400 font-semibold">18 Jan 2026 · 11:00 WIB</span>
+                <span class="text-[10px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">SHA-256 #a491bc</span>
+              </div>
+              <h4 class="text-sm sm:text-base font-bold text-pine font-heading mt-1">
+                Pagu Pembangunan Desa Ditetapkan Sebesar Rp 300.000.000
+              </h4>
+              <p class="text-xs text-slate-600 mt-0.5">
+                Disahkan dalam Musrenbangdes Awal Tahun untuk alokasi 7 usulan prioritas warga.
+              </p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 self-start sm:self-center shrink-0">
+            ✓ Terverifikasi RLS
+          </span>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ================= MODAL: PRATINJAU CETAK PAPAN PENGUMUMAN BALAI DESA (A4) ================= -->
+  <div id="printModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 relative">
+      
+      <!-- Close button -->
+      <button onclick="closePrintModal()" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center font-bold">
+        ✕
+      </button>
+
+      <!-- Print layout preview header -->
+      <div class="flex items-center gap-3 border-b border-slate-200 pb-4">
+        <div class="w-10 h-10 rounded-xl bg-pine text-white flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+        </div>
+        <div>
+          <h3 class="text-lg font-black text-pine font-heading">Format Cetak Lembar Papan Pengumuman Balai Desa (A4)</h3>
+          <p class="text-xs text-slate-500">Standar cetak bersih, hitam-putih ramah toner, siap tempel di papan fisik desa</p>
+        </div>
+      </div>
+
+      <!-- Simulated Paper Sheet -->
+      <div class="p-6 sm:p-8 bg-amber-50/20 border-2 border-slate-300 rounded-xl space-y-5 text-slate-800 font-sans shadow-inner">
+        <!-- Official Government Header -->
+        <div class="text-center border-b-2 border-slate-800 pb-4 space-y-1">
+          <h4 class="text-xs font-bold tracking-widest uppercase">PEMERINTAH KABUPATEN SUKAMAJU · KECAMATAN HARAPAN</h4>
+          <h2 class="text-xl font-extrabold font-heading text-slate-900">KANTOR KEPALA DESA SUKAMAJU</h2>
+          <p class="text-[11px] text-slate-600">Jl. Raya Desa Sukamaju No. 01 — Kode Pos 55281 · Portal: suara.desa.id</p>
+        </div>
+
+        <div class="text-center space-y-1">
+          <h3 class="text-base font-extrabold font-heading underline decoration-2">RINGKASAN KEPUTUSAN MUSYAWARAH DESA</h3>
+          <p class="text-xs font-semibold text-slate-600">Tahun Anggaran 2026 · Berita Acara: 141/BA-DES/XI/2025</p>
+        </div>
+
+        <!-- Print Table -->
+        <table class="w-full text-xs text-left border-collapse border border-slate-400">
+          <thead>
+            <tr class="bg-slate-200 text-slate-900 font-bold">
+              <th class="border border-slate-400 p-2">No</th>
+              <th class="border border-slate-400 p-2">Nama Usulan Pembangunan</th>
+              <th class="border border-slate-400 p-2">Wilayah</th>
+              <th class="border border-slate-400 p-2 text-right">Alokasi Biaya</th>
+              <th class="border border-slate-400 p-2">Hasil Keputusan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-slate-400 p-2 text-center">1</td>
+              <td class="border border-slate-400 p-2 font-bold">Rehabilitasi Saluran Irigasi Sawah</td>
+              <td class="border border-slate-400 p-2">RW 01</td>
+              <td class="border border-slate-400 p-2 text-right font-mono">Rp 150.000.000</td>
+              <td class="border border-slate-400 p-2 font-bold text-emerald-800">Disetujui</td>
+            </tr>
+            <tr>
+              <td class="border border-slate-400 p-2 text-center">2</td>
+              <td class="border border-slate-400 p-2 font-bold">Perbaikan Jalan Lingkungan</td>
+              <td class="border border-slate-400 p-2">RW 01</td>
+              <td class="border border-slate-400 p-2 text-right font-mono">Rp 100.000.000</td>
+              <td class="border border-slate-400 p-2 font-bold text-emerald-800">Disetujui</td>
+            </tr>
+            <tr>
+              <td class="border border-slate-400 p-2 text-center">3</td>
+              <td class="border border-slate-400 p-2 font-bold">Pembangunan MCK Umum</td>
+              <td class="border border-slate-400 p-2">RW 03</td>
+              <td class="border border-slate-400 p-2 text-right font-mono">Rp 60.000.000</td>
+              <td class="border border-slate-400 p-2 font-bold text-emerald-800">Disetujui</td>
+            </tr>
+            <tr class="bg-slate-50">
+              <td class="border border-slate-400 p-2 text-center">4</td>
+              <td class="border border-slate-400 p-2 line-through text-slate-500">Pembangunan Kolam Renang Wisata</td>
+              <td class="border border-slate-400 p-2 text-slate-500">RW 01</td>
+              <td class="border border-slate-400 p-2 text-right font-mono text-slate-500">Rp 0</td>
+              <td class="border border-slate-400 p-2 font-bold text-red-800">Ditolak (Melebihi Pagu)</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="font-bold bg-slate-100">
+              <td colspan="3" class="border border-slate-400 p-2 text-right">TOTAL REALISASI PAGU DESA:</td>
+              <td class="border border-slate-400 p-2 text-right font-mono text-slate-900">Rp 310.000.000</td>
+              <td class="border border-slate-400 p-2 text-slate-600">Sisa SILPA: Rp 10 Jt</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <!-- Signatures in print -->
+        <div class="grid grid-cols-2 pt-6 text-xs text-center">
+          <div>
+            <p>Mengetahui,</p>
+            <p class="font-bold mt-1">Ketua BPD Sukamaju</p>
+            <div class="h-14 flex items-center justify-center italic text-slate-400">[Ttd Sah]</div>
+            <p class="font-bold underline">Drs. Suryanto, M.Si</p>
+          </div>
+          <div>
+            <p>Sukamaju, 20 November 2025</p>
+            <p class="font-bold mt-1">Kepala Desa Sukamaju</p>
+            <div class="h-14 flex items-center justify-center italic text-slate-400">[Ttd Sah & Cap]</div>
+            <p class="font-bold underline">H. Bambang Soedirman</p>
+          </div>
+        </div>
+
+        <div class="text-[9.5px] text-slate-500 text-center pt-2 border-t border-slate-300">
+          Dokumen ringkasan keputusan musyawarah desa, bukan pengesahan anggaran resmi. Dicetak melalui Sistem Informasi SUARA · suaradesa.id
+        </div>
+      </div>
+
+      <!-- Action -->
+      <div class="flex justify-end gap-3">
+        <button onclick="window.print()" class="px-5 py-2 rounded-xl bg-pine text-white font-bold text-xs hover:bg-pine-dark shadow-md">
+          Cetak Dokumen Sekarang (PDF)
+        </button>
+        <button onclick="closePrintModal()" class="px-5 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200">
+          Tutup
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-pine-deep text-white px-5 py-3 rounded-2xl shadow-2xl text-xs font-bold border border-emerald-500/30 hidden flex items-center gap-2">
+    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+    <span id="toast-text">Pesan pemberitahuan</span>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    function switchTab(tabId) {
+      const tabs = ['tab-berjalan', 'tab-arsip', 'tab-audit'];
+      tabs.forEach(t => {
+        const el = document.getElementById(t);
+        const btn = document.getElementById('btn-' + t);
+        if (t === tabId) {
+          el.classList.remove('hidden');
+          btn.classList.add('active');
+        } else {
+          el.classList.add('hidden');
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    function openPrintModal() {
+      document.getElementById('printModal').classList.remove('hidden');
+    }
+    function closePrintModal() {
+      document.getElementById('printModal').classList.add('hidden');
+    }
+
+    function downloadDemoCSV() {
+      const csv = '\uFEFFNo,Nama Usulan,Wilayah,Biaya,Status,Alasan\n' +
+        '1,Rehabilitasi Saluran Irigasi Sawah,RW 01,150000000,Disetujui,"Mengamankan pengairan sawah warga"\n' +
+        '2,Perbaikan Jalan Lingkungan,RW 01,100000000,Disetujui,"Pavingisasi jalan lingkar warga"\n' +
+        '3,Pembangunan MCK Umum,RW 03,60000000,Disetujui,"Sanitasi dasar komunal warga sungai"\n' +
+        '4,Pembangunan Kolam Renang Wisata,RW 01,400000000,Ditolak,"Melebihi pagu tahunan desa"';
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'keputusan_musyawarah_desa_2026.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast('Unduhan CSV berhasil (formula Excel dinetralkan).');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-text').textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3500);
+    }
+  </script>
+
+</body>
+</html>
