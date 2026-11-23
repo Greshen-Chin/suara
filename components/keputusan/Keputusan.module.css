@@ -5,12 +5,17 @@
 
 .halaman {
   display: grid;
-  gap: 2.5rem;
+  gap: 1.75rem;
   align-content: start;
-  max-width: 1280px;
+  max-width: 1240px;
   margin-inline: auto;
-  padding-inline: clamp(1rem, 4vw, 2.5rem);
-  padding-bottom: 5rem;
+  padding-inline: clamp(1rem, 3.5vw, 2rem);
+  padding-bottom: 4rem;
+}
+
+.berjalanWrap {
+  display: grid;
+  gap: 1.75rem;
 }
 
 .kembali {
@@ -45,9 +50,9 @@
     radial-gradient(circle at 90% 10%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
     linear-gradient(180deg, #FFFFFF 0%, #F4F7F4 100%);
   border: 1px solid rgba(15, 81, 50, 0.1);
-  border-radius: 1.75rem;
-  padding: clamp(1.5rem, 4vw, 3rem);
-  padding-bottom: 3.5rem;
+  border-radius: 1.5rem;
+  padding: clamp(1.5rem, 3.5vw, 2.5rem);
+  padding-bottom: 2.75rem;
   overflow: hidden;
   box-shadow: 0 10px 30px -5px rgba(15, 81, 50, 0.04);
 }
@@ -224,8 +229,8 @@
 .tunasFloatWrap {
   position: absolute;
   bottom: -0.5rem;
-  right: 0.5rem;
-  width: clamp(7.5rem, 20vw, 10.5rem);
+  right: 0.25rem;
+  width: clamp(6.5rem, 16vw, 9rem);
   height: auto;
   z-index: 10;
   animation: floatMascot 4s ease-in-out infinite;
@@ -244,15 +249,15 @@
 
 .speechBubble {
   position: absolute;
-  bottom: 1.25rem;
+  bottom: 1rem;
   left: 1rem;
-  right: clamp(7.5rem, 20vw, 10.5rem);
+  right: clamp(7rem, 16vw, 9.25rem);
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(8px);
-  padding: 0.75rem 1rem;
-  border-radius: 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.85rem;
   border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   z-index: 5;
 }
 
@@ -303,7 +308,7 @@
 @media (min-width: 64rem) {
   .kpiGrid {
     grid-template-columns: repeat(4, 1fr);
-    gap: 1.25rem;
+    gap: 1rem;
   }
 }
 
@@ -311,8 +316,8 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(226, 232, 240, 0.85);
-  border-radius: 1.25rem;
-  padding: 1.25rem;
+  border-radius: 1.15rem;
+  padding: 1.15rem 1.25rem;
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 16px rgba(15, 81, 50, 0.04);
@@ -414,10 +419,10 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(15, 81, 50, 0.15);
-  border-radius: 1.5rem;
-  padding: clamp(1.25rem, 3vw, 2rem);
+  border-radius: 1.25rem;
+  padding: clamp(1.25rem, 3vw, 1.85rem);
   display: grid;
-  gap: 1.5rem;
+  gap: 1.35rem;
   box-shadow: 0 8px 30px rgba(15, 81, 50, 0.05);
 }
 
@@ -586,8 +591,8 @@
 .spotlightCard {
   background: linear-gradient(135deg, rgba(254, 243, 199, 0.7) 0%, #FFFFFF 50%, rgba(234, 244, 235, 0.5) 100%);
   border: 1.5px solid rgba(245, 158, 11, 0.4);
-  border-radius: 1.5rem;
-  padding: clamp(1.25rem, 3vw, 2rem);
+  border-radius: 1.25rem;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
   box-shadow: 0 8px 24px rgba(245, 158, 11, 0.08);
 }
 

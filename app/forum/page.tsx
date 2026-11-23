@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { CatatanCadangan } from "@/components/forum/CatatanCadangan";
 import { FilterForum } from "@/components/forum/FilterForum";
+import { ForumHero } from "@/components/forum/ForumHero";
 import { ItemUsulan } from "@/components/forum/ItemUsulan";
 import { SkeletonDaftar } from "@/components/forum/SkeletonDaftar";
 import styles from "@/components/forum/Forum.module.css";
@@ -33,27 +34,7 @@ type Param = Record<string, string | string[] | undefined>;
 export default function HalamanForum({ searchParams }: { searchParams: Promise<Param> }) {
   return (
     <main id="isi" tabIndex={-1} className={`wadah ${styles.halaman}`}>
-      <div className={styles.kepala}>
-        <div>
-          <h1>Forum warga</h1>
-          <p className={styles.pengantar}>
-            Baca usulan warga, dukung yang Anda setujui, dan lihat posisinya terhadap pagu anggaran desa.
-          </p>
-        </div>
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
-          <Link href="/peta" className="tombol tombol-kedua" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
-              <line x1="8" y1="2" x2="8" y2="18" />
-              <line x1="16" y1="6" x2="16" y2="22" />
-            </svg>
-            Lihat Peta
-          </Link>
-          <Link href={URL_USUL} className={`tombol tombol-utama ${styles.ajukan}`}>
-            Ajukan usulan
-          </Link>
-        </div>
-      </div>
+      <ForumHero urlUsul={URL_USUL} />
 
       <Suspense fallback={<SkeletonDaftar />}>
         <IsiForum searchParams={searchParams} />
@@ -92,52 +73,56 @@ async function IsiForum({ searchParams }: { searchParams: Promise<Param> }) {
           {adaFilterAktif(filter) ? (
             <>
               <h2>Tidak ada usulan yang cocok</h2>
-              <p>Belum ada usulan dengan status, RW, dan kategori yang Anda pilih. Hapus filter untuk melihat semuanya.</p>
-              <Link href="/forum" className="tombol tombol-kedua">
-                Hapus filter
-              </Link>
+              <p className={styles.keterangan}>Coba ubah kata kunci atau hapus beberapa penyaring.</p>
+              <p>
+                <Link href="/forum" className="tombol tombol-kedua">
+                  Tampilkan semua usulan
+                </Link>
+              </p>
             </>
           ) : (
             <>
               <h2>Belum ada usulan</h2>
-              <p>Jadilah yang pertama menyampaikan aspirasi untuk desa Anda.</p>
-              <Link href={URL_USUL} className="tombol tombol-utama">
-                Ajukan usulan
-              </Link>
+              <p className={styles.keterangan}>Jadilah warga pertama yang mengajukan kebutuhan pembangunan desa.</p>
+              <p>
+                <Link href={URL_USUL} className="tombol tombol-utama">
+                  Ajukan usulan
+                </Link>
+              </p>
             </>
           )}
         </div>
       ) : (
         <>
-          <p className={styles.ringkasan} role="status">
-            Menampilkan {ribuan(tampil.length)} dari {ribuan(total)} usulan
+          <p className={styles.jumlah} role="status">
+            Menampilkan {tampil.length} dari {ribuan(total)} usulan
           </p>
+
           <ol className={styles.daftar}>
             {tampil.map((u) => (
-              <ItemUsulan
-                key={u.id}
-                usulan={u}
-                pengguna={untukTampilan}
-                didukung={sudahDidukung.has(u.id)}
-                dataCadangan={data.dataCadangan}
-                query={query}
-                sekarang={sekarang}
-              />
+              <li key={u.id}>
+                <ItemUsulan
+                  usulan={u}
+                  sekarang={sekarang}
+                  didukung={sudahDidukung.has(u.id)}
+                  dataCadangan={data.dataCadangan}
+                  query={query}
+                  pengguna={untukTampilan}
+                />
+              </li>
             ))}
           </ol>
+
           {adaLagi && (
-            <div className={styles.lagi}>
+            <p className={styles.muatLebih}>
               <Link
                 href={`/forum${bangunQuery(filter, { batas: filter.batas + BATAS_TAMBAH })}`}
-                scroll={false}
                 className="tombol tombol-kedua"
+                scroll={false}
               >
-                Muat {Math.min(BATAS_TAMBAH, total - tampil.length)} usulan lagi
+                Muat lebih banyak
               </Link>
-              <p>
-                {ribuan(total - tampil.length)} usulan belum ditampilkan.
-              </p>
-            </div>
+            </p>
           )}
         </>
       )}

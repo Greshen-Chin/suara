@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Simulasi } from "@/components/simulasi/Simulasi";
+import { SimulasiHero } from "@/components/simulasi/SimulasiHero";
 import { SimulasiKosong, SimulasiTerlaluBanyak } from "@/components/simulasi/SimulasiKosong";
 import styles from "@/components/simulasi/Simulasi.module.css";
 import { hitungAwalKetahanan } from "@/lib/ketahanan";
@@ -34,10 +35,7 @@ export default async function HalamanSimulasi() {
 
   return (
     <main id="isi" tabIndex={-1} className={`wadah ${styles.halaman}`}>
-      <header className={styles.kepala}>
-        <h1>Simulasi anggaran</h1>
-        {bisaDisimulasikan && <p className={styles.pengantar}>{DESKRIPSI}</p>}
-      </header>
+      <SimulasiHero deskripsi={DESKRIPSI} />
       {usulan.length === 0 ? (
         <SimulasiKosong />
       ) : usulan.length > BATAS_USULAN_OPTIMAL ? (
