@@ -11,14 +11,13 @@ export default async function Beranda() {
 
   return (
     <main id="isi" tabIndex={-1}>
-      <Hero dataContoh={data.dataContoh}>
-        <GarisPagu
-          pagu={data.pagu}
-          modeSuara={data.modeSuara}
-          modeRekomendasi={data.modeRekomendasi}
-        />
-      </Hero>
-      <WilayahKontras wilayah={data.wilayah} usulan={data.usulan} />
+      <Hero pagu={data.pagu} dataContoh={data.dataContoh} />
+      <GarisPagu
+        pagu={data.pagu}
+        modeSuara={data.modeSuara}
+        modeRekomendasi={data.modeRekomendasi}
+      />
+      <WilayahKontras wilayah={data.wilayah} />
       <CaraKerja bobot={data.bobot} />
       <JejakKeputusan log={data.log} judulUsulan={judulUsulan} />
     </main>

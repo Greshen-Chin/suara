@@ -2,8 +2,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.125rem 0.5rem;
-  border: 2px solid currentColor;
+  padding: 0.2rem 0.625rem;
+  border: 1px solid transparent;
   border-radius: var(--radius);
   font-size: var(--t-xs);
   font-weight: 700;
@@ -16,20 +16,19 @@
 }
 
 .terpilih {
-  background: var(--status-terpilih-latar);
-  border-color: var(--status-terpilih-latar);
-  color: var(--status-terpilih-teks);
+  background: var(--mint);
+  border-color: #a7f3d0;
+  color: var(--pine-primary);
 }
 
 .ditunda {
-  background: var(--status-ditunda-latar);
-  border-color: var(--tinta);
-  color: var(--status-ditunda-teks);
+  background: #fef3c7;
+  border-color: #fde68a;
+  color: #b45309;
 }
 
 .tidak-terpilih {
-  background: transparent;
-  border-style: dashed;
-  border-color: var(--status-tidak-garis);
-  color: var(--status-tidak-teks);
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #64748b;
 }

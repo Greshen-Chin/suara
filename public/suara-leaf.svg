@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- SUARA Leaf & Speech Balloon Symbol -->
+  <defs>
+    <linearGradient id="leafGrad" x1="6" y1="42" x2="42" y2="6" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#14261E" />
+      <stop offset="40%" stop-color="#0F5132" />
+      <stop offset="100%" stop-color="#2E7D32" />
+    </linearGradient>
+  </defs>
+  <!-- Outer leaf body curving like a dialogue balloon -->
+  <path d="M8 38C7 26 14 14 38 7C38 21 34 35 18 39C14 40 10 40 8 38Z" fill="url(#leafGrad)" />
+  <!-- Dynamic flowing spine / sound aspiration line -->
+  <path d="M10 37C15 26 23 18 36 9" stroke="#E8F3E9" stroke-width="3" stroke-linecap="round" />
+</svg>

@@ -1,0 +1,98 @@
+const fs = require('fs');
+
+// 1. StatusLabel
+let sl = `
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.2rem 0.625rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.ikon {
+  flex: none;
+}
+
+.terpilih {
+  background: var(--mint);
+  border-color: #a7f3d0;
+  color: var(--pine-primary);
+}
+
+.ditunda {
+  background: #fef3c7;
+  border-color: #fde68a;
+  color: #b45309;
+}
+
+.tidak-terpilih {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #64748b;
+}
+`;
+fs.writeFileSync('components/ui/StatusLabel.module.css', sl.trim(), 'utf8');
+
+// 2. StatusSiklus
+let ss = `
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.2rem 0.625rem;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius);
+  background: var(--papan);
+  color: var(--charcoal);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.ikon {
+  flex: none;
+}
+
+.voting {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-color: #bae6fd;
+}
+
+.approved {
+  background: var(--mint);
+  color: var(--pine-primary);
+  border-color: #a7f3d0;
+}
+
+.rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.done {
+  background: #f1f5f9;
+  color: #475569;
+  border-color: #cbd5e1;
+}
+`;
+fs.writeFileSync('components/ui/StatusSiklus.module.css', ss.trim(), 'utf8');
+
+// 3. Forum.module.css
+let fm = fs.readFileSync('components/forum/Forum.module.css', 'utf8');
+fm = fm.replace('border: var(--tebal) solid var(--tinta);', 'border: 1px solid var(--garis-halus); box-shadow: var(--bayangan-kartu);');
+fm = fm.replace('border: 2px solid var(--tinta);', 'border: 1px solid var(--garis-halus);');
+fm = fm.replace('border-top: 2px solid var(--tinta);', 'border-top: 1px solid var(--garis-halus);');
+fm = fm.replace('background: var(--kapur);', 'background: var(--sand);');
+fs.writeFileSync('components/forum/Forum.module.css', fm, 'utf8');
+
+console.log('Patched Status badges & Forum styles');

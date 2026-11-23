@@ -3,68 +3,34 @@ import type { Bobot } from "@/lib/seleksi";
 import { RUTE } from "@/lib/tautan";
 import styles from "./CaraKerja.module.css";
 
-interface Props {
-  bobot: Bobot;
-}
+interface Props { bobot: Bobot }
 
-interface Langkah {
-  judul: string;
-  isi: string;
-  peranAi: string;
-  tautan: { href: string; teks: string };
-}
-
-function susunLangkah(bobot: Bobot): Langkah[] {
-  return [
-    {
-      judul: "Sampaikan aspirasi",
-      isi: "Warga menulis usulan, atau mendukung usulan yang sudah ada.",
-      peranAi:
-        "AI mengenali usulan yang mirip dari makna dan lokasinya, lalu menawarkan gabung dukungan.",
-      tautan: { href: RUTE.forum, teks: "Buka forum warga" },
-    },
-    {
-      judul: "Bandingkan pilihan anggaran",
-      isi: `Skor tiap usulan menggabungkan dukungan per 1.000 penduduk, urgensi, dan pemerataan anggaran, dengan bobot ${bobot.popularitas}, ${bobot.urgensi}, dan ${bobot.pemerataan} hasil musyawarah.`,
-      peranAi: "AI menilai urgensi 1 sampai 10 dan menuliskan alasannya.",
-      tautan: { href: RUTE.simulasi, teks: "Coba simulasi anggaran" },
-    },
-    {
-      judul: "Putuskan dengan alasan tertulis",
-      isi: "Musyawarah desa memutuskan, dan setiap perubahan bobot atau status dicatat.",
-      peranAi:
-        "AI tidak ikut memutuskan. Ia hanya menyediakan nilai urgensi dan alasannya sebagai bahan musyawarah.",
-      tautan: { href: RUTE.keputusan, teks: "Lihat keputusan desa" },
-    },
-  ];
-}
-
-/** Tiga tahap berurutan, jadi pakai penomoran. Tiap tahap menyebut peran AI dan tertaut ke layarnya. */
 export function CaraKerja({ bobot }: Props) {
-  return (
-    <section aria-labelledby="judul-cara" className="bagian">
-      <div className="wadah">
-        <div className="bagian-kepala">
-          <h2 id="judul-cara">Tiga langkah dari usulan sampai keputusan</h2>
+  const kriteria = [
+    { nama: "Urgensi", nilai: bobot.urgensi, isi: "Admin desa menilai kebutuhan mendesak pada skala 1–10 dan menulis alasannya." },
+    { nama: "Dukungan warga", nilai: bobot.popularitas, isi: "Dukungan dihitung per 1.000 penduduk agar RW kecil tetap terwakili." },
+    { nama: "Pemerataan", nilai: bobot.pemerataan, isi: "Anggaran yang diterima tiap RW pada periode lalu ikut dipertimbangkan." },
+  ];
+  return <section aria-labelledby="judul-cara" className={styles.bagian}>
+    <div className="wadah">
+      <div className={styles.kepala}>
+        <div>
+          <h2 id="judul-cara">Mengapa hasilnya bisa berbeda?</h2>
+          <p>Rekomendasi menggabungkan tiga pertimbangan. Bobot di bawah ini adalah pengaturan resmi saat ini.</p>
         </div>
-        <ol className={styles.daftar}>
-          {susunLangkah(bobot).map((l, i) => (
-            <li key={l.judul} className={styles.langkah}>
-              <span className={styles.nomor} aria-hidden="true">
-                {i + 1}
-              </span>
-              <h3>{l.judul}</h3>
-              <p>{l.isi}</p>
-              <p className={styles.ai}>
-                <strong>Peran AI.</strong> {l.peranAi}
-              </p>
-              <Link href={l.tautan.href} className={styles.tautan}>
-                {l.tautan.teks}
-              </Link>
-            </li>
-          ))}
-        </ol>
+        <Link href={RUTE.simulasi}>Uji bobot di simulasi <span aria-hidden="true">↗</span></Link>
       </div>
-    </section>
-  );
+      <ol className={styles.daftar}>
+        {kriteria.map((item) => <li key={item.nama}>
+          <span className={styles.nilai}>{item.nilai}%</span>
+          <h3>{item.nama}</h3>
+          <p>{item.isi}</p>
+        </li>)}
+      </ol>
+      <p className={styles.catatan}>
+        Rekomendasi membantu musyawarah desa, bukan mengesahkan proyek.
+        <Link href={RUTE.keputusan}> Periksa jejak perubahan yang sudah tercatat.</Link>
+      </p>
+    </div>
+  </section>;
 }

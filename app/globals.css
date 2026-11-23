@@ -1,69 +1,90 @@
 @import "tailwindcss";
 
 /* -----------------------------------------------------------------------------
-   Token SUARA. Warna diambil dari papan proyek dan cat tembok kantor desa.
-   Tiga warna status (terpilih, ditunda, tidak terpilih) dipakai sama di seluruh
-   aplikasi. Status selalu disertai ikon dan teks, tidak pernah hanya warna.
+   SUARA — Master Design System (Civic-Tech Edition)
+   Palet Resmi: Pine (#14261E / #0F5132), Green (#176448 / #2E7D32),
+   Mint (#E8F3E9), Kapur/Sand (#F3F5EF / #FAF8F2), Charcoal (#1F2937),
+   Blue (#27409B), Marka (#F2B600).
    ----------------------------------------------------------------------------- */
 :root {
   color-scheme: light;
 
-  /* Warna dasar */
-  --kapur: #f3f5ef; /* latar halaman, cat tembok */
-  --papan: #ffffff; /* permukaan papan proyek */
-  --tinta: #14261e; /* teks dan garis tebal papan */
-  --abu-semen: #5b655f; /* teks redam, kontras 5,3:1 di atas kapur */
-  --biru-stempel: #27409b; /* tautan, fokus, stempel */
-  --garis-halus: #c9d0c6; /* garis pembantu non-teks */
+  /* Warna Primer & Sekunder (Brand Daun & Civic Tech) */
+  --pine: #14261e;
+  --pine-primary: #0f5132;
+  --green: #176448;
+  --leaf-green: #2e7d32;
+  --mint: #e8f3e9;
 
-  /* Status */
-  --hijau-sawah: #1b7048;
+  /* Latar Belakang & Permukaan */
+  --sand: #faf8f2;
+  --kapur: #f3f5ef;
+  --papan: #ffffff;
+  --charcoal: #1f2937;
+  --tinta: #14261e;
+  --abu-semen: #5b655f;
+  --garis-halus: #e2e8f0;
+
+  /* Aksen & Penanda */
+  --biru-stempel: #27409b;
   --kuning-marka: #f2b600;
-  --status-terpilih-latar: var(--hijau-sawah);
-  --status-terpilih-teks: #ffffff;
-  --status-ditunda-latar: var(--kuning-marka);
-  --status-ditunda-teks: var(--tinta);
-  --status-tidak-garis: var(--abu-semen);
-  --status-tidak-teks: var(--abu-semen);
+  --hijau-sawah: #1b7048;
 
-  /* Galat dan aksi berisiko (mis. nonaktifkan akun). Dipakai formulir masuk, forum, dan halaman
-     admin. Kontras (diukur): teks galat di atas latar galat 9,58:1, di atas papan 10,58:1;
-     tepi galat di atas papan 7,41:1 dan di atas kapur 6,75:1. */
-  --galat-tepi: #a4231a;
-  --galat-teks: #7a1a13;
-  --galat-latar: #fdf1f0;
+  /* Status Penilaian & Siklus */
+  --status-terpilih-latar: var(--mint);
+  --status-terpilih-teks: var(--pine-primary);
+  --status-ditunda-latar: #fef3c7;
+  --status-ditunda-teks: #b45309;
+  --status-tidak-garis: #cbd5e1;
+  --status-tidak-teks: #64748b;
 
-  /* Huruf */
-  --f-judul: var(--font-judul), "Arial Narrow", sans-serif;
-  --f-isi: var(--font-isi), system-ui, sans-serif;
+  /* Galat dan Aksi Berisiko (WCAG AA Teruji) */
+  --galat-tepi: #fca5a5;
+  --galat-teks: #991b1b;
+  --galat-latar: #fef2f2;
 
-  /* Skala tipe */
+  /* Tipografi Master: Plus Jakarta Sans (Headings/UI) + Inter (Body/Data) */
+  --f-judul: var(--font-judul), "Plus Jakarta Sans", system-ui, sans-serif;
+  --f-isi: var(--font-isi), "Inter", system-ui, sans-serif;
+
+  /* Skala Tipe */
   --t-xs: 0.8125rem;
   --t-sm: 0.9375rem;
   --t-md: 1.0625rem;
   --t-lg: 1.25rem;
   --t-xl: 1.75rem;
-  --t-2xl: 2.5rem;
-  --t-hero: clamp(2.5rem, 1.1rem + 6vw, 4.75rem);
+  --t-2xl: 2.375rem;
+  --t-hero: clamp(2.25rem, 1.2rem + 4.5vw, 4rem);
 
-  /* Ruang */
-  --gutter: clamp(1rem, 4vw, 2.5rem);
+  /* Dimensi & Grid */
+  --gutter: clamp(1rem, 3.5vw, 2.5rem);
   --lebar-maks: 76rem;
-  --radius: 0.375rem;
-  --tebal: 3px;
+  --radius: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
+  --tebal: 1.5px;
 
-  /* Gerak */
-  --gerak-tenang: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Efek Bayangan Lembut (Minimal & Bersih) */
+  --bayangan-halus: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --bayangan-kartu: 0 4px 12px rgba(15, 81, 50, 0.04), 0 1px 3px rgba(0, 0, 0, 0.03);
+
+  /* Gerak Animasi */
+  --gerak-tenang: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Warna yang sama tersedia sebagai kelas Tailwind (bg-kapur, text-tinta, ...) untuk layar lain. */
 @theme inline {
+  --color-pine: var(--pine);
+  --color-pine-primary: var(--pine-primary);
+  --color-green: var(--green);
+  --color-leaf-green: var(--leaf-green);
+  --color-mint: var(--mint);
+  --color-sand: var(--sand);
   --color-kapur: var(--kapur);
   --color-papan: var(--papan);
+  --color-charcoal: var(--charcoal);
   --color-tinta: var(--tinta);
   --color-abu-semen: var(--abu-semen);
   --color-biru-stempel: var(--biru-stempel);
-  --color-hijau-sawah: var(--hijau-sawah);
   --color-kuning-marka: var(--kuning-marka);
   --font-judul: var(--f-judul);
   --font-isi: var(--f-isi);
@@ -76,18 +97,19 @@
 }
 
 html {
-  background: var(--kapur);
+  background: var(--sand);
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
-  background: var(--kapur);
-  color: var(--tinta);
+  background: var(--sand);
+  color: var(--charcoal);
   font-family: var(--f-isi);
   font-size: var(--t-md);
   line-height: 1.6;
   font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1,
@@ -97,8 +119,10 @@ h4 {
   margin: 0;
   font-family: var(--f-judul);
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1.15;
+  color: var(--pine);
   text-wrap: balance;
+  letter-spacing: -0.015em;
 }
 
 p {
@@ -106,14 +130,19 @@ p {
 }
 
 a {
-  color: var(--biru-stempel);
-  text-underline-offset: 0.2em;
+  color: var(--pine-primary);
+  text-underline-offset: 0.25em;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--leaf-green);
 }
 
 :focus-visible {
-  outline: 3px solid var(--biru-stempel);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline: 2px solid var(--leaf-green);
+  outline-offset: 2px;
+  border-radius: var(--radius);
 }
 
 .sr-only {
@@ -129,18 +158,21 @@ a {
   position: absolute;
   left: var(--gutter);
   top: 0;
-  z-index: 10;
-  padding: 0.75rem 1rem;
-  background: var(--tinta);
+  z-index: 50;
+  padding: 0.75rem 1.25rem;
+  background: var(--pine-primary);
   color: var(--papan);
+  font-weight: 600;
+  border-radius: var(--radius);
   transform: translateY(-100%);
+  transition: transform 0.2s var(--gerak-tenang);
 }
 
 .lompat:focus-visible {
   transform: none;
 }
 
-/* Wadah isi: lebar maksimum dan gutter yang sama di semua bagian. */
+/* Wadah Isi Responsif */
 .wadah {
   width: 100%;
   max-width: calc(var(--lebar-maks) + 2 * var(--gutter));
@@ -149,51 +181,57 @@ a {
 }
 
 /* -----------------------------------------------------------------------------
-   Tombol. Sentuhan minimal 44 x 44 px. Dipakai pada <a> dan <button>.
+   Tombol Interaktif Standar Civic Tech (Target Sentuh Minimal 44x44px)
    ----------------------------------------------------------------------------- */
 .tombol {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   min-height: 2.75rem;
   min-width: 2.75rem;
-  padding: 0.5rem 1.125rem;
-  border: var(--tebal) solid var(--tinta);
+  padding: 0.5rem 1.25rem;
   border-radius: var(--radius);
-  font: 600 var(--t-sm) / 1.2 var(--f-isi);
+  font: 600 var(--t-sm) / 1.2 var(--f-judul);
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.15s, color 0.15s;
+  transition: all 0.18s var(--gerak-tenang);
 }
 
 .tombol-utama {
-  background: var(--tinta);
+  background: var(--pine-primary);
   color: var(--papan);
+  border: 1px solid var(--pine-primary);
+  box-shadow: 0 1px 2px rgba(15, 81, 50, 0.12);
 }
 
 .tombol-utama:hover {
-  background: var(--biru-stempel);
-  border-color: var(--biru-stempel);
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--papan);
+  transform: translateY(-1px);
 }
 
 .tombol-kedua {
-  background: transparent;
-  color: var(--tinta);
+  background: var(--papan);
+  color: var(--pine-primary);
+  border: 1px solid var(--garis-halus);
+  box-shadow: var(--bayangan-halus);
 }
 
 .tombol-kedua:hover {
-  background: var(--tinta);
-  color: var(--papan);
+  background: var(--mint);
+  border-color: #cbd5e1;
+  color: var(--pine);
 }
 
 /* -----------------------------------------------------------------------------
-   Bagian halaman: garis tinta tebal sebagai pembuka, seperti batas pada papan.
-   Judul di kolom kiri, isi di kolom kanan pada layar lebar.
+   Tata Letak Bagian (Minimal Borders, Soft Dividers)
    ----------------------------------------------------------------------------- */
 .bagian {
-  border-top: 6px solid var(--tinta);
-  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  border-top: 1px solid var(--garis-halus);
+  padding-block: clamp(2.5rem, 5vw, 4.5rem);
 }
 
 .bagian-kepala {
@@ -207,15 +245,16 @@ a {
 }
 
 .bagian-kepala p {
-  max-width: 34ch;
+  max-width: 42ch;
   color: var(--abu-semen);
+  font-size: var(--t-md);
 }
 
 @media (min-width: 62rem) {
   .bagian-dua-kolom {
     display: grid;
     grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-    gap: 3rem;
+    gap: 3.5rem;
   }
 }
 
