@@ -135,18 +135,6 @@ export function Simulasi({ data, awal }: Props) {
 
   return (
     <div className={styles.tata}>
-      {data.dataCadangan && (
-        <div role="note" className={styles.cadangan}>
-          <svg viewBox="0 0 16 16" width={20} height={20} aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" strokeLinejoin="round">
-            <path d="M8 2.5l6 10.5H2z" />
-            <path d="M8 6.8v3M8 11.6v.2" />
-          </svg>
-          <p>
-            <strong>Ini data contoh.</strong> Database sedang tidak terjangkau, jadi angkanya bisa tertinggal. Simulasi
-            tetap berjalan di perangkat Anda.
-          </p>
-        </div>
-      )}
       {(tidakTersedia > 0 || terpotong > 0) && (
         <p role="note" className={styles.catatan}>
           {tidakTersedia > 0 &&
